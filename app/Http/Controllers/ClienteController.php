@@ -12,6 +12,12 @@ class ClienteController extends Controller
 {
     public function index()
     {
+        if (!Auth::user()->can('Cliente')) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No tienes permiso para gestionar clientes'
+            ], 403);
+        }
         return view('cliente.cliente');
     }
     // Endpoint JSON para fetch
@@ -43,50 +49,53 @@ class ClienteController extends Controller
     {
         // Validar datos
         $validator = Validator::make($request->all(), [
-            'nombre' => 'required|string|max:255',
-            'paterno' => 'required|string|max:255',
-            'materno' => 'nullable|string|max:255',
+            'nombre'   => 'required|string|max:255',
+            'paterno'  => 'required|string|max:255',
+            'materno'  => 'nullable|string|max:255',
             'telefono' => 'nullable|string|max:20',
-            'correo' => 'nullable|email|max:255',
-            'ci' => 'nullable|string|max:20|unique:cliente,ci',
+            'correo'   => 'nullable|email|max:255',
+            'ci'       => 'nullable|string|max:20|unique:cliente,ci',
         ]);
 
         if ($validator->fails()) {
             // IMPORTANTE: devolver 200 con status error en JSON
             return response()->json([
-                'status' => 'error',
+                'status'  => 'error',
                 'message' => $validator->errors()->first()
             ], 200);
         }
 
         $user = Auth::user();
-        $empresa = Empresa::where('id_user', $user->id)->first();
 
-        if (!$empresa) {
+        // Sacamos la empresa desde el usuario
+        $empresaId = $user->id_empresa;
+
+        if (!$empresaId) {
             return response()->json([
-                'status' => 'error',
+                'status'  => 'error',
                 'message' => 'No se encontró la empresa asociada al usuario'
-            ], 200); // <-- cambiar de 422 a 200
+            ], 200);
         }
 
         // Crear cliente
         $cliente = Cliente::create([
-            'nombre' => $request->nombre,
-            'paterno' => $request->paterno,
-            'materno' => $request->materno,
-            'telefono' => $request->telefono,
-            'correo' => $request->correo,
-            'ci' => $request->ci,
-            'estado' => 'Activo',
-            'id_empresa' => $empresa->id,
+            'nombre'     => $request->nombre,
+            'paterno'    => $request->paterno,
+            'materno'    => $request->materno,
+            'telefono'   => $request->telefono,
+            'correo'     => $request->correo,
+            'ci'         => $request->ci,
+            'estado'     => 'Activo',
+            'id_empresa' => $empresaId,
         ]);
 
         return response()->json([
-            'status' => 'success',
+            'status'  => 'success',
             'message' => 'Cliente registrado correctamente',
             'cliente' => $cliente
         ], 200);
     }
+
     public function update(Request $request, $id)
     {
         $cliente = Cliente::find($id);

@@ -16,35 +16,55 @@ class EmpresaController extends Controller
     }
     public function edit($id)
     {
-        $empresa = Empresa::where('id_user', Auth::id())->findOrFail($id);
+        $user = Auth::user();
+
+        $query = Empresa::query();
+
+        // Si el usuario no es Administrador, solo puede acceder a su empresa
+        if (!$user->hasRole('Administrador')) {
+            $query->where('id', $user->id_empresa ?? 0);
+        }
+
+        $empresa = $query->findOrFail($id);
+
         return response()->json($empresa);
     }
+
     public function fetch(Request $request)
     {
-        $search = $request->input('search', '');
-        $perPage = 10;
-        $page = $request->input('page', 1);
+        $search  = $request->input('search', '');
+        $perPage = (int) $request->input('per_page', 10);
+        $page    = (int) $request->input('page', 1);
 
         $user = Auth::user();
 
-        $query = Empresa::with('user')
-            ->where('id_user', $user->id); // Solo empresas del usuario autenticado
+        $query = Empresa::query();
 
-        if ($search) {
+        // Si el usuario NO es Administrador, limitamos a su empresa.
+        // OJO con el nombre exacto del rol en tu BD (Administrador vs Adminstrador).
+        if (!$user->hasRole('Administrador')) {
+            // Si el usuario no tiene empresa asociada, forzamos a que no devuelva nada:
+            $empresaId = $user->id_empresa ?? 0;
+            $query->where('id', $empresaId);
+        }
+
+        if ($search !== '') {
             $query->where(function ($q) use ($search) {
-                $q->where('nombre', 'like', "%$search%")
-                    ->orWhere('telefono', 'like', "%$search%")
-                    ->orWhere('correo', 'like', "%$search%")
-                    ->orWhere('nit', 'like', "%$search%")
-                    ->orWhere('direccion', 'like', "%$search%");
+                $q->where('nombre', 'like', "%{$search}%")
+                    ->orWhere('telefono', 'like', "%{$search}%")
+                    ->orWhere('correo', 'like', "%{$search}%")
+                    ->orWhere('nit', 'like', "%{$search}%")
+                    ->orWhere('direccion', 'like', "%{$search}%");
             });
         }
 
-        $empresas = $query->orderBy('id', 'desc')
+        $empresas = $query
+            ->orderByDesc('id')
             ->paginate($perPage, ['*'], 'page', $page);
 
         return response()->json($empresas);
     }
+
 
 
     public function store(Request $request)

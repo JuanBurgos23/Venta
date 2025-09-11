@@ -20,7 +20,9 @@ return new class extends Migration
             $table->string('paterno')->nullable();
             $table->string('materno')->nullable();
             $table->string('foto')->nullable();
-            $table->foreignId('id_empresa')->constrained('empresa')->onDelete('cascade');
+            $table->string('telefono')->nullable();
+            $table->string('estado')->default('Activo')->nullable();
+            $table->foreignId('id_empresa')->nullable()->constrained('empresa')->onDelete('cascade');
             $table->rememberToken();
             $table->timestamps();
         });

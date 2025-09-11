@@ -117,11 +117,13 @@
             <div class="modal fade" id="addRoleModal" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog modal-lg modal-dialog-centered modal-add-new-role">
                     <div class="modal-content">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         <div class="modal-body">
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
                             <div class="text-center mb-6">
                                 <h4 class="role-title mb-2">Agregar Nuevo Rol</h4>
                                 <p>Asigna permisos al nuevo rol</p>
+
                             </div>
                             <form action="{{ route('roles.store') }}" method="POST" class="row g-6">
                                 @csrf

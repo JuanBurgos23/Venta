@@ -14,7 +14,7 @@
     <script src="{{asset('assets/js/ui-toasts.js')}}"></script>
 
     <!-- Canonical SEO -->
-
+   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- ? PROD Only: Google Tag Manager (Default ThemeSelection: GTM-5DDHKGP, PixInvent: GTM-5J3LMKC) -->
     <script async="" src="https://www.googletagmanager.com/gtm.js?id=GTM-5DDHKGP"></script>
@@ -34,7 +34,7 @@
         })(window, document, 'script', 'dataLayer', 'GTM-5DDHKGP');
     </script>
     <!-- End Google Tag Manager -->
-
+    @vite([ 'resources/js/app.js'])
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="{{asset('assets/img/favicon/gato.svg')}}">
 
@@ -3518,41 +3518,25 @@
 
         <script>
             document.addEventListener("DOMContentLoaded", () => {
-                @if(session('success') || session('error') || session('warning') || session('info'))
-                const toastEl = document.getElementById('liveToast');
-                const toastBody = toastEl.querySelector('.toast-body');
-
-                let type = "";
-                let message = "";
+                // --- Toast Bootstrap ---
+                function showToast(message, type = 'primary') {
+                    const toastEl = document.querySelector('.bs-toast');
+                    toastEl.className = `bs-toast toast toast-placement-ex m-2 fade bg-${type} top-0 end-0 hide`;
+                    toastEl.querySelector('.toast-body').textContent = message;
+                    const toast = new bootstrap.Toast(toastEl);
+                    toast.show();
+                }
 
                 @if(session('success'))
-                type = "success";
-                message = "{{ session('success') }}";
-                @elseif(session('error'))
-                type = "error";
-                message = "{{ session('error') }}";
-                @elseif(session('warning'))
-                type = "warning";
-                message = "{{ session('warning') }}";
-                @elseif(session('info'))
-                type = "info";
-                message = "{{ session('info') }}";
+                showToast("{{ session('success') }}", 'success');
                 @endif
 
-                // Limpiar clases anteriores
-                toastEl.classList.remove("toast-success", "toast-error", "toast-warning", "toast-info");
-
-                // Aplicar clase según tipo
-                toastEl.classList.add(`toast-${type}`);
-
-                // Colocar mensaje
-                toastBody.textContent = message;
-
-                // Mostrar toast
-                const toast = new bootstrap.Toast(toastEl, {
-                    delay: 4000
-                }); // 4s
-                toast.show();
+                @if($errors -> any())
+                let errorMsg = '';
+                @foreach($errors -> all() as $error)
+                errorMsg += "{{ $error }}\n";
+                @endforeach
+                showToast(errorMsg.trim(), 'danger');
                 @endif
             });
         </script>

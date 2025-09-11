@@ -93,6 +93,10 @@ Route::delete('/user/avatar/reset', [PerfilController::class, 'resetAvatar'])
 //Crear Usuario
 Route::get('/user', [UsuarioController::class, 'index'])->name('Crear Usuario')->middleware(['auth', 'verified']);
 Route::get('/usuarios/lista', [UsuarioController::class, 'getUsers'])->name('usuarios.lista');
+Route::post('/usuarios/store', [UsuarioController::class, 'store'])->name('usuarios.store');
+Route::put('/usuarios/{id}', [UsuarioController::class, 'update'])->name('usuarios.update');
+Route::delete('/usuarios/{id}', [UsuarioController::class, 'destroy'])->name('usuarios.destroy');
+
 
 //Crear Rol y Permisos
 Route::get('/rol', [RolController::class, 'index'])->name('rol.index');

@@ -14,7 +14,10 @@ class Empresa extends Model
         'correo',
         'direccion',
         'nit',
-       
+
     ];
-    
+    public function users()
+    {
+        return $this->hasMany(User::class, 'id_empresa');
+    }
 }

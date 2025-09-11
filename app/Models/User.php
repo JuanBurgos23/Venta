@@ -26,6 +26,8 @@ class User extends Authenticatable
         'paterno',
         'materno',
         'foto',
+        'telefono',
+        'estado',
         'id_empresa'
     ];
 
