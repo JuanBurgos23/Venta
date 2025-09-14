@@ -1172,6 +1172,30 @@
                             <div data-i18n="Cliente">Cliente</div>
                         </a>
                     </li>
+                    <li class="menu-item {{ Request::routeIs('sucursal') ? 'active' : '' }}">
+                        <a href="{{ route('sucursal') }}" class="menu-link">
+                            <i class="menu-icon icon-base bx bx-user"></i>
+                            <div data-i18n="Sucursal">Sucursal</div>
+                        </a>
+                    </li>
+                    <li class="menu-item {{ Request::routeIs('almacen') ? 'active' : '' }}">
+                        <a href="{{ route('almacen') }}" class="menu-link">
+                            <i class="menu-icon icon-base bx bx-user"></i>
+                            <div data-i18n="almacen">Almacen</div>
+                        </a>
+                    </li>
+                    <li class="menu-item {{ Request::routeIs('unidad_medida') ? 'active' : '' }}">
+                        <a href="{{ route('unidad_medida') }}" class="menu-link">
+                            <i class="menu-icon icon-base bx bx-user"></i>
+                            <div data-i18n="unidad_medida">Unidad de medida</div>
+                        </a>
+                    </li>
+                    <li class="menu-item {{ Request::routeIs('categoria') ? 'active' : '' }}">
+                        <a href="{{ route('categoria') }}" class="menu-link">
+                            <i class="menu-icon icon-base bx bx-user"></i>
+                            <div data-i18n="categoria">Categoria</div>
+                        </a>
+                    </li>
                     <li class="menu-item {{ Request::routeIs('Crear Usuario') ? 'active' : '' }}">
                         <a href="{{ route('Crear Usuario') }}" class="menu-link">
                             <i class="menu-icon icon-base bx bx-user"></i>

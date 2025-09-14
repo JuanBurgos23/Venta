@@ -1,13 +1,18 @@
 <?php
 
-use App\Http\Controllers\ClienteController;
-use App\Http\Controllers\DashboardControoler;
-use App\Http\Controllers\EmpresaController;
-use App\Http\Controllers\PerfilController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\RolController;
-use App\Http\Controllers\UsuarioController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\RolController;
+use App\Http\Controllers\PerfilController;
+use App\Http\Controllers\AlmacenController;
+use App\Http\Controllers\ClienteController;
+use App\Http\Controllers\EmpresaController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UsuarioController;
+use App\Http\Controllers\SucursalController;
+use App\Http\Controllers\CategoriaController;
+use App\Http\Controllers\DashboardControoler;
+use App\Http\Controllers\SubcategoriaController;
+use App\Http\Controllers\UnidadMedidaController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -103,5 +108,43 @@ Route::get('/rol', [RolController::class, 'index'])->name('rol.index');
 Route::post('/roles', [RolController::class, 'store'])->name('roles.store');
 Route::put('/roles/{role}', [RolController::class, 'update'])->name('roles.update');
 Route::delete('/roles/{role}', [RolController::class, 'destroy'])->name('roles.destroy');
+
+
+//sucursal
+Route::get('/sucursal', [SucursalController::class, 'index'])->name('sucursal');
+Route::get('sucursal/fetch', [SucursalController::class, 'fetch'])->name('sucursal.fetch');
+Route::post('/sucursal/store', [SucursalController::class, 'store'])->name('sucursal.store');
+Route::put('sucursal/{id}', [SucursalController::class, 'update'])->name('sucursal.update');
+Route::get('/sucursal/{id}/edit', [SucursalController::class, 'edit'])->name('sucursal.edit');
+//almacen
+Route::get('/almacen', [AlmacenController::class, 'index'])->name('almacen');
+Route::get('almacen/fetch', [AlmacenController::class, 'fetch'])->name('almacen.fetch');
+Route::post('/almacen/store', [AlmacenController::class, 'store'])->name('almacen.store');
+Route::put('almacen/{id}', [AlmacenController::class, 'update'])->name('almacen.update');
+Route::get('/almacen/{id}/edit', [AlmacenController::class, 'edit'])->name('almacen.edit');
+
+//unidad de medida
+Route::get('/unidad-medida',            [UnidadMedidaController::class, 'index'])->name('unidad_medida');
+Route::get('/unidad-medida/fetch',      [UnidadMedidaController::class, 'fetch'])->name('unidad_medida.fetch');
+Route::get('/unidad-medida/{id}/edit',  [UnidadMedidaController::class, 'edit'])->name('unidad_medida.edit');
+Route::post('/unidad-medida',           [UnidadMedidaController::class, 'store'])->name('unidad_medida.store');
+Route::put('/unidad-medida/{id}',       [UnidadMedidaController::class, 'update'])->name('unidad_medida.update');
+Route::delete('/unidad-medida/{id}',    [UnidadMedidaController::class, 'destroy'])->name('unidad_medida.destroy');
+
+// Categorías
+Route::get('/categorias',              [CategoriaController::class, 'index'])->name('categoria');
+Route::get('/categorias/fetch',        [CategoriaController::class, 'fetch'])->name('categorias.fetch');
+Route::get('/categorias/{id}/edit',    [CategoriaController::class, 'edit'])->name('categorias.edit');
+Route::post('/categorias',             [CategoriaController::class, 'store'])->name('categorias.store');
+Route::put('/categorias/{id}',         [CategoriaController::class, 'update'])->name('categorias.update');
+Route::delete('/categorias/{id}',      [CategoriaController::class, 'destroy'])->name('categorias.destroy');
+
+// Subcategorías (usadas desde la misma pantalla)
+Route::get('/subcategorias/fetch',     [SubcategoriaController::class, 'fetch'])->name('subcategorias.fetch'); // ?categoria_id=...
+Route::get('/subcategorias/{id}/edit', [SubcategoriaController::class, 'edit'])->name('subcategorias.edit');
+Route::post('/subcategorias',          [SubcategoriaController::class, 'store'])->name('subcategorias.store');
+Route::put('/subcategorias/{id}',      [SubcategoriaController::class, 'update'])->name('subcategorias.update');
+Route::delete('/subcategorias/{id}',   [SubcategoriaController::class, 'destroy'])->name('subcategorias.destroy');
+
 
 require __DIR__ . '/auth.php';
