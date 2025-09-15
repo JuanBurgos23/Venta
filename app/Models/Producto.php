@@ -34,12 +34,12 @@ class Producto extends Model
 
     public function unidadMedida()
     {
-        return $this->belongsTo(UnidadMedida::class, 'unidad_medida_id');
+        return $this->belongsTo(Unidad_medida::class, 'unidad_medida_id');
     }
 
     public function tipoProducto()
     {
-        return $this->belongsTo(TipoProducto::class, 'tipo_producto_id');
+        return $this->belongsTo(Tipo_producto::class, 'tipo_producto_id');
     }
 
     public function categoria()
@@ -54,7 +54,7 @@ class Producto extends Model
 
     public function tipoPrecio()
     {
-        return $this->belongsTo(TipoPrecio::class, 'tipo_precio_id');
+        return $this->belongsTo(Tipo_precio::class, 'tipo_precio_id');
     }
 
     // --------------- Scopes útiles ---------------

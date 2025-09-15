@@ -11,6 +11,8 @@ use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\SucursalController;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\DashboardControoler;
+use App\Http\Controllers\ProductoController;
+use App\Http\Controllers\ProveedorController;
 use App\Http\Controllers\SubcategoriaController;
 use App\Http\Controllers\UnidadMedidaController;
 
@@ -123,6 +125,11 @@ Route::post('/almacen/store', [AlmacenController::class, 'store'])->name('almace
 Route::put('almacen/{id}', [AlmacenController::class, 'update'])->name('almacen.update');
 Route::get('/almacen/{id}/edit', [AlmacenController::class, 'edit'])->name('almacen.edit');
 
+//pruebas de venta y compra
+Route::get('/venta', [AlmacenController::class, 'venta'])->name('venta');   
+Route::get('/compra', [ProveedorController::class, 'index'])->name('compra');
+
+
 //unidad de medida
 Route::get('/unidad-medida',            [UnidadMedidaController::class, 'index'])->name('unidad_medida');
 Route::get('/unidad-medida/fetch',      [UnidadMedidaController::class, 'fetch'])->name('unidad_medida.fetch');
@@ -138,6 +145,15 @@ Route::get('/categorias/{id}/edit',    [CategoriaController::class, 'edit'])->na
 Route::post('/categorias',             [CategoriaController::class, 'store'])->name('categorias.store');
 Route::put('/categorias/{id}',         [CategoriaController::class, 'update'])->name('categorias.update');
 Route::delete('/categorias/{id}',      [CategoriaController::class, 'destroy'])->name('categorias.destroy');
+
+//Productos
+Route::get('/producto', [ProductoController::class, 'index'])->name('Producto');
+Route::post('/productos', [ProductoController::class, 'store'])->name('productos.store');
+Route::get('/api/categorias', [ProductoController::class, 'categorias']);
+Route::get('/api/subcategorias/{categoria}', [ProductoController::class, 'subcategorias']);
+Route::get('/api/tipos-producto', [ProductoController::class, 'tiposProducto']);
+Route::get('/api/unidades-medida', [ProductoController::class, 'unidadesMedida']);
+Route::get('/api/tipos-precio', [ProductoController::class, 'tiposPrecio']);
 
 // Subcategorías (usadas desde la misma pantalla)
 Route::get('/subcategorias/fetch',     [SubcategoriaController::class, 'fetch'])->name('subcategorias.fetch'); // ?categoria_id=...

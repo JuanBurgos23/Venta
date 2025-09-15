@@ -14,7 +14,7 @@
     <script src="{{asset('assets/js/ui-toasts.js')}}"></script>
 
     <!-- Canonical SEO -->
-   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- ? PROD Only: Google Tag Manager (Default ThemeSelection: GTM-5DDHKGP, PixInvent: GTM-5J3LMKC) -->
     <script async="" src="https://www.googletagmanager.com/gtm.js?id=GTM-5DDHKGP"></script>
@@ -1194,6 +1194,12 @@
                         <a href="{{ route('categoria') }}" class="menu-link">
                             <i class="menu-icon icon-base bx bx-user"></i>
                             <div data-i18n="categoria">Categoria</div>
+                        </a>
+                    </li>
+                    <li class="menu-item {{ Request::routeIs('Producto') ? 'active' : '' }}">
+                        <a href="{{ route('Producto') }}" class="menu-link">
+                            <i class="menu-icon icon-base bx bx-user"></i>
+                            <div data-i18n="Producto">Producto</div>
                         </a>
                     </li>
                     <li class="menu-item {{ Request::routeIs('Crear Usuario') ? 'active' : '' }}">

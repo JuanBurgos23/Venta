@@ -13,10 +13,8 @@ class ClienteController extends Controller
     public function index()
     {
         if (!Auth::user()->can('Cliente')) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'No tienes permiso para gestionar clientes'
-            ], 403);
+            return response()
+                ->view('errors.forbidden', [], 403);
         }
         return view('cliente.cliente');
     }
