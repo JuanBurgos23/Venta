@@ -24,7 +24,11 @@ return new class extends Migration
             $table->foreignId('empresa_id')
                 ->constrained('empresa');
 
+            $table->foreignId('detalleCompra_id')
+                ->constrained('producto_compra')
+                ->cascadeOnDelete();
             $table->decimal('stock', 12, 2)->default(0);
+            $table->integer('estado')->default(1); // 1: activo, 0: inactivo
             $table->timestamps();
 
             $table->unique(['producto_id', 'almacen_id']);
