@@ -1,5 +1,135 @@
 <x-layout bodyClass="g-sidenav-show bg-gray-200">
     <script src="{{asset('assets/vendor/js/template-customizer.js')}}"></script>
+
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+        <title>Compras - Sistema ERP</title>
+
+        <!-- Favicon -->
+        <link rel="icon" type="image/x-icon" href="../../assets/img/favicon/favicon.ico" />
+
+        <!-- Fonts -->
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet" />
+
+        <link rel="stylesheet" href="{{asset('assets/vendor/fonts/iconify-icons.css')}}" />
+
+        <!-- Core CSS -->
+        <link rel="stylesheet" href="{{asset('assets/vendor/libs/pickr/pickr-themes.css')}}" />
+        <link rel="stylesheet" href="{{asset('assets/vendor/css/core.css')}}" />
+        <link rel="stylesheet" href="{{asset('assets/css/demo.css')}}" />
+
+        <!-- Vendors CSS -->
+        <link rel="stylesheet" href="{{asset('assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css')}}" />
+        <link rel="stylesheet" href="{{asset('assets/vendor/libs/select2/select2.css')}}" />
+
+        <!-- Page CSS -->
+        <style>
+            .supplier-card {
+                transition: all 0.3s ease;
+                cursor: pointer;
+            }
+
+            .supplier-card:hover,
+            .supplier-card.active {
+                transform: translateY(-3px);
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                border-color: #696cff;
+            }
+
+            .order-item {
+                border-bottom: 1px solid #e9ecef;
+                padding: 12px 0;
+            }
+
+            .product-selector {
+                cursor: pointer;
+                padding: 10px;
+                border-radius: 6px;
+                margin-bottom: 8px;
+                transition: all 0.2s;
+                border: 1px solid #e9ecef;
+            }
+
+            .product-selector:hover,
+            .product-selector.active {
+                background-color: #f8f9fa;
+                border-color: #696cff;
+            }
+
+            .sticky-summary {
+                position: sticky;
+                top: 80px;
+                height: calc(100vh - 100px);
+                overflow-y: auto;
+            }
+
+            .search-box {
+                position: relative;
+            }
+
+            .search-results {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: white;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                z-index: 1000;
+                max-height: 300px;
+                overflow-y: auto;
+                display: none;
+            }
+
+            .search-item {
+                padding: 10px;
+                border-bottom: 1px solid #eee;
+                cursor: pointer;
+            }
+
+            .search-item:hover {
+                background-color: #f8f9fa;
+            }
+
+            .low-stock {
+                color: #ff6b6b;
+                font-weight: 500;
+            }
+
+            .order-status {
+                padding: 4px 8px;
+                border-radius: 4px;
+                font-size: 0.8rem;
+                font-weight: 500;
+            }
+
+            .status-pending {
+                background-color: #fff3cd;
+                color: #856404;
+            }
+
+            .status-approved {
+                background-color: #d4edda;
+                color: #155724;
+            }
+
+            .status-rejected {
+                background-color: #f8d7da;
+                color: #721c24;
+            }
+
+            .status-received {
+                background-color: #d1ecf1;
+                color: #0c5460;
+            }
+        </style>
+
+
+    </head>
+
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
         <!-- Navbar -->
         <nav class="navbar ..."></nav>
@@ -156,165 +286,32 @@
                     </div>
                 </div>
             </div>
+            <!-- Footer -->
+            <footer class="content-footer footer bg-footer-theme">
+                <div class="container-xxl">
+                    <div class="footer-container d-flex align-items-center justify-content-between py-4 flex-md-row flex-column">
+                        <div class="mb-2 mb-md-0">
+                            © <script>
+                                document.write(new Date().getFullYear());
+                            </script>
+                            Sistema ERP
+                        </div>
+                    </div>
+                </div>
+            </footer>
     </main>
 
     <!-- Template Customizer va fuera de main y slot -->
 
 </x-layout>
 
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
-    <title>Compras - Sistema ERP</title>
-
-    <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="../../assets/img/favicon/favicon.ico" />
-
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet" />
-
-    <link rel="stylesheet" href="{{asset('assets/vendor/fonts/iconify-icons.css')}}" />
-
-    <!-- Core CSS -->
-    <link rel="stylesheet" href="{{asset('assets/vendor/libs/pickr/pickr-themes.css')}}" />
-    <link rel="stylesheet" href="{{asset('assets/vendor/css/core.css')}}" />
-    <link rel="stylesheet" href="{{asset('assets/css/demo.css')}}" />
-
-    <!-- Vendors CSS -->
-    <link rel="stylesheet" href="{{asset('assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css')}}" />
-    <link rel="stylesheet" href="{{asset('assets/vendor/libs/select2/select2.css')}}" />
-
-    <!-- Page CSS -->
-    <style>
-        .supplier-card {
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .supplier-card:hover,
-        .supplier-card.active {
-            transform: translateY(-3px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            border-color: #696cff;
-        }
-
-        .order-item {
-            border-bottom: 1px solid #e9ecef;
-            padding: 12px 0;
-        }
-
-        .product-selector {
-            cursor: pointer;
-            padding: 10px;
-            border-radius: 6px;
-            margin-bottom: 8px;
-            transition: all 0.2s;
-            border: 1px solid #e9ecef;
-        }
-
-        .product-selector:hover,
-        .product-selector.active {
-            background-color: #f8f9fa;
-            border-color: #696cff;
-        }
-
-        .sticky-summary {
-            position: sticky;
-            top: 80px;
-            height: calc(100vh - 100px);
-            overflow-y: auto;
-        }
-
-        .search-box {
-            position: relative;
-        }
-
-        .search-results {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            z-index: 1000;
-            max-height: 300px;
-            overflow-y: auto;
-            display: none;
-        }
-
-        .search-item {
-            padding: 10px;
-            border-bottom: 1px solid #eee;
-            cursor: pointer;
-        }
-
-        .search-item:hover {
-            background-color: #f8f9fa;
-        }
-
-        .low-stock {
-            color: #ff6b6b;
-            font-weight: 500;
-        }
-
-        .order-status {
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            font-weight: 500;
-        }
-
-        .status-pending {
-            background-color: #fff3cd;
-            color: #856404;
-        }
-
-        .status-approved {
-            background-color: #d4edda;
-            color: #155724;
-        }
-
-        .status-rejected {
-            background-color: #f8d7da;
-            color: #721c24;
-        }
-
-        .status-received {
-            background-color: #d1ecf1;
-            color: #0c5460;
-        }
-    </style>
-
-
-</head>
 
 
 
 
 
-<!-- Footer -->
-<footer class="content-footer footer bg-footer-theme">
-    <div class="container-xxl">
-        <div class="footer-container d-flex align-items-center justify-content-between py-4 flex-md-row flex-column">
-            <div class="mb-2 mb-md-0">
-                © <script>
-                    document.write(new Date().getFullYear());
-                </script>
-                Sistema ERP
-            </div>
-        </div>
-    </div>
-</footer>
-<!-- / Footer -->
-</div>
-<!-- Content wrapper -->
-</div>
-<!-- / Layout page -->
-</div>
-</div>
+
+
 <!-- / Layout wrapper -->
 
 <!-- Modal para agregar proveedor -->
