@@ -3,13 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Producto;
-use App\Http\Controllers\Controller;
 use App\Models\Categoria;
-use App\Models\Subcategoria;
 use App\Models\Tipo_precio;
+use App\Models\Subcategoria;
+use Illuminate\Http\Request;
 use App\Models\Tipo_producto;
 use App\Models\Unidad_medida;
-use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class ProductoController extends Controller
 {
@@ -18,7 +19,7 @@ class ProductoController extends Controller
      */
     public function index()
     {
-        return view('producto.producto');
+        return view('compra.compra');
     }
     public function categorias()
     {
@@ -129,6 +130,54 @@ class ProductoController extends Controller
             ], 500);
         }
     }
+
+    public function fetch(Request $request)
+    {
+        $user       = Auth::user();
+        $empresaId  = $user->id_empresa ?? null; // si manejas empresa por usuario
+        $search     = $request->input('search', '');
+        $proveedorId= $request->input('proveedor_id'); // opcional
+        $perPage    = 10;
+        $page       = (int)$request->input('page', 1);
+
+        $q = Producto::with(['categoria:id,nombre', 'subcategoria:id,nombre'])
+            ->when($empresaId, fn($qq) => $qq->where('id_empresa', $empresaId))
+            ->when($proveedorId, fn($qq) => $qq->where('proveedor_id', $proveedorId))
+            ->when($search, function($qq) use ($search) {
+                $qq->where(function($w) use ($search) {
+                    $w->where('nombre', 'like', "%{$search}%")
+                      ->orWhere('codigo', 'like', "%{$search}%")
+                      ->orWhere('marca', 'like', "%{$search}%")
+                      ->orWhere('modelo', 'like', "%{$search}%");
+                });
+            })
+            ->orderByDesc('id');
+
+        // OJO: tu tabla "producto" NO tiene columna "precio".
+        // Para que el front funcione, por ahora mando "precio" = 0.
+        // Si más adelante sacas precio de otra tabla, calcula aquí.
+        $paginator = $q->paginate($perPage, ['*'], 'page', $page);
+
+        $mapped = collect($paginator->items())->map(function($p){
+            return [
+                'id'            => (int)$p->id,
+                'nombre'        => $p->nombre,
+                'precio'        => 0, // <-- ajusta cuando tengas precio real
+                'categoria'     => $p->categoria ? ['nombre' => $p->categoria->nombre] : null,
+                'subcategoria'  => $p->subcategoria ? ['nombre' => $p->subcategoria->nombre] : null,
+                'stock_actual'  => null, // si aún no tienes stock, deja null
+                'minimo'        => null, // idem
+            ];
+        })->values();
+
+        return response()->json([
+            'data'          => $mapped,
+            'current_page'  => $paginator->currentPage(),
+            'last_page'     => $paginator->lastPage(),
+            'total'         => $paginator->total(),
+        ]);
+    }
+
 
     /**
      * Display the specified resource.

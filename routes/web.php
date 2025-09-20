@@ -10,6 +10,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\SucursalController;
 use App\Http\Controllers\CategoriaController;
+use App\Http\Controllers\CompraController;
 use App\Http\Controllers\DashboardControoler;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\ProveedorController;
@@ -125,9 +126,16 @@ Route::post('/almacen/store', [AlmacenController::class, 'store'])->name('almace
 Route::put('almacen/{id}', [AlmacenController::class, 'update'])->name('almacen.update');
 Route::get('/almacen/{id}/edit', [AlmacenController::class, 'edit'])->name('almacen.edit');
 
+//proveedor
+Route::get('/proveedores',        [ProveedorController::class, 'index'])->name('proveedore.index');
+Route::get('/proveedores/fetch',  [ProveedorController::class, 'fetch'])->name('proveedores.fetch');
+Route::post('/proveedores',       [ProveedorController::class, 'store'])->name('proveedores.store');
+Route::put('/proveedores/{id}',   [ProveedorController::class, 'update'])->name('proveedores.update');
+Route::post('/proveedores/{id}/delete', [ProveedorController::class, 'marcarBorrado'])->name('proveedores.delete');
+
 //pruebas de venta y compra
 Route::get('/venta', [AlmacenController::class, 'venta'])->name('venta');   
-Route::get('/compra', [ProveedorController::class, 'index'])->name('compra');
+Route::get('/compra', [CompraController::class, 'index'])->name('compra');
 
 
 //unidad de medida
@@ -154,6 +162,15 @@ Route::get('/api/subcategorias/{categoria}', [ProductoController::class, 'subcat
 Route::get('/api/tipos-producto', [ProductoController::class, 'tiposProducto']);
 Route::get('/api/unidades-medida', [ProductoController::class, 'unidadesMedida']);
 Route::get('/api/tipos-precio', [ProductoController::class, 'tiposPrecio']);
+
+
+
+// Productos (solo lectura para búsqueda)
+Route::get('/productos/fetch', [ProductoController::class,'fetch'])->name('productos.fetch');
+
+// Compras
+Route::post('/compras', [CompraController::class,'store'])->name('compras.store');
+
 
 // Subcategorías (usadas desde la misma pantalla)
 Route::get('/subcategorias/fetch',     [SubcategoriaController::class, 'fetch'])->name('subcategorias.fetch'); // ?categoria_id=...

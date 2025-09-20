@@ -20,286 +20,541 @@
         <link rel="stylesheet" href="{{asset('assets/vendor/libs/pickr/pickr-themes.css')}}" />
         <link rel="stylesheet" href="{{asset('assets/vendor/css/core.css')}}" />
         <link rel="stylesheet" href="{{asset('assets/css/demo.css')}}" />
-
+        <meta name="csrf-token" content="{{ csrf_token() }}">
         <!-- Vendors CSS -->
         <link rel="stylesheet" href="{{asset('assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css')}}" />
         <link rel="stylesheet" href="{{asset('assets/vendor/libs/select2/select2.css')}}" />
-
-        <!-- Page CSS -->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Gestión de Compras</title>
+        <!-- Bootstrap CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <!-- Boxicons -->
+        <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
         <style>
+            :root {
+                --primary-color: #696cff;
+                --primary-hover: #5f61e0;
+                --border-radius: 0.375rem;
+                --box-shadow: 0 0.125rem 0.25rem rgba(165, 163, 174, 0.3);
+            }
+            
+            body {
+                background-color: #f5f5f9;
+                font-family: 'Inter', sans-serif;
+            }
+            
+            .main-content {
+                background-color: #f5f5f9;
+            }
+            
+            .card {
+                border: none;
+                border-radius: 0.5rem;
+                box-shadow: var(--box-shadow);
+                margin-bottom: 1.5rem;
+            }
+            
+            .card-header {
+                background-color: #fff;
+                border-bottom: 1px solid #d9dee3;
+                padding: 1.2rem 1.5rem;
+            }
+            
+            .card-title {
+                font-weight: 600;
+                margin-bottom: 0;
+                color: #566a7f;
+            }
+            
+            .sticky-summary {
+                position: sticky;
+                top: 20px;
+            }
+            
             .supplier-card {
                 transition: all 0.3s ease;
                 cursor: pointer;
             }
-
-            .supplier-card:hover,
+            
+            .supplier-card:hover, .supplier-card.active {
+                border-color: var(--primary-color);
+                transform: translateY(-2px);
+            }
+            
             .supplier-card.active {
-                transform: translateY(-3px);
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-                border-color: #696cff;
+                box-shadow: 0 0 0 1px var(--primary-color);
             }
-
+            
             .order-item {
-                border-bottom: 1px solid #e9ecef;
-                padding: 12px 0;
+                border-bottom: 1px solid #d9dee3;
+                padding: 1rem 0;
             }
-
-            .product-selector {
-                cursor: pointer;
-                padding: 10px;
-                border-radius: 6px;
-                margin-bottom: 8px;
-                transition: all 0.2s;
-                border: 1px solid #e9ecef;
+            
+            .order-item:last-child {
+                border-bottom: none;
             }
-
-            .product-selector:hover,
-            .product-selector.active {
-                background-color: #f8f9fa;
-                border-color: #696cff;
-            }
-
-            .sticky-summary {
-                position: sticky;
-                top: 80px;
-                height: calc(100vh - 100px);
-                overflow-y: auto;
-            }
-
+            
             .search-box {
                 position: relative;
             }
-
+            
             .search-results {
                 position: absolute;
                 top: 100%;
                 left: 0;
                 right: 0;
                 background: white;
-                border: 1px solid #ddd;
-                border-radius: 4px;
+                border-radius: var(--border-radius);
+                box-shadow: var(--box-shadow);
                 z-index: 1000;
                 max-height: 300px;
                 overflow-y: auto;
-                display: none;
             }
-
+            
             .search-item {
-                padding: 10px;
-                border-bottom: 1px solid #eee;
+                padding: 0.75rem 1rem;
+                border-bottom: 1px solid #d9dee3;
                 cursor: pointer;
             }
-
+            
             .search-item:hover {
                 background-color: #f8f9fa;
             }
-
-            .low-stock {
-                color: #ff6b6b;
+            
+            .form-label {
                 font-weight: 500;
+                margin-bottom: 0.5rem;
+                color: #566a7f;
             }
-
-            .order-status {
-                padding: 4px 8px;
-                border-radius: 4px;
-                font-size: 0.8rem;
-                font-weight: 500;
+            
+            .btn-primary {
+                background-color: var(--primary-color);
+                border-color: var(--primary-color);
             }
-
-            .status-pending {
-                background-color: #fff3cd;
-                color: #856404;
+            
+            .btn-primary:hover {
+                background-color: var(--primary-hover);
+                border-color: var(--primary-hover);
             }
-
-            .status-approved {
-                background-color: #d4edda;
-                color: #155724;
+            
+            .table th {
+                font-weight: 600;
+                color: #566a7f;
             }
-
-            .status-rejected {
-                background-color: #f8d7da;
-                color: #721c24;
+            
+            .status-badge {
+                padding: 0.35em 0.65em;
+                font-size: 0.75em;
+                font-weight: 600;
             }
-
-            .status-received {
-                background-color: #d1ecf1;
-                color: #0c5460;
+            
+            .order-summary {
+                background-color: #f8f9fa;
+                border-radius: var(--border-radius);
+                padding: 1.25rem;
+            }
+            
+            .detail-row {
+                margin-bottom: 0.75rem;
+                padding-bottom: 0.75rem;
+                border-bottom: 1px solid #e9ecef;
+            }
+            
+            .detail-row:last-child {
+                border-bottom: none;
+                margin-bottom: 0;
+                padding-bottom: 0;
+            }
+            
+            .product-detail-row {
+                background-color: #f8f9fa;
+                border-radius: 0.5rem;
+                padding: 1rem;
+                margin-bottom: 1rem;
+            }
+            
+            .editable-field {
+                background-color: #fff;
+                border: 1px solid #d9dee3;
+                border-radius: 0.375rem;
+                padding: 0.375rem 0.75rem;
+                width: 100%;
+            }
+            
+            .editable-field:focus {
+                outline: none;
+                border-color: var(--primary-color);
+                box-shadow: 0 0 0 0.2rem rgba(105, 108, 255, 0.25);
+            }
+            
+            .section-title {
+                font-size: 0.875rem;
+                font-weight: 600;
+                color: #566a7f;
+                margin-bottom: 0.75rem;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
             }
         </style>
 
 
     </head>
 
-    <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
-        <!-- Navbar -->
-        <nav class="navbar ..."></nav>
-        <!-- Scripts -->
-        @vite([ 'resources/js/app.js'])
-        <!-- End Navbar -->
-        <div class="container-fluid py-4">
-            <div class="col-12">
-
-                <div class="card-body">
-                    <!-- Content wrapper -->
-                    <div class="content-wrapper">
-                        <!-- Content -->
-                        <div class="container-xxl flex-grow-1 container-p-y">
-                            <h4 class="fw-bold py-3 mb-4">Gestión de Compras</h4>
-
-                            <div class="row">
-                                <!-- Panel de proveedores y productos -->
-                                <div class="col-lg-8 mb-4">
-                                    <div class="card">
+    <body>
+      <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
+          <!-- Navbar -->
+          <nav class="navbar ..."></nav>
+          <!-- Scripts -->
+          @vite([ 'resources/js/app.js'])
+          <!-- End Navbar -->
+          <div class="container-fluid py-4">
+              <div class="col-12">
+                  <div class="card-body">
+                      <!-- Content wrapper -->
+                      <div class="content-wrapper">
+                          <!-- Content -->
+                          <div class="container-xxl flex-grow-1 container-p-y">
+                              <h4 class="fw-bold py-3 mb-4">Gestión de Compras</h4>
+  
+                              <div class="row">
+                                  <!-- Panel de proveedores y productos -->
+                                  <div class="col-lg-8 mb-4">
+                                      <div class="card">
                                         <div class="card-header">
-                                            <h5 class="card-title mb-0">Proveedores</h5>
-                                            <div class="d-flex justify-content-between mt-3">
-                                                <div class="search-box w-100 me-3">
-                                                    <input type="text" class="form-control" placeholder="Buscar proveedor..." id="supplierSearch">
-                                                    <div class="search-results" id="supplierSearchResults"></div>
-                                                </div>
-                                                <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#addSupplierModal">
-                                                    <i class="icon-base bx bx-plus"></i> Nuevo
-                                                </button>
+                                          <h5 class="card-title mb-0">Proveedores</h5>
+                                    
+                                          <div class="d-flex justify-content-between mt-3">
+                                            <div class="search-box w-100 me-3">
+                                              <input type="text" class="form-control" placeholder="Buscar proveedor..." id="supplierSearch" autocomplete="off">
+                                              <div class="search-results d-none" id="supplierSearchResults"></div>
                                             </div>
+                                            <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#addSupplierModal" id="btnNuevoProveedor">
+                                              <i class='bx bx-plus'></i> Nuevo
+                                            </button>
+                                          </div>
                                         </div>
+                                    
                                         <div class="card-body">
-                                            <div class="row mb-4" id="supplierList">
-                                                <!-- Los proveedores se cargarán dinámicamente -->
+                                          <!-- Grid de proveedores -->
+                                          <div class="row g-3 mb-4" id="supplierList">
+                                            <div class="text-center text-muted py-4">
+                                              <i class='bx bx-user-pin display-4'></i>
+                                              <p class="mt-2">Cargando proveedores...</p>
                                             </div>
-
-                                            <hr>
-
-                                            <h5 class="mb-3">Productos del Proveedor</h5>
-                                            <div class="search-box mb-3">
-                                                <input type="text" class="form-control" placeholder="Buscar producto..." id="productSearch">
-                                                <div class="search-results" id="productSearchResults"></div>
+                                          </div>
+                                    
+                                          <nav>
+                                            <ul class="pagination justify-content-center" id="suppliersPagination"></ul>
+                                          </nav>
+                                    
+                                          <hr>
+                                    
+                                          <!-- Productos del proveedor -->
+                                          <h5 class="mb-3">Productos del Proveedor</h5>
+                                          <div class="search-box mb-3">
+                                            <input type="text" class="form-control" placeholder="Buscar producto..." id="productSearch" disabled>
+                                            <div class="search-results d-none" id="productSearchResults"></div>
+                                          </div>
+                                    
+                                          <div id="supplierProducts">
+                                            <div class="text-center text-muted py-4">
+                                              <i class='bx bx-package display-4'></i>
+                                              <p class="mt-2">Seleccione un proveedor para ver sus productos</p>
                                             </div>
-
-                                            <div id="supplierProducts">
-                                                <div class="text-center text-muted py-4">
-                                                    <i class="icon-base bx bx-package display-4"></i>
-                                                    <p class="mt-2">Seleccione un proveedor para ver sus productos</p>
-                                                </div>
-                                            </div>
+                                          </div>
                                         </div>
-                                    </div>
-
-                                    <!-- Historial de órdenes de compra -->
-                                    <div class="card mt-4">
+                                      </div>
+                                    
+                                      <!-- Historial de órdenes -->
+                                      <div class="card mt-4">
                                         <div class="card-header d-flex justify-content-between align-items-center">
-                                            <h5 class="card-title mb-0">Historial de Órdenes de Compra</h5>
-                                            <div class="btn-group">
-                                                <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
-                                                    <i class="icon-base bx bx-filter"></i> Filtrar
-                                                </button>
-                                                <ul class="dropdown-menu">
-                                                    <li><a class="dropdown-item" href="#" data-status="all">Todas</a></li>
-                                                    <li><a class="dropdown-item" href="#" data-status="pending">Pendientes</a></li>
-                                                    <li><a class="dropdown-item" href="#" data-status="approved">Aprobadas</a></li>
-                                                    <li><a class="dropdown-item" href="#" data-status="rejected">Rechazadas</a></li>
-                                                    <li><a class="dropdown-item" href="#" data-status="received">Recibidas</a></li>
-                                                </ul>
-                                            </div>
+                                          <h5 class="card-title mb-0">Historial de Órdenes de Compra</h5>
+                                          <div class="btn-group">
+                                            <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
+                                              <i class='bx bx-filter'></i> Filtrar
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                              <li><a class="dropdown-item" href="#" data-status="all">Todas</a></li>
+                                              <li><a class="dropdown-item" href="#" data-status="pending">Pendientes</a></li>
+                                              <li><a class="dropdown-item" href="#" data-status="approved">Aprobadas</a></li>
+                                              <li><a class="dropdown-item" href="#" data-status="rejected">Rechazadas</a></li>
+                                              <li><a class="dropdown-item" href="#" data-status="received">Recibidas</a></li>
+                                            </ul>
+                                          </div>
                                         </div>
                                         <div class="card-body">
-                                            <div class="table-responsive">
-                                                <table class="table table-hover">
-                                                    <thead>
-                                                        <tr>
-                                                            <th># Orden</th>
-                                                            <th>Proveedor</th>
-                                                            <th>Fecha</th>
-                                                            <th>Total</th>
-                                                            <th>Estado</th>
-                                                            <th>Acciones</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody id="purchaseOrdersTable">
-                                                        <!-- Las órdenes se cargarán dinámicamente -->
-                                                    </tbody>
-                                                </table>
-                                            </div>
+                                          <div class="table-responsive">
+                                            <table class="table table-hover">
+                                              <thead>
+                                                <tr>
+                                                  <th># Orden</th>
+                                                  <th>Proveedor</th>
+                                                  <th>Fecha</th>
+                                                  <th>Total</th>
+                                                  <th>Estado</th>
+                                                  <th>Acciones</th>
+                                                </tr>
+                                              </thead>
+                                              <tbody id="purchaseOrdersTable">
+                                                <tr><td colspan="6" class="text-center text-muted">Sin datos</td></tr>
+                                              </tbody>
+                                            </table>
+                                          </div>
                                         </div>
+                                      </div>
                                     </div>
-                                </div>
-
-                                <!-- Panel de la orden de compra -->
-                                <div class="col-lg-4">
-                                    <div class="card sticky-summary">
-                                        <div class="card-header">
-                                            <h5 class="card-title mb-0">Orden de Compra</h5>
-                                        </div>
-                                        <div class="card-body">
-                                            <div class="mb-4">
-                                                <label class="form-label">Proveedor seleccionado</label>
-                                                <div class="alert alert-info py-2" id="selectedSupplier">
-                                                    <div class="text-center text-muted">Ningún proveedor seleccionado</div>
-                                                </div>
-                                            </div>
-
-                                            <!-- Items de la orden -->
-                                            <div class="mb-3">
-                                                <h6 class="mb-3">Productos a ordenar</h6>
-                                                <div id="orderItems">
-                                                    <div class="text-center text-muted py-4">
-                                                        <i class="icon-base bx bx-cart-add display-4"></i>
-                                                        <p class="mt-2">No hay productos en la orden</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <!-- Resumen de la orden -->
-                                            <div class="border-top pt-3">
-                                                <div class="d-flex justify-content-between mb-2">
-                                                    <span class="text-muted">Subtotal:</span>
-                                                    <span id="orderSubtotal">$0.00</span>
-                                                </div>
-                                                <div class="d-flex justify-content-between mb-2">
-                                                    <span class="text-muted">Impuestos (18%):</span>
-                                                    <span id="orderTaxes">$0.00</span>
-                                                </div>
-                                                <div class="d-flex justify-content-between mb-2">
-                                                    <span class="text-muted">Descuento:</span>
-                                                    <span id="orderDiscount">$0.00</span>
-                                                </div>
-                                                <div class="d-flex justify-content-between mb-3 fw-bold">
-                                                    <span>Total:</span>
-                                                    <span id="orderTotal">$0.00</span>
-                                                </div>
-
-                                                <div class="mb-3">
-                                                    <label class="form-label">Fecha esperada de entrega</label>
-                                                    <input type="date" class="form-control" id="expectedDeliveryDate">
-                                                </div>
-
-                                                <div class="d-grid gap-2">
-                                                    <button class="btn btn-primary" id="createPurchaseOrder">Crear Orden de Compra</button>
-                                                    <button class="btn btn-outline-secondary" id="clearOrder">Limpiar Orden</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- / Content -->
-                    </div>
+  
+                                  <!-- Panel de la orden de compra - Rediseñado -->
+                                  <div class="col-lg-4">
+                                      <div class="card sticky-summary">
+                                          <div class="card-header">
+                                              <h5 class="card-title mb-0">Orden de Compra</h5>
+                                          </div>
+                                          <div class="card-body">
+                                              <!-- Información de ubicación -->
+                                              <div class="section-title">Información de Ubicación</div>
+                                              <div class="row g-3 mb-4">
+                                                  <div class="col-12">
+                                                      <label class="form-label">Sucursal</label>
+                                                      <select id="sucursal_id" class="form-select">
+                                                          <option value="">Seleccionar sucursal</option>
+                                                      </select>
+                                                  </div>
+                                                  <div class="col-12">
+                                                      <label class="form-label">Almacén</label>
+                                                      <select id="almacen_id" class="form-select" disabled>
+                                                          <option value="">Seleccionar almacén</option>
+                                                      </select>
+                                                  </div>
+                                              </div>
+  
+                                              <!-- Información del proveedor -->
+                                              <div class="section-title">Información del Proveedor</div>
+                                              <div class="mb-4">
+                                                  <div class="alert alert-info py-2" id="selectedSupplier">
+                                                      <div class="text-center text-muted">Ningún proveedor seleccionado</div>
+                                                  </div>
+                                              </div>
+  
+                                              <!-- Información de la orden -->
+                                              <div class="section-title">Detalles de la Orden</div>
+                                              <div class="row g-3 mb-4">
+                                                  <div class="col-md-6">
+                                                      <label class="form-label">Fecha de Emisión</label>
+                                                      <input type="date" class="form-control" id="issueDate" value="{{ date('Y-m-d') }}">
+                                                  </div>
+                                                  <div class="col-md-6">
+                                                      <label class="form-label">Fecha Esperada de Entrega</label>
+                                                      <input type="date" class="form-control" id="expectedDeliveryDate">
+                                                  </div>
+                                                  <div class="col-12">
+                                                      <label class="form-label">Términos de Pago</label>
+                                                      <select class="form-select" id="paymentTerms">
+                                                          <option value="contado">Contado</option>
+                                                          <option value="15_dias">15 días</option>
+                                                          <option value="30_dias">30 días</option>
+                                                          <option value="60_dias">60 días</option>
+                                                      </select>
+                                                  </div>
+                                                  <div class="col-12">
+                                                      <label class="form-label">Notas</label>
+                                                      <textarea class="form-control" id="orderNotes" rows="2" placeholder="Notas adicionales para la orden"></textarea>
+                                                  </div>
+                                              </div>
+  
+                                              <!-- Items de la orden -->
+                                              <div class="section-title">Productos</div>
+                                              <div class="mb-3">
+                                                  <div id="orderItems">
+                                                      <div class="text-center text-muted py-4">
+                                                          <i class='bx bx-cart-add display-4'></i>
+                                                          <p class="mt-2">No hay productos en la orden</p>
+                                                      </div>
+                                                  </div>
+                                              </div>
+  
+                                              <!-- Resumen de la orden -->
+                                              <div class="section-title">Resumen de la Orden</div>
+                                              <div class="order-summary">
+                                                  <div class="detail-row d-flex justify-content-between">
+                                                      <span class="text-muted">Subtotal:</span>
+                                                      <span id="orderSubtotal">$0.00</span>
+                                                  </div>
+                                                  <div class="detail-row d-flex justify-content-between">
+                                                      <span class="text-muted">Impuestos (18%):</span>
+                                                      <span id="orderTaxes">$0.00</span>
+                                                  </div>
+                                                  <div class="detail-row d-flex justify-content-between">
+                                                      <span class="text-muted">Descuento:</span>
+                                                      <div class="d-flex align-items-center">
+                                                          <input type="number" class="form-control form-control-sm me-2" id="discountInput" style="width: 80px" min="0" value="0">
+                                                          <span>%</span>
+                                                      </div>
+                                                  </div>
+                                                  <div class="detail-row d-flex justify-content-between mb-3 fw-bold">
+                                                      <span>Total:</span>
+                                                      <span id="orderTotal">$0.00</span>
+                                                  </div>
+  
+                                                  <div class="d-grid gap-2">
+                                                      <button class="btn btn-primary" id="createPurchaseOrder">Crear Orden de Compra</button>
+                                                      <button class="btn btn-outline-secondary" id="clearOrder">Limpiar Orden</button>
+                                                  </div>
+                                              </div>
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                          <!-- / Content -->
+                      </div>
+                  </div>
+              </div>
+              <!-- Footer -->
+              <footer class="content-footer footer bg-footer-theme">
+                  <div class="container-xxl">
+                      <div class="footer-container d-flex align-items-center justify-content-between py-4 flex-md-row flex-column">
+                          <div class="mb-2 mb-md-0">
+                              © <script>
+                                  document.write(new Date().getFullYear());
+                              </script>
+                              Sistema ERP
+                          </div>
+                      </div>
+                  </div>
+              </footer>
+      </main>
+  
+      <!-- Modal para agregar proveedor -->
+      <div class="modal fade" id="addSupplierModal" tabindex="-1" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <form id="supplierForm">
+                @csrf
+                <input type="hidden" id="proveedor_id">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="supplierModalTitle">Agregar Nuevo Proveedor</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
+                <div class="modal-body">
+                  <div class="row g-3">
+                    <div class="col-md-6">
+                      <label class="form-label">Nombre</label>
+                      <input type="text" class="form-control" name="nombre" id="prov_nombre" required>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label">Apellido paterno</label>
+                      <input type="text" class="form-control" name="paterno" id="prov_paterno">
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label">Apellido materno</label>
+                      <input type="text" class="form-control" name="materno" id="prov_materno">
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label">Teléfono</label>
+                      <input type="text" class="form-control" name="telefono" id="prov_telefono">
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label">CI / Documento</label>
+                      <input type="text" class="form-control" name="ci" id="prov_ci">
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label">Estado</label>
+                      <select class="form-select" name="estado" id="prov_estado">
+                        <option value="1">Activo</option>
+                        <option value="0">Inactivo</option>
+                      </select>
+                    </div>
+                  </div>
+        
+                  <div class="alert alert-danger d-none mt-3" id="formErrorsProv">
+                    <ul class="mb-0" id="formErrorsListProv"></ul>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button class="btn btn-label-secondary" data-bs-dismiss="modal" type="button">Cancelar</button>
+                  <button class="btn btn-primary" id="btnGuardarProveedor" type="submit">Guardar</button>
+                </div>
+              </form>
             </div>
-            <!-- Footer -->
-            <footer class="content-footer footer bg-footer-theme">
-                <div class="container-xxl">
-                    <div class="footer-container d-flex align-items-center justify-content-between py-4 flex-md-row flex-column">
-                        <div class="mb-2 mb-md-0">
-                            © <script>
-                                document.write(new Date().getFullYear());
-                            </script>
-                            Sistema ERP
-                        </div>
-                    </div>
-                </div>
-            </footer>
-    </main>
+          </div>
+        </div>
+        
+        <!-- Toast simple -->
+        <div class="position-fixed top-0 end-0 p-3" style="z-index: 1080">
+          <div class="toast bs-toast text-white bg-primary" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+              <div class="toast-body">...</div>
+              <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+          </div>
+        </div>
+        
+      <!-- Modal para detalles de producto -->
+      <div class="modal fade" id="productDetailModal" tabindex="-1" aria-hidden="true">
+          <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+                  <div class="modal-header">
+                      <h5 class="modal-title">Detalles del Producto</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                      <form id="productDetailForm">
+                          <input type="hidden" id="detailProductId">
+                          <div class="row mb-4">
+                              <div class="col-md-8">
+                                  <h6 id="detailProductName"></h6>
+                                  <p class="text-muted mb-0" id="detailProductCategory"></p>
+                              </div>
+                              <div class="col-md-4 text-end">
+                                  <p class="mb-0">Precio base: <span id="detailBasePrice" class="fw-bold"></span></p>
+                              </div>
+                          </div>
+                          
+                          <div class="product-detail-row">
+                              <div class="row g-3">
+                                  <div class="col-md-4">
+                                      <label class="form-label">Cantidad</label>
+                                      <input type="number" class="form-control" id="detailQuantity" min="1" value="1">
+                                  </div>
+                                  <div class="col-md-4">
+                                      <label class="form-label">Costo Unitario</label>
+                                      <div class="input-group">
+                                          <span class="input-group-text">$</span>
+                                          <input type="number" class="form-control" id="detailUnitCost" step="0.01" min="0">
+                                      </div>
+                                  </div>
+                                  <div class="col-md-4">
+                                      <label class="form-label">Total</label>
+                                      <div class="form-control" id="detailTotalCost">$0.00</div>
+                                  </div>
+                                  <div class="col-md-6">
+                                      <label class="form-label">Número de Lote</label>
+                                      <input type="text" class="form-control" id="detailLotNumber">
+                                  </div>
+                                  <div class="col-md-6">
+                                      <label class="form-label">Fecha de Vencimiento</label>
+                                      <input type="date" class="form-control" id="detailExpiryDate">
+                                  </div>
+                                  <div class="col-12">
+                                      <label class="form-label">Notas del Producto</label>
+                                      <textarea class="form-control" id="detailProductNotes" rows="2"></textarea>
+                                  </div>
+                              </div>
+                          </div>
+                      </form>
+                  </div>
+                  <div class="modal-footer">
+                      <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Cancelar</button>
+                      <button type="button" class="btn btn-primary" id="saveProductDetails">Agregar a la Orden</button>
+                  </div>
+              </div>
+          </div>
+      </div>
+  
+      <!-- Core JS -->
+      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- Template Customizer va fuera de main y slot -->
 
@@ -316,84 +571,69 @@
 
 <!-- Modal para agregar proveedor -->
 <div class="modal fade" id="addSupplierModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Agregar Nuevo Proveedor</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form id="supplierForm">
+          @csrf
+          <input type="hidden" id="proveedor_id">
+          <div class="modal-header">
+            <h5 class="modal-title" id="supplierModalTitle">Agregar Nuevo Proveedor</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+          </div>
+          <div class="modal-body">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label">Nombre</label>
+                <input type="text" class="form-control" name="nombre" id="prov_nombre" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Apellido paterno</label>
+                <input type="text" class="form-control" name="paterno" id="prov_paterno">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Apellido materno</label>
+                <input type="text" class="form-control" name="materno" id="prov_materno">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Teléfono</label>
+                <input type="text" class="form-control" name="telefono" id="prov_telefono">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">CI / Documento</label>
+                <input type="text" class="form-control" name="ci" id="prov_ci">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Estado</label>
+                <select class="form-select" name="estado" id="prov_estado">
+                  <option value="1">Activo</option>
+                  <option value="0">Inactivo</option>
+                </select>
+              </div>
             </div>
-            <div class="modal-body">
-                <form id="supplierForm">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label">Nombre de la empresa</label>
-                                <input type="text" class="form-control" required>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label">Contacto principal</label>
-                                <input type="text" class="form-control" required>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label">Email</label>
-                                <input type="email" class="form-control" required>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label">Teléfono</label>
-                                <input type="tel" class="form-control" required>
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <div class="mb-3">
-                                <label class="form-label">Dirección</label>
-                                <textarea class="form-control" rows="2" required></textarea>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label">Tipo de documento</label>
-                                <select class="form-select">
-                                    <option>RUC</option>
-                                    <option>DNI</option>
-                                    <option>Cédula</option>
-                                    <option>Pasaporte</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label">Número de documento</label>
-                                <input type="text" class="form-control" required>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label">Plazo de pago (días)</label>
-                                <input type="number" class="form-control" value="30" min="0">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label">Límite de crédito</label>
-                                <input type="number" class="form-control" value="0" min="0" step="0.01">
-                            </div>
-                        </div>
-                    </div>
-                </form>
+  
+            <div class="alert alert-danger d-none mt-3" id="formErrorsProv">
+              <ul class="mb-0" id="formErrorsListProv"></ul>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary">Guardar Proveedor</button>
-            </div>
-        </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-label-secondary" data-bs-dismiss="modal" type="button">Cancelar</button>
+            <button class="btn btn-primary" id="btnGuardarProveedor" type="submit">Guardar</button>
+          </div>
+        </form>
+      </div>
     </div>
-</div>
+  </div>
+  
+  <!-- Toast simple -->
+  <div class="position-fixed top-0 end-0 p-3" style="z-index: 1080">
+    <div class="toast bs-toast text-white bg-primary" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body">...</div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+      </div>
+    </div>
+  </div>
+  
 
 <!-- Modal para detalles de orden -->
 <div class="modal fade" id="orderDetailsModal" tabindex="-1" aria-hidden="true">
@@ -481,813 +721,618 @@
 
 <!-- Custom JS para la pantalla de compras -->
 <script>
-    // Datos de ejemplo (en un sistema real vendrían de una base de datos)
-    const suppliers = [{
-            id: 1,
-            name: "TecnoImport S.A.",
-            contact: "Carlos Rodríguez",
-            email: "carlos@tecnoimport.com",
-            phone: "+1 234 567 890",
-            address: "Av. Industrial 123, Lima",
-            paymentTerms: 30,
-            creditLimit: 10000
-        },
-        {
-            id: 2,
-            name: "Suministros Office",
-            contact: "María González",
-            email: "maria@suministrossoffice.com",
-            phone: "+1 345 678 901",
-            address: "Calle Comercio 456, Lima",
-            paymentTerms: 15,
-            creditLimit: 5000
-        },
-        {
-            id: 3,
-            name: "ElectroParts",
-            contact: "Roberto Silva",
-            email: "roberto@electroparts.com",
-            phone: "+1 456 789 012",
-            address: "Jr. Componentes 789, Lima",
-            paymentTerms: 45,
-            creditLimit: 15000
-        }
-    ];
-
-    const products = [{
-            id: 1,
-            name: "Monitor 24\" LED",
-            price: 179.99,
-            category: "Tecnología",
-            supplierId: 1,
-            minOrder: 5,
-            currentStock: 8
-        },
-        {
-            id: 2,
-            name: "Teclado Mecánico",
-            price: 89.99,
-            category: "Tecnología",
-            supplierId: 1,
-            minOrder: 10,
-            currentStock: 15
-        },
-        {
-            id: 3,
-            name: "Mouse Inalámbrico",
-            price: 29.99,
-            category: "Tecnología",
-            supplierId: 1,
-            minOrder: 15,
-            currentStock: 20
-        },
-        {
-            id: 4,
-            name: "Papel A4 Resma",
-            price: 8.99,
-            category: "Oficina",
-            supplierId: 2,
-            minOrder: 20,
-            currentStock: 50
-        },
-        {
-            id: 5,
-            name: "Tóner Impresora HP",
-            price: 69.99,
-            category: "Oficina",
-            supplierId: 2,
-            minOrder: 5,
-            currentStock: 12
-        },
-        {
-            id: 6,
-            name: "Silla Ergonómica",
-            price: 199.99,
-            category: "Mobiliario",
-            supplierId: 3,
-            minOrder: 3,
-            currentStock: 5
-        },
-        {
-            id: 7,
-            name: "Escritorio Ejecutivo",
-            price: 349.99,
-            category: "Mobiliario",
-            supplierId: 3,
-            minOrder: 2,
-            currentStock: 3
-        },
-        {
-            id: 8,
-            name: "CPU Intel i7",
-            price: 499.99,
-            category: "Tecnología",
-            supplierId: 1,
-            minOrder: 5,
-            currentStock: 6
-        }
-    ];
-
-    const purchaseOrders = [{
-            id: "PO-001",
-            supplierId: 1,
-            date: "2023-10-15",
-            expectedDate: "2023-10-25",
-            status: "received",
-            items: [{
-                    productId: 1,
-                    quantity: 10,
-                    price: 175.99
-                },
-                {
-                    productId: 2,
-                    quantity: 15,
-                    price: 85.99
-                }
-            ],
-            subtotal: 3519.85,
-            taxes: 633.57,
-            total: 4153.42
-        },
-        {
-            id: "PO-002",
-            supplierId: 2,
-            date: "2023-10-18",
-            expectedDate: "2023-10-28",
-            status: "approved",
-            items: [{
-                    productId: 4,
-                    quantity: 25,
-                    price: 8.50
-                },
-                {
-                    productId: 5,
-                    quantity: 8,
-                    price: 65.99
-                }
-            ],
-            subtotal: 655.42,
-            taxes: 117.98,
-            total: 773.40
-        },
-        {
-            id: "PO-003",
-            supplierId: 3,
-            date: "2023-10-20",
-            expectedDate: "2023-11-05",
-            status: "pending",
-            items: [{
-                    productId: 6,
-                    quantity: 4,
-                    price: 189.99
-                },
-                {
-                    productId: 7,
-                    quantity: 2,
-                    price: 329.99
-                }
-            ],
-            subtotal: 1339.94,
-            taxes: 241.19,
-            total: 1581.13
-        }
-    ];
-
-    let currentOrder = {
-        supplierId: null,
-        items: [],
-        subtotal: 0,
-        taxes: 0,
-        total: 0
-    };
-
-    let selectedSupplierId = null;
-    let orderFilterStatus = 'all';
-
-    // Inicializar la pantalla de compras
-    $(document).ready(function() {
-        loadSuppliers();
-        loadPurchaseOrders();
-        setupEventListeners();
-    });
-
-    // Cargar proveedores en la interfaz
-    function loadSuppliers() {
-        const supplierList = $('#supplierList');
-        supplierList.empty();
-
-        suppliers.forEach(supplier => {
-            const supplierCard = `
-                    <div class="col-md-6 mb-3">
-                        <div class="card supplier-card" data-id="${supplier.id}">
-                            <div class="card-body">
-                                <h5 class="card-title">${supplier.name}</h5>
-                                <p class="card-text mb-1">
-                                    <small class="text-muted">Contacto: ${supplier.contact}</small>
-                                </p>
-                                <p class="card-text mb-1">
-                                    <small class="text-muted">Tel: ${supplier.phone}</small>
-                                </p>
-                                <p class="card-text">
-                                    <small class="text-muted">Plazo: ${supplier.paymentTerms} días</small>
-                                </p>
-                                <button class="btn btn-sm btn-outline-primary select-supplier">Seleccionar</button>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            supplierList.append(supplierCard);
-        });
-    }
-
-    // Cargar órdenes de compra en la tabla
-    function loadPurchaseOrders() {
-        const ordersTable = $('#purchaseOrdersTable');
-        ordersTable.empty();
-
-        const filteredOrders = orderFilterStatus === 'all' ?
-            purchaseOrders :
-            purchaseOrders.filter(order => order.status === orderFilterStatus);
-
-        if (filteredOrders.length === 0) {
-            ordersTable.html(`
-                    <tr>
-                        <td colspan="6" class="text-center py-4">
-                            <i class="icon-base bx bx-purchase-tag-alt display-4"></i>
-                            <p class="mt-2 text-muted">No hay órdenes de compra</p>
-                        </td>
-                    </tr>
-                `);
-            return;
-        }
-
-        filteredOrders.forEach(order => {
-            const supplier = suppliers.find(s => s.id === order.supplierId);
-            const statusClass = `status-${order.status}`;
-            let statusText = '';
-
-            switch (order.status) {
-                case 'pending':
-                    statusText = 'Pendiente';
-                    break;
-                case 'approved':
-                    statusText = 'Aprobada';
-                    break;
-                case 'rejected':
-                    statusText = 'Rechazada';
-                    break;
-                case 'received':
-                    statusText = 'Recibida';
-                    break;
-            }
-
-            const orderRow = `
-                    <tr>
-                        <td>${order.id}</td>
-                        <td>${supplier ? supplier.name : 'Proveedor no disponible'}</td>
-                        <td>${order.date}</td>
-                        <td>$${order.total.toFixed(2)}</td>
-                        <td><span class="order-status ${statusClass}">${statusText}</span></td>
-                        <td>
-                            <button class="btn btn-sm btn-icon btn-outline-info view-order" data-id="${order.id}">
-                                <i class="icon-base bx bx-show"></i>
-                            </button>
-                            ${order.status === 'pending' ? `
-                                <button class="btn btn-sm btn-icon btn-outline-success approve-order" data-id="${order.id}">
-                                    <i class="icon-base bx bx-check"></i>
-                                </button>
-                                <button class="btn btn-sm btn-icon btn-outline-danger reject-order" data-id="${order.id}">
-                                    <i class="icon-base bx bx-x"></i>
-                                </button>
-                            ` : ''}
-                            ${order.status === 'approved' ? `
-                                <button class="btn btn-sm btn-icon btn-outline-primary receive-order" data-id="${order.id}">
-                                    <i class="icon-base bx bx-package"></i>
-                                </button>
-                            ` : ''}
-                        </td>
-                    </tr>
-                `;
-            ordersTable.append(orderRow);
-        });
-    }
-
-    // Configurar event listeners
-    function setupEventListeners() {
-        // Buscar proveedores
-        $('#supplierSearch').on('input', function() {
-            const query = $(this).val().toLowerCase();
-            if (query.length > 2) {
-                const results = suppliers.filter(s =>
-                    s.name.toLowerCase().includes(query) ||
-                    s.contact.toLowerCase().includes(query)
-                );
-                showSupplierSearchResults(results);
-            } else {
-                $('#supplierSearchResults').hide();
-            }
-        });
-
-        // Seleccionar proveedor
-        $(document).on('click', '.select-supplier', function() {
-            const supplierId = $(this).closest('.supplier-card').data('id');
-            selectSupplier(supplierId);
-        });
-
-        // Buscar productos
-        $('#productSearch').on('input', function() {
-            const query = $(this).val().toLowerCase();
-            if (query.length > 2 && selectedSupplierId) {
-                const supplierProducts = products.filter(p => p.supplierId === selectedSupplierId);
-                const results = supplierProducts.filter(p =>
-                    p.name.toLowerCase().includes(query) ||
-                    p.category.toLowerCase().includes(query)
-                );
-                showProductSearchResults(results);
-            } else {
-                $('#productSearchResults').hide();
-            }
-        });
-
-        // Agregar producto a la orden
-        $(document).on('click', '.add-to-order', function() {
-            const productId = $(this).closest('.product-selector').data('id');
-            addToOrder(productId);
-        });
-
-        // Cambiar cantidad en orden
-        $(document).on('click', '.quantity-btn', function() {
-            const productId = $(this).closest('.order-item').data('id');
-            const action = $(this).data('action');
-            updateOrderItemQuantity(productId, action);
-        });
-
-        // Eliminar item de la orden
-        $(document).on('click', '.remove-item', function() {
-            const productId = $(this).closest('.order-item').data('id');
-            removeFromOrder(productId);
-        });
-
-        // Crear orden de compra
-        $('#createPurchaseOrder').click(createPurchaseOrder);
-
-        // Limpiar orden
-        $('#clearOrder').click(clearOrder);
-
-        // Filtrar órdenes
-        $('.dropdown-item[data-status]').click(function() {
-            orderFilterStatus = $(this).data('status');
-            loadPurchaseOrders();
-        });
-
-        // Ver detalles de orden
-        $(document).on('click', '.view-order', function() {
-            const orderId = $(this).data('id');
-            viewOrderDetails(orderId);
-        });
-
-        // Aprobar orden
-        $(document).on('click', '.approve-order', function() {
-            const orderId = $(this).data('id');
-            updateOrderStatus(orderId, 'approved');
-        });
-
-        // Rechazar orden
-        $(document).on('click', '.reject-order', function() {
-            const orderId = $(this).data('id');
-            updateOrderStatus(orderId, 'rejected');
-        });
-
-        // Recibir orden
-        $(document).on('click', '.receive-order', function() {
-            const orderId = $(this).data('id');
-            updateOrderStatus(orderId, 'received');
-        });
-    }
-
-    // Mostrar resultados de búsqueda de proveedores
-    function showSupplierSearchResults(results) {
-        const resultsContainer = $('#supplierSearchResults');
-        resultsContainer.empty();
-
-        if (results.length === 0) {
-            resultsContainer.html('<div class="search-item">No se encontraron proveedores</div>');
-        } else {
-            results.forEach(supplier => {
-                const resultItem = `
-                        <div class="search-item" data-id="${supplier.id}">
-                            <div class="d-flex justify-content-between">
-                                <span>${supplier.name}</span>
-                            </div>
-                            <small class="text-muted">${supplier.contact} • ${supplier.phone}</small>
-                        </div>
-                    `;
-                resultsContainer.append(resultItem);
-            });
-
-            // Al hacer clic en un resultado
-            $('.search-item', resultsContainer).click(function() {
-                const supplierId = $(this).data('id');
-                selectSupplier(supplierId);
-                $('#supplierSearch').val('');
-                resultsContainer.hide();
-            });
-        }
-
-        resultsContainer.show();
-    }
-
-    // Seleccionar un proveedor
-    function selectSupplier(supplierId) {
-        selectedSupplierId = supplierId;
-        const supplier = suppliers.find(s => s.id === supplierId);
-
-        if (!supplier) return;
-
-        // Resaltar el proveedor seleccionado
-        $('.supplier-card').removeClass('active');
-        $(`.supplier-card[data-id="${supplierId}"]`).addClass('active');
-
-        // Actualizar la información del proveedor seleccionado
-        $('#selectedSupplier').html(`
-                <strong>${supplier.name}</strong><br>
-                <small>Contacto: ${supplier.contact} • ${supplier.phone}</small>
-            `);
-
-        // Cargar productos del proveedor
-        loadSupplierProducts(supplierId);
-    }
-
-    // Cargar productos del proveedor seleccionado
-    function loadSupplierProducts(supplierId) {
-        const supplierProductsContainer = $('#supplierProducts');
-        supplierProductsContainer.empty();
-
-        const supplierProducts = products.filter(p => p.supplierId === supplierId);
-
-        if (supplierProducts.length === 0) {
-            supplierProductsContainer.html(`
-                    <div class="text-center text-muted py-4">
-                        <i class="icon-base bx bx-package display-4"></i>
-                        <p class="mt-2">Este proveedor no tiene productos registrados</p>
-                    </div>
-                `);
-            return;
-        }
-
-        supplierProducts.forEach(product => {
-            const stockClass = product.currentStock < product.minOrder ? 'low-stock' : '';
-
-            const productSelector = `
-                    <div class="product-selector" data-id="${product.id}">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6 class="mb-1">${product.name}</h6>
-                                <small class="text-muted">${product.category}</small>
-                            </div>
-                            <div class="text-end">
-                                <span class="fw-bold">$${product.price.toFixed(2)}</span>
-                                <div class="mt-1">
-                                    <small class="${stockClass}">Stock: ${product.currentStock} (Mín: ${product.minOrder})</small>
-                                </div>
-                                <button class="btn btn-sm btn-primary mt-2 add-to-order">Agregar</button>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            supplierProductsContainer.append(productSelector);
-        });
-    }
-
-    // Mostrar resultados de búsqueda de productos
-    function showProductSearchResults(results) {
-        const resultsContainer = $('#productSearchResults');
-        resultsContainer.empty();
-
-        if (results.length === 0) {
-            resultsContainer.html('<div class="search-item">No se encontraron productos</div>');
-        } else {
-            results.forEach(product => {
-                const resultItem = `
-                        <div class="search-item" data-id="${product.id}">
-                            <div class="d-flex justify-content-between">
-                                <span>${product.name}</span>
-                                <span>$${product.price.toFixed(2)}</span>
-                            </div>
-                            <small class="text-muted">${product.category} • Stock: ${product.currentStock}</small>
-                        </div>
-                    `;
-                resultsContainer.append(resultItem);
-            });
-
-            // Al hacer clic en un resultado
-            $('.search-item', resultsContainer).click(function() {
-                const productId = $(this).data('id');
-                addToOrder(productId);
-                $('#productSearch').val('');
-                resultsContainer.hide();
-            });
-        }
-
-        resultsContainer.show();
-    }
-
-    // Agregar producto a la orden de compra
-    function addToOrder(productId) {
-        if (!selectedSupplierId) {
-            showNotification('Error', 'Debe seleccionar un proveedor primero', 'error');
-            return;
-        }
-
-        const product = products.find(p => p.id === productId);
-
-        if (!product) return;
-
-        // Verificar que el producto pertenece al proveedor seleccionado
-        if (product.supplierId !== selectedSupplierId) {
-            showNotification('Error', 'Este producto no pertenece al proveedor seleccionado', 'error');
-            return;
-        }
-
-        // Buscar si el producto ya está en la orden
-        const existingItem = currentOrder.items.find(item => item.productId === productId);
-
-        if (existingItem) {
-            existingItem.quantity += 1;
-        } else {
-            currentOrder.items.push({
-                productId: product.id,
-                name: product.name,
-                price: product.price,
-                quantity: 1,
-                minOrder: product.minOrder
-            });
-        }
-
-        updateOrderDisplay();
-        showNotification('Éxito', 'Producto agregado a la orden', 'success');
-    }
-
-    // Actualizar cantidad de un item en la orden
-    function updateOrderItemQuantity(productId, action) {
-        const item = currentOrder.items.find(item => item.productId === productId);
-
-        if (action === 'increase') {
-            item.quantity += 1;
-        } else if (action === 'decrease') {
-            if (item.quantity > 1) {
-                item.quantity -= 1;
-            } else {
-                removeFromOrder(productId);
-                return;
-            }
-        }
-
-        updateOrderDisplay();
-    }
-
-    // Eliminar producto de la orden
-    function removeFromOrder(productId) {
-        currentOrder.items = currentOrder.items.filter(item => item.productId !== productId);
-        updateOrderDisplay();
-        showNotification('Info', 'Producto eliminado de la orden', 'info');
-    }
-
-    // Actualizar visualización de la orden
-    function updateOrderDisplay() {
-        const orderItemsContainer = $('#orderItems');
-
-        if (currentOrder.items.length === 0) {
-            orderItemsContainer.html(`
-                    <div class="text-center text-muted py-4">
-                        <i class="icon-base bx bx-cart-add display-4"></i>
-                        <p class="mt-2">No hay productos en la orden</p>
-                    </div>
-                `);
-        } else {
-            let orderHTML = '';
-            let subtotal = 0;
-
-            currentOrder.items.forEach(item => {
-                const itemTotal = item.price * item.quantity;
-                subtotal += itemTotal;
-
-                orderHTML += `
-                        <div class="order-item" data-id="${item.productId}">
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <h6 class="mb-1">${item.name}</h6>
-                                    <small class="text-muted">$${item.price.toFixed(2)} c/u</small>
-                                </div>
-                                <div class="text-end">
-                                    <span class="fw-bold">$${itemTotal.toFixed(2)}</span>
-                                    <div class="mt-2 d-flex align-items-center">
-                                        <button class="btn btn-sm btn-outline-secondary quantity-btn" data-action="decrease">-</button>
-                                        <span class="mx-2">${item.quantity}</span>
-                                        <button class="btn btn-sm btn-outline-secondary quantity-btn" data-action="increase">+</button>
-                                        <button class="btn btn-sm btn-outline-danger ms-2 remove-item">
-                                            <i class="icon-base bx bx-trash"></i>
-                                        </button>
-                                    </div>
-                                    ${item.quantity < item.minOrder ? `
-                                        <small class="text-danger">Cantidad mínima: ${item.minOrder}</small>
-                                    ` : ''}
-                                </div>
-                            </div>
-                        </div>
-                    `;
-            });
-
-            orderItemsContainer.html(orderHTML);
-        }
-
-        // Actualizar totales
-        const taxes = subtotal * 0.18;
-        const total = subtotal + taxes;
-
-        currentOrder.subtotal = subtotal;
-        currentOrder.taxes = taxes;
-        currentOrder.total = total;
-
-        $('#orderSubtotal').text('$' + subtotal.toFixed(2));
-        $('#orderTaxes').text('$' + taxes.toFixed(2));
-        $('#orderTotal').text('$' + total.toFixed(2));
-    }
-
-    // Crear orden de compra
-    function createPurchaseOrder() {
-        if (currentOrder.items.length === 0) {
-            showNotification('Error', 'No hay productos en la orden', 'error');
-            return;
-        }
-
-        if (!selectedSupplierId) {
-            showNotification('Error', 'Debe seleccionar un proveedor', 'error');
-            return;
-        }
-
-        // Validar cantidades mínimas
-        for (const item of currentOrder.items) {
-            if (item.quantity < item.minOrder) {
-                showNotification('Error', `La cantidad de ${item.name} es menor al mínimo requerido (${item.minOrder})`, 'error');
-                return;
-            }
-        }
-
-        // Crear nueva orden
-        const newOrder = {
-            id: 'PO-' + String(purchaseOrders.length + 1).padStart(3, '0'),
-            supplierId: selectedSupplierId,
-            date: new Date().toISOString().split('T')[0],
-            expectedDate: $('#expectedDeliveryDate').val(),
-            status: 'pending',
-            items: [...currentOrder.items],
-            subtotal: currentOrder.subtotal,
-            taxes: currentOrder.taxes,
-            total: currentOrder.total
-        };
-
-        // Agregar a la lista de órdenes
-        purchaseOrders.unshift(newOrder);
-
-        // Actualizar la interfaz
-        loadPurchaseOrders();
-        clearOrder();
-
-        showNotification('Éxito', `Orden de compra ${newOrder.id} creada correctamente`, 'success');
-    }
-
-    // Limpiar orden
-    function clearOrder() {
-        currentOrder = {
-            supplierId: null,
-            items: [],
-            subtotal: 0,
-            taxes: 0,
-            total: 0
-        };
-
-        selectedSupplierId = null;
-        $('.supplier-card').removeClass('active');
-        $('#selectedSupplier').html('<div class="text-center text-muted">Ningún proveedor seleccionado</div>');
-        $('#supplierProducts').html('<div class="text-center text-muted py-4"><i class="icon-base bx bx-package display-4"></i><p class="mt-2">Seleccione un proveedor para ver sus productos</p></div>');
-        $('#expectedDeliveryDate').val('');
-
-        updateOrderDisplay();
-    }
-
-    // Ver detalles de una orden
-    function viewOrderDetails(orderId) {
-        const order = purchaseOrders.find(o => o.id === orderId);
-        if (!order) return;
-
-        const supplier = suppliers.find(s => s.id === order.supplierId);
-
-        // Actualizar información básica
-        $('#orderId').text(order.id);
-        $('#detailSupplier').text(supplier ? supplier.name : 'Proveedor no disponible');
-        $('#detailDate').text(order.date);
-        $('#detailExpectedDate').text(order.expectedDate);
-
-        // Actualizar estado
-        let statusText = '';
-        switch (order.status) {
-            case 'pending':
-                statusText = '<span class="order-status status-pending">Pendiente</span>';
-                break;
-            case 'approved':
-                statusText = '<span class="order-status status-approved">Aprobada</span>';
-                break;
-            case 'rejected':
-                statusText = '<span class="order-status status-rejected">Rechazada</span>';
-                break;
-            case 'received':
-                statusText = '<span class="order-status status-received">Recibida</span>';
-                break;
-        }
-        $('#detailStatus').html(statusText);
-
-        // Actualizar productos
-        const productsContainer = $('#orderDetailsProducts');
-        productsContainer.empty();
-
-        order.items.forEach(item => {
-            const product = products.find(p => p.id === item.productId);
-            const productRow = `
-                    <tr>
-                        <td>${product ? product.name : 'Producto no disponible'}</td>
-                        <td>${item.quantity}</td>
-                        <td>$${item.price.toFixed(2)}</td>
-                        <td>$${(item.price * item.quantity).toFixed(2)}</td>
-                    </tr>
-                `;
-            productsContainer.append(productRow);
-        });
-
-        // Actualizar totales
-        $('#detailSubtotal').text('$' + order.subtotal.toFixed(2));
-        $('#detailTaxes').text('$' + order.taxes.toFixed(2));
-        $('#detailTotal').text('$' + order.total.toFixed(2));
-
-        // Configurar acciones según el estado
-        const actionsContainer = $('#orderActions');
-        actionsContainer.empty();
-
-        if (order.status === 'pending') {
-            actionsContainer.html(`
-                    <div class="d-grid gap-2">
-                        <button class="btn btn-success" onclick="updateOrderStatus('${order.id}', 'approved')">
-                            <i class="icon-base bx bx-check"></i> Aprobar Orden
-                        </button>
-                        <button class="btn btn-danger" onclick="updateOrderStatus('${order.id}', 'rejected')">
-                            <i class="icon-base bx bx-x"></i> Rechazar Orden
-                        </button>
-                    </div>
-                `);
-        } else if (order.status === 'approved') {
-            actionsContainer.html(`
-                    <div class="d-grid">
-                        <button class="btn btn-primary" onclick="updateOrderStatus('${order.id}', 'received')">
-                            <i class="icon-base bx bx-package"></i> Marcar como Recibida
-                        </button>
-                    </div>
-                `);
-        }
-
-        // Mostrar el modal
-        new bootstrap.Modal(document.getElementById('orderDetailsModal')).show();
-    }
-
-    // Actualizar estado de una orden
-    function updateOrderStatus(orderId, status) {
-        const order = purchaseOrders.find(o => o.id === orderId);
-        if (!order) return;
-
-        order.status = status;
-
-        // Si la orden fue recibida, actualizar el stock
-        if (status === 'received') {
-            order.items.forEach(item => {
-                const product = products.find(p => p.id === item.productId);
-                if (product) {
-                    product.currentStock += item.quantity;
-                }
-            });
-        }
-
-        // Actualizar la interfaz
-        loadPurchaseOrders();
-
-        // Cerrar el modal
-        bootstrap.Modal.getInstance(document.getElementById('orderDetailsModal')).hide();
-
-        showNotification('Éxito', `Estado de la orden ${orderId} actualizado a ${status}`, 'success');
-    }
-
-    // Mostrar notificación
-    function showNotification(title, message, type) {
-        // En un sistema real, se usaría la librería de notificaciones de la plantilla
-        // Por ahora usamos alertas nativas para simplificar
-        alert(`${title}: ${message}`);
-    }
+  $(function(){
+      // ------------------ Config ------------------
+      const CSRF = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+  
+      const URLS = {
+          proveedores: {
+              fetch : `{{ route('proveedores.fetch') }}`,
+              store : `{{ route('proveedores.store') }}`,
+              base  : `{{ url('proveedores') }}`
+          },
+          productos: {
+              fetch : `{{ route('productos.fetch') }}`
+          },
+          compras: {
+              store : `{{ route('compras.store') }}`
+          },
+          sucursal: { 
+              fetch: `{{ route('sucursal.fetch') }}` 
+          },
+          almacen:  { 
+              fetch: `{{ route('almacen.fetch') }}` 
+          }
+      };
+  
+      // ------------------ Estado ------------------
+      let currentPageProv = 1;
+      let currentSearchProv = '';
+      let debounceTimer = null;
+  
+      let selectedSupplier = null;
+      let _productsCache = [];
+      let currentProductDetails = null;
+
+      const order = {
+          items: [],
+          subtotal: 0,
+          taxes: 0,
+          discount: 0,
+          total: 0
+      };
+  
+      // ------------------ Utils ------------------
+      const money = n => '$' + (Number(n||0)).toFixed(2);
+      const escapeHtml = s => (s ?? '').toString()
+          .replaceAll('&','&amp;').replaceAll('<','&lt;')
+          .replaceAll('>','&gt;').replaceAll('"','&quot;')
+          .replaceAll("'",'&#39;');
+      const attr = s => escapeHtml(s).replaceAll('"','&quot;');
+      const notifyOk = (m) => {
+          const toast = new bootstrap.Toast(document.querySelector('.toast'));
+          document.querySelector('.toast-body').textContent = m;
+          toast.show();
+      };
+      const notifyError = (m) => alert(m || 'Ocurrió un error');
+  
+      // ============================================================
+      // PROVEEDORES
+      // ============================================================
+      async function fetchSuppliers(page=1, search=''){
+          const url = new URL(URLS.proveedores.fetch, window.location.origin);
+          url.searchParams.set('page', page);
+          if (search) url.searchParams.set('search', search);
+          const r = await fetch(url, { headers: { 'Accept':'application/json' }});
+          const data = await r.json();
+          renderSuppliers(data);
+      }
+  
+      function renderSuppliers(resp){
+          const $list = $('#supplierList').empty();
+          const rows = resp?.data || [];
+          if (!rows.length){
+              $list.html(`
+                  <div class="col-12">
+                      <div class="text-center text-muted py-4">
+                          <i class='bx bx-user-x display-4'></i>
+                          <p class="mt-2">No hay proveedores</p>
+                      </div>
+                  </div>
+              `);
+              renderProvPagination(1,1);
+              return;
+          }
+  
+          rows.forEach(p => {
+              const fullName = `${p.nombre ?? ''} ${p.paterno ?? ''} ${p.materno ?? ''}`.trim();
+              $list.append(`
+                  <div class="col-md-6 mb-3">
+                      <div class="card supplier-card h-100" data-id="${p.id}">
+                          <div class="card-body d-flex flex-column">
+                              <h5 class="card-title mb-1">${escapeHtml(fullName)}</h5>
+                              <div class="small text-muted mb-2">CI: ${escapeHtml(p.ci ?? '-')}</div>
+                              <div class="small text-muted mb-3">Tel: ${escapeHtml(p.telefono ?? '-')}</div>
+                              <div class="mt-auto d-flex gap-2">
+                                  <button class="btn btn-sm btn-outline-primary select-supplier">Seleccionar</button>
+                                  <button class="btn btn-sm btn-warning btn-edit"
+                                          data-id="${p.id}"
+                                          data-nombre="${attr(p.nombre)}"
+                                          data-paterno="${attr(p.paterno)}"
+                                          data-materno="${attr(p.materno)}"
+                                          data-telefono="${attr(p.telefono)}"
+                                          data-ci="${attr(p.ci)}">Editar</button>
+                                  <button class="btn btn-sm btn-danger btn-delete" data-id="${p.id}">Eliminar</button>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              `);
+          });
+  
+          renderProvPagination(resp.current_page, resp.last_page);
+      }
+  
+      function renderProvPagination(page, last){
+          const $pag = $('#suppliersPagination');
+          let html = `
+              <li class="page-item ${page<=1?'disabled':''}">
+                  <a class="page-link" href="#" data-page="${page-1}">Anterior</a>
+              </li>
+          `;
+          for (let i=1;i<=last;i++){
+              html += `
+                  <li class="page-item ${i===page?'active':''}">
+                      <a class="page-link" href="#" data-page="${i}">${i}</a>
+                  </li>
+              `;
+          }
+          html += `
+              <li class="page-item ${page>=last?'disabled':''}">
+                  <a class="page-link" href="#" data-page="${page+1}">Siguiente</a>
+              </li>
+          `;
+          $pag.html(html);
+  
+          $pag.find('a.page-link').off('click').on('click', function(e){
+              e.preventDefault();
+              const p = parseInt($(this).data('page'));
+              if (!isNaN(p) && p>=1 && p<=last && p!==currentPageProv){
+                  currentPageProv = p;
+                  fetchSuppliers(currentPageProv, currentSearchProv);
+              }
+          });
+      }
+
+      // Cargar sucursales y almacenes
+      async function loadSucursales(){
+          const url = new URL(URLS.sucursal.fetch, window.location.origin);
+          url.searchParams.set('per_page', 200);
+          const res = await fetch(url, { headers:{'Accept':'application/json'} });
+          const data = await res.json();
+          const $s = $('#sucursal_id').empty();
+          const items = data.data || [];
+          if (!items.length){
+              $s.append('<option value="">(sin sucursales)</option>');
+              $('#almacen_id').prop('disabled', true).empty().append('<option value="">(sin almacenes)</option>');
+              return;
+          }
+          items.forEach(it => $s.append(`<option value="${it.id}">${it.nombre}</option>`));
+          // seleccionar 1ª y cargar almacenes
+          $s.val(items[0].id).trigger('change');
+      }
+
+      async function loadAlmacenes(sucursalId){
+          const url = new URL(URLS.almacen.fetch, window.location.origin);
+          url.searchParams.set('per_page', 200);
+          if (sucursalId) url.searchParams.set('sucursal_id', sucursalId);
+          const res = await fetch(url, { headers:{'Accept':'application/json'} });
+          const data = await res.json();
+          const $a = $('#almacen_id').empty();
+          const items = data.data || [];
+          if (!items.length){
+              $a.append('<option value="">(sin almacenes)</option>').prop('disabled', true);
+              return;
+          }
+          items.forEach(it => $a.append(`<option value="${it.id}">${it.nombre}</option>`));
+          $a.prop('disabled', false);
+      }
+
+      // Eventos de selects
+      $(document).on('change', '#sucursal_id', function(){
+          const sid = $(this).val();
+          $('#almacen_id').prop('disabled', true).empty().append('<option value="">Cargando...</option>');
+          loadAlmacenes(sid);
+      });
+
+      // Llamar al inicio
+      loadSucursales();
+  
+      function setSelectedSupplierCard(id){
+          $('.supplier-card').removeClass('active');
+          $(`.supplier-card[data-id="${id}"]`).addClass('active');
+      }
+  
+      function selectSupplierFromCard(card){
+          const id = Number(card?.dataset?.id);
+          if (!id) return;
+          const title = card.querySelector('.card-title')?.innerText || '';
+          selectedSupplier = { id, nombre: title };
+          setSelectedSupplierCard(id);
+          $('#selectedSupplier').html(`<strong>${escapeHtml(title)}</strong>`);
+          $('#productSearch').prop('disabled', false).focus();
+          // cargar productos del proveedor
+          fetchProducts({ page:1, search:'', proveedor_id: id });
+      }
+  
+      // ============================================================
+      // PRODUCTOS
+      // ============================================================
+      async function fetchProducts({page=1, search='', proveedor_id=null} = {}) {
+          const url = new URL(URLS.productos.fetch, window.location.origin);
+          url.searchParams.set('page', page);
+          if (search)       url.searchParams.set('search', search);
+          if (proveedor_id) url.searchParams.set('proveedor_id', proveedor_id);
+  
+          const res = await fetch(url, { headers: { 'Accept':'application/json' } });
+          if (!res.ok) { console.error('Error HTTP', res.status); return; }
+          const data = await res.json();
+  
+          _productsCache = (data?.data || []).map(p => ({
+              id: Number(p.id),
+              nombre: p.nombre ?? '',
+              precio: Number(p.precio ?? 0),
+              categoria: p.categoria ?? null,
+              subcategoria: p.subcategoria ?? null,
+              stock_actual: p.stock_actual ?? null,
+              minimo: p.minimo ?? null
+          }));
+  
+          renderProductsList(_productsCache);
+          renderProductSearchResults(_productsCache, {show:false});
+      }
+  
+      function renderProductsList(list, {target='#supplierProducts', emptyMsg='No hay productos'} = {}){
+          const $ctn = $(target).empty();
+          if (!list.length) {
+              $ctn.html(`
+                  <div class="text-center text-muted py-4">
+                      <i class='bx bx-package display-4'></i>
+                      <p class="mt-2">${emptyMsg}</p>
+                  </div>
+              `);
+              return;
+          }
+  
+          list.forEach(p => {
+              const precio = money(p.precio);
+              const cat = escapeHtml(p.categoria?.nombre ?? '-');
+              const sub = p.subcategoria?.nombre ? ' · ' + escapeHtml(p.subcategoria.nombre) : '';
+              const stockInfo = (p.stock_actual != null && p.minimo != null)
+                  ? `<small class="${Number(p.stock_actual) < Number(p.minimo) ? 'text-danger' : 'text-muted'}">
+                      Stock: ${p.stock_actual} (Mín: ${p.minimo})
+                      </small>` : '';
+  
+              $ctn.append(`
+                  <div class="product-selector" data-id="${p.id}">
+                      <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                          <div>
+                              <h6 class="mb-1">${escapeHtml(p.nombre)}</h6>
+                              <small class="text-muted">${cat}${sub}</small>
+                          </div>
+                          <div class="text-end">
+                              <span class="fw-bold">${precio}</span>
+                              <div class="mt-1">${stockInfo}</div>
+                              <button class="btn btn-sm btn-primary mt-2 add-to-order" data-id="${p.id}">Agregar</button>
+                          </div>
+                      </div>
+                  </div>
+              `);
+          });
+      }
+  
+      function renderProductSearchResults(list, {show=true} = {}){
+          const $res = $('#productSearchResults').empty();
+          if (!list.length) {
+              $res.html('<div class="search-item px-2 py-2 text-muted">No se encontraron productos</div>');
+          } else {
+              list.forEach(p => {
+                  $res.append(`
+                      <div class="search-item px-2 py-2" data-id="${p.id}">
+                          <div class="d-flex justify-content-between">
+                              <span>${escapeHtml(p.nombre)}</span>
+                              <span>${money(p.precio)}</span>
+                          </div>
+                          <small class="text-muted">
+                              ${escapeHtml(p.categoria?.nombre ?? '-')}${p.subcategoria?.nombre ? ' · ' + escapeHtml(p.subcategoria.nombre) : ''}
+                          </small>
+                      </div>
+                  `);
+              });
+          }
+          if (show) $res.removeClass('d-none'); else $res.addClass('d-none');
+      }
+
+      // Abrir modal de detalles de producto
+      function openProductDetailModal(productId) {
+          const p = _productsCache.find(x => x.id === productId);
+          if (!p) return;
+          
+          currentProductDetails = p;
+          
+          $('#detailProductId').val(p.id);
+          $('#detailProductName').text(p.nombre);
+          $('#detailProductCategory').text(`${p.categoria?.nombre || ''} ${p.subcategoria?.nombre ? ' / ' + p.subcategoria.nombre : ''}`);
+          $('#detailBasePrice').text(money(p.precio));
+          $('#detailUnitCost').val(p.precio);
+          $('#detailQuantity').val(1);
+          $('#detailLotNumber').val('');
+          $('#detailExpiryDate').val('');
+          $('#detailProductNotes').val('');
+          
+          calculateDetailTotal();
+          
+          const modal = new bootstrap.Modal(document.getElementById('productDetailModal'));
+          modal.show();
+      }
+      
+      function calculateDetailTotal() {
+          const quantity = parseInt($('#detailQuantity').val()) || 0;
+          const unitCost = parseFloat($('#detailUnitCost').val()) || 0;
+          const total = quantity * unitCost;
+          $('#detailTotalCost').text(money(total));
+      }
+  
+      // ============================================================
+      // ORDEN (carrito)
+      // ============================================================
+      function addToOrderWithDetails(details) {
+          if (!selectedSupplier){
+              notifyError('Seleccione un proveedor primero');
+              return;
+          }
+          
+          const it = order.items.find(i => i.producto_id === details.producto_id && i.lote === details.lote);
+          if (it) {
+              it.cantidad += details.cantidad;
+          } else {
+              order.items.push({
+                  producto_id: details.producto_id,
+                  nombre: details.nombre,
+                  precio: details.precio,
+                  cantidad: details.cantidad,
+                  lote: details.lote,
+                  fecha_vencimiento: details.fecha_vencimiento,
+                  notas: details.notas
+              });
+          }
+          
+          recalcOrder(); 
+          renderOrder();
+      }
+  
+      function changeQty(producto_id, lote, delta){
+          const it = order.items.find(x => x.producto_id === producto_id && x.lote === lote);
+          if (!it) return;
+          it.cantidad += delta;
+          if (it.cantidad <= 0) {
+              order.items = order.items.filter(x => !(x.producto_id === producto_id && x.lote === lote));
+          }
+          recalcOrder(); 
+          renderOrder();
+      }
+  
+      function removeItem(producto_id, lote){
+          order.items = order.items.filter(x => !(x.producto_id === producto_id && x.lote === lote));
+          recalcOrder(); 
+          renderOrder();
+      }
+  
+      function recalcOrder(){
+          const subtotal = order.items.reduce((s,i)=> s + i.precio*i.cantidad, 0);
+          const taxes = subtotal * 0.18;
+          const discount = subtotal * (order.discount / 100);
+          order.subtotal = subtotal; 
+          order.taxes = taxes; 
+          order.total = subtotal + taxes - discount;
+          
+          $('#orderSubtotal').text(money(order.subtotal));
+          $('#orderTaxes').text(money(order.taxes));
+          $('#orderTotal').text(money(order.total));
+      }
+  
+      function renderOrder(){
+          const $box = $('#orderItems');
+          if (!order.items.length) {
+              $box.html(`
+                  <div class="text-center text-muted py-4">
+                      <i class='bx bx-cart-add display-4'></i>
+                      <p class="mt-2">No hay productos en la orden</p>
+                  </div>
+              `);
+              return;
+          }
+          
+          let html = '';
+          order.items.forEach(it => {
+              const tot = it.precio * it.cantidad;
+              const loteInfo = it.lote ? `<small class="text-muted d-block">Lote: ${escapeHtml(it.lote)}</small>` : '';
+              const expiryInfo = it.fecha_vencimiento ? `<small class="text-muted d-block">Vence: ${it.fecha_vencimiento}</small>` : '';
+              
+              html += `
+                  <div class="order-item" data-id="${it.producto_id}" data-lote="${it.lote || ''}">
+                      <div class="d-flex justify-content-between">
+                          <div class="w-60">
+                              <h6 class="mb-1">${escapeHtml(it.nombre)}</h6>
+                              ${loteInfo}
+                              ${expiryInfo}
+                              <small class="text-muted">${money(it.precio)} c/u</small>
+                          </div>
+                          <div class="text-end">
+                              <span class="fw-bold">${money(tot)}</span>
+                              <div class="mt-2 d-flex align-items-center">
+                                  <button class="btn btn-sm btn-outline-secondary btn-dec">-</button>
+                                  <span class="mx-2">${it.cantidad}</span>
+                                  <button class="btn btn-sm btn-outline-secondary btn-inc">+</button>
+                                  <button class="btn btn-sm btn-outline-danger ms-2 btn-del"><i class='bx bx-trash'></i></button>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              `;
+          });
+          $box.html(html);
+      }
+  
+      async function createPurchaseOrder(){
+          if (!selectedSupplier){ notifyError('Seleccione un proveedor'); return; }
+          if (!order.items.length){ notifyError('No hay productos'); return; }
+          
+          const sucursalId = $('#sucursal_id').val();
+          const almacenId = $('#almacen_id').val();
+          if (!sucursalId || !almacenId) {
+              notifyError('Seleccione una sucursal y un almacén');
+              return;
+          }
+  
+          const orderData = {
+              id_proveedor: selectedSupplier.id,
+              proveedor_id: selectedSupplier.id,
+              almacen_id: Number(almacenId),
+              sucursal_id: Number(sucursalId),
+              fecha_emision: $('#issueDate').val(),
+              fecha_esperada: $('#expectedDeliveryDate').val(),
+              terminos_pago: $('#paymentTerms').val(),
+              notas: $('#orderNotes').val(),
+              descuento: order.discount,
+              items: order.items.map(it => ({
+                  producto_id: it.producto_id,
+                  cantidad: it.cantidad,
+                  costo_unitario: it.precio,
+                  lote: it.lote || null,
+                  fecha_vencimiento: it.fecha_vencimiento || null,
+                  notas: it.notas || null
+              }))
+          };
+  
+          try {
+              const res = await fetch(URLS.compras.store, {
+                  method:'POST',
+                  headers:{
+                      'X-CSRF-TOKEN': CSRF,
+                      'Accept':'application/json',
+                      'Content-Type':'application/json'
+                  },
+                  body: JSON.stringify(orderData)
+              });
+              
+              const data = await res.json();
+              if (data.status !== 'success') {
+                  throw new Error(data.message || 'No se pudo crear la orden');
+              }
+
+              notifyOk(`Orden creada (ID: ${data.compra?.id ?? '-'})`);
+              clearOrder();
+          } catch (error) {
+              notifyError(error.message);
+          }
+      }
+  
+      function clearOrder(){
+          selectedSupplier = null;
+          order.items = [];
+          order.discount = 0;
+          recalcOrder(); 
+          renderOrder();
+          $('.supplier-card').removeClass('active');
+          $('#selectedSupplier').html('<div class="text-center text-muted">Ningún proveedor seleccionado</div>');
+          $('#productSearch').val('').prop('disabled', true);
+          $('#productSearchResults').empty().addClass('d-none');
+          $('#expectedDeliveryDate').val('');
+          $('#paymentTerms').val('contado');
+          $('#orderNotes').val('');
+          $('#discountInput').val(0);
+      }
+  
+      // ============================================================
+      // EVENTOS
+      // ============================================================
+      // Carga inicial
+      fetchSuppliers();
+  
+      // Buscar proveedores
+      $('#supplierSearch').on('input', function(){
+          currentSearchProv = $(this).val().trim();
+          currentPageProv = 1;
+          fetchSuppliers(currentPageProv, currentSearchProv);
+      });
+  
+      // Seleccionar proveedor
+      $(document).on('click', '.select-supplier', function(){
+          const card = this.closest('.supplier-card');
+          selectSupplierFromCard(card);
+      });
+  
+      // Buscar productos (con debounce)
+      $('#productSearch').on('input', function(){
+          const term = $(this).val().trim();
+          clearTimeout(debounceTimer);
+          if (!term){
+              $('#productSearchResults').addClass('d-none').empty();
+              // si hay proveedor seleccionado y no hay término, recarga su catálogo
+              if (selectedSupplier) fetchProducts({page:1, search:'', proveedor_id: selectedSupplier.id});
+              return;
+          }
+          debounceTimer = setTimeout(()=> {
+              fetchProducts({ page:1, search: term, proveedor_id: selectedSupplier?.id || null });
+              renderProductSearchResults(_productsCache, {show:true});
+          }, 250);
+      });
+      
+      // Click en resultado de búsqueda de productos
+      $(document).on('click', '#productSearchResults .search-item', function(){
+          const id = Number($(this).data('id'));
+          openProductDetailModal(id);
+          $('#productSearch').val('');
+          $('#productSearchResults').addClass('d-none').empty();
+      });
+      
+      // Click en botón "Agregar" de productos
+      $(document).on('click', '.add-to-order', function(){
+          const id = Number($(this).data('id'));
+          openProductDetailModal(id);
+      });
+      
+      // Calcular total en modal de detalles
+      $(document).on('input', '#detailQuantity, #detailUnitCost', function(){
+          calculateDetailTotal();
+      });
+      
+      // Guardar detalles del producto
+      $(document).on('click', '#saveProductDetails', function(){
+          const productId = $('#detailProductId').val();
+          const product = _productsCache.find(p => p.id === Number(productId));
+          
+          if (!product) return;
+          
+          const details = {
+              producto_id: product.id,
+              nombre: product.nombre,
+              precio: parseFloat($('#detailUnitCost').val()) || 0,
+              cantidad: parseInt($('#detailQuantity').val()) || 1,
+              lote: $('#detailLotNumber').val().trim() || null,
+              fecha_vencimiento: $('#detailExpiryDate').val() || null,
+              notas: $('#detailProductNotes').val().trim() || null
+          };
+          
+          addToOrderWithDetails(details);
+          
+          // Cerrar modal
+          bootstrap.Modal.getInstance(document.getElementById('productDetailModal')).hide();
+      });
+  
+      // Botones +/- del carrito
+      $(document).on('click', '.btn-inc', function(){
+          const $item = $(this).closest('.order-item');
+          const id = Number($item.data('id'));
+          const lote = $item.data('lote') || '';
+          changeQty(id, lote, +1);
+      });
+      
+      $(document).on('click', '.btn-dec', function(){
+          const $item = $(this).closest('.order-item');
+          const id = Number($item.data('id'));
+          const lote = $item.data('lote') || '';
+          changeQty(id, lote, -1);
+      });
+      
+      $(document).on('click', '.btn-del', function(){
+          const $item = $(this).closest('.order-item');
+          const id = Number($item.data('id'));
+          const lote = $item.data('lote') || '';
+          removeItem(id, lote);
+      });
+      
+      // Cambio de descuento
+      $(document).on('input', '#discountInput', function(){
+          order.discount = parseFloat($(this).val()) || 0;
+          recalcOrder();
+      });
+  
+      // Crear orden y limpiar
+      $('#createPurchaseOrder').on('click', async function(){
+          try{ 
+              await createPurchaseOrder(); 
+          } catch(e){ 
+              notifyError(e.message); 
+          }
+      });
+      
+      $('#clearOrder').on('click', clearOrder);
+  });
 </script>
+  
+  
+    
+    
+ 

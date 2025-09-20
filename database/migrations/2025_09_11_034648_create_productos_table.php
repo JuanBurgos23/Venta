@@ -41,6 +41,9 @@ return new class extends Migration
             $table->string('modelo', 100)->nullable();
             $table->string('origen', 100)->nullable();
             $table->integer('estado')->nullable()->default(1);
+            $table->foreignId('proveedor_id')
+                  ->nullable()
+                  ->constrained('proveedor');
             $table->integer('inventariable')->nullable()->default(1);
             $table->timestamps();
         });
