@@ -1,128 +1,111 @@
-<!DOCTYPE html>
-<html lang="en" class="layout-navbar-fixed layout-menu-fixed layout-compact" dir="ltr" data-skin="default" data-assets-path="../../assets/" data-template="vertical-menu-template" data-bs-theme="light">
+<x-layout bodyClass="g-sidenav-show bg-gray-200">
+    <script src="{{asset('assets/vendor/js/template-customizer.js')}}"></script>
 
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
-    <title>Punto de Venta - Sistema ERP</title>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+        <title>Punto de Venta - Sistema ERP</title>
 
-    <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="../../assets/img/favicon/favicon.ico" />
+        <!-- Favicon -->
 
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet" />
 
-    <link rel="stylesheet" href="../../assets/vendor/fonts/iconify-icons.css" />
+        <!-- Fonts -->
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet" />
 
-    <!-- Core CSS -->
-    <link rel="stylesheet" href="../../assets/vendor/libs/pickr/pickr-themes.css" />
-    <link rel="stylesheet" href="../../assets/vendor/css/core.css" />
-    <link rel="stylesheet" href="../../assets/css/demo.css" />
+        <!-- Page CSS -->
+        <style>
+            .product-card {
+                transition: all 0.3s ease;
+                cursor: pointer;
+            }
 
-    <!-- Vendors CSS -->
-    <link rel="stylesheet" href="../../assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
-    <link rel="stylesheet" href="../../assets/vendor/libs/select2/select2.css" />
+            .product-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            }
 
-    <!-- Page CSS -->
-    <style>
-        .product-card {
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
+            .cart-item {
+                border-bottom: 1px solid #e9ecef;
+                padding: 10px 0;
+            }
 
-        .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
+            .category-filter {
+                cursor: pointer;
+                padding: 8px 15px;
+                border-radius: 6px;
+                margin-bottom: 5px;
+                transition: all 0.2s;
+            }
 
-        .cart-item {
-            border-bottom: 1px solid #e9ecef;
-            padding: 10px 0;
-        }
+            .category-filter.active,
+            .category-filter:hover {
+                background-color: #696cff;
+                color: white;
+            }
 
-        .category-filter {
-            cursor: pointer;
-            padding: 8px 15px;
-            border-radius: 6px;
-            margin-bottom: 5px;
-            transition: all 0.2s;
-        }
+            .sticky-cart {
+                position: sticky;
+                top: 80px;
+                height: calc(100vh - 100px);
+                overflow-y: auto;
+            }
 
-        .category-filter.active,
-        .category-filter:hover {
-            background-color: #696cff;
-            color: white;
-        }
+            .search-box {
+                position: relative;
+            }
 
-        .sticky-cart {
-            position: sticky;
-            top: 80px;
-            height: calc(100vh - 100px);
-            overflow-y: auto;
-        }
+            .search-results {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: white;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                z-index: 1000;
+                max-height: 300px;
+                overflow-y: auto;
+                display: none;
+            }
 
-        .search-box {
-            position: relative;
-        }
+            .search-item {
+                padding: 10px;
+                border-bottom: 1px solid #eee;
+                cursor: pointer;
+            }
 
-        .search-results {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            z-index: 1000;
-            max-height: 300px;
-            overflow-y: auto;
-            display: none;
-        }
+            .search-item:hover {
+                background-color: #f8f9fa;
+            }
 
-        .search-item {
-            padding: 10px;
-            border-bottom: 1px solid #eee;
-            cursor: pointer;
-        }
+            .low-stock {
+                color: #ff6b6b;
+                font-weight: 500;
+            }
 
-        .search-item:hover {
-            background-color: #f8f9fa;
-        }
+            .out-of-stock {
+                color: #fa5252;
+                font-weight: 600;
+            }
+        </style>
 
-        .low-stock {
-            color: #ff6b6b;
-            font-weight: 500;
-        }
 
-        .out-of-stock {
-            color: #fa5252;
-            font-weight: 600;
-        }
-    </style>
+    </head>
 
-    <!-- Helpers -->
-    <script src="../../assets/vendor/js/helpers.js"></script>
-    <script src="../../assets/vendor/js/template-customizer.js"></script>
-    <script src="../../assets/js/config.js"></script>
-</head>
-
-<body>
-    <!-- Layout wrapper -->
-    <div class="layout-wrapper layout-content-navbar">
-        <div class="layout-container">
-            <!-- Menu (se mantendría igual que en la plantilla) -->
-            <!-- ... -->
-
-            <!-- Layout container -->
-            <div class="layout-page">
-                <!-- Navbar (se mantendría igual que en la plantilla) -->
-                <!-- ... -->
-
-                <!-- Content wrapper -->
-                <div class="content-wrapper">
-                    <!-- Content -->
+    <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
+        <!-- Navbar -->
+        <nav class="navbar ..."></nav>
+        <!-- Scripts -->
+        @vite([ 'resources/js/app.js'])
+        <!-- End Navbar -->
+        <div class="container-fluid py-4">
+            <div class="col-12">
+                <div class="card my-4">
+                    <div class="card-header">Registrar Venta</div>
+                </div>
+                <div class="card-body">
                     <div class="container-xxl flex-grow-1 container-p-y">
                         <div class="row">
                             <!-- Panel de productos -->
@@ -225,237 +208,226 @@
                                     © <script>
                                         document.write(new Date().getFullYear());
                                     </script>
-                                    Sistema ERP
+                                    Sistema ERPTUXON
                                 </div>
                             </div>
                         </div>
                     </footer>
                     <!-- / Footer -->
                 </div>
-                <!-- Content wrapper -->
             </div>
-            <!-- / Layout page -->
         </div>
-    </div>
-    <!-- / Layout wrapper -->
-
-    <!-- Modal para agregar cliente -->
-    <div class="modal fade" id="addClientModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Agregar Nuevo Cliente</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="clientForm">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Nombre</label>
-                                    <input type="text" class="form-control" required>
+        <!-- Modal para agregar cliente -->
+        <div class="modal fade" id="addClientModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Agregar Nuevo Cliente</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="clientForm">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Nombre</label>
+                                        <input type="text" class="form-control" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Apellido</label>
+                                        <input type="text" class="form-control" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Email</label>
+                                        <input type="email" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Teléfono</label>
+                                        <input type="tel" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="mb-3">
+                                        <label class="form-label">Dirección</label>
+                                        <textarea class="form-control" rows="2"></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Tipo de documento</label>
+                                        <select class="form-select">
+                                            <option>DNI</option>
+                                            <option>RUC</option>
+                                            <option>Cédula</option>
+                                            <option>Pasaporte</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Número de documento</label>
+                                        <input type="text" class="form-control">
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Apellido</label>
-                                    <input type="text" class="form-control" required>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Email</label>
-                                    <input type="email" class="form-control">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Teléfono</label>
-                                    <input type="tel" class="form-control">
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <div class="mb-3">
-                                    <label class="form-label">Dirección</label>
-                                    <textarea class="form-control" rows="2"></textarea>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Tipo de documento</label>
-                                    <select class="form-select">
-                                        <option>DNI</option>
-                                        <option>RUC</option>
-                                        <option>Cédula</option>
-                                        <option>Pasaporte</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Número de documento</label>
-                                    <input type="text" class="form-control">
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary">Guardar Cliente</button>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-primary">Guardar Cliente</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    </main>
 
-    <!-- Core JS -->
-    <script src="../../assets/vendor/libs/jquery/jquery.js"></script>
-    <script src="../../assets/vendor/libs/popper/popper.js"></script>
-    <script src="../../assets/vendor/js/bootstrap.js"></script>
-    <script src="../../assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
-    <script src="../../assets/vendor/js/menu.js"></script>
-    <script src="../../assets/js/main.js"></script>
+    <!-- Template Customizer va fuera de main y slot -->
 
-    <!-- Vendors JS -->
-    <script src="../../assets/vendor/libs/cleave-zen/cleave-zen.js"></script>
-    <script src="../../assets/vendor/libs/select2/select2.js"></script>
+</x-layout>
 
-    <!-- Custom JS para la pantalla de ventas -->
-    <script>
-        // Datos de ejemplo (en un sistema real vendrían de una base de datos)
-        const products = [{
-                id: 1,
-                name: "Laptop HP Pavilion",
-                price: 899.99,
-                category: 1,
-                stock: 15,
-                image: "laptop.jpg"
-            },
-            {
-                id: 2,
-                name: "Smartphone Samsung Galaxy",
-                price: 499.99,
-                category: 1,
-                stock: 25,
-                image: "phone.jpg"
-            },
-            {
-                id: 3,
-                name: "Auriculares Bluetooth",
-                price: 79.99,
-                category: 1,
-                stock: 40,
-                image: "headphones.jpg"
-            },
-            {
-                id: 4,
-                name: "Camiseta Casual",
-                price: 29.99,
-                category: 2,
-                stock: 100,
-                image: "tshirt.jpg"
-            },
-            {
-                id: 5,
-                name: "Zapatos Deportivos",
-                price: 89.99,
-                category: 2,
-                stock: 30,
-                image: "shoes.jpg"
-            },
-            {
-                id: 6,
-                name: "Silla de Oficina",
-                price: 199.99,
-                category: 3,
-                stock: 18,
-                image: "chair.jpg"
-            },
-            {
-                id: 7,
-                name: "Mesa de Centro",
-                price: 149.99,
-                category: 3,
-                stock: 12,
-                image: "table.jpg"
-            },
-            {
-                id: 8,
-                name: "Balón de Fútbol",
-                price: 24.99,
-                category: 4,
-                stock: 50,
-                image: "ball.jpg"
-            },
-            {
-                id: 9,
-                name: "Raqueta de Tenis",
-                price: 69.99,
-                category: 4,
-                stock: 22,
-                image: "racket.jpg"
-            },
-            {
-                id: 10,
-                name: "Monitor 24\"",
-                price: 179.99,
-                category: 1,
-                stock: 5,
-                image: "monitor.jpg"
-            },
-            {
-                id: 11,
-                name: "Teclado Mecánico",
-                price: 89.99,
-                category: 1,
-                stock: 35,
-                image: "keyboard.jpg"
-            },
-            {
-                id: 12,
-                name: "Jeans Modernos",
-                price: 49.99,
-                category: 2,
-                stock: 60,
-                image: "jeans.jpg"
-            }
-        ];
 
-        const categories = {
-            1: "Electrónicos",
-            2: "Ropa",
-            3: "Hogar",
-            4: "Deportes"
-        };
+<!-- Custom JS para la pantalla de ventas -->
+<script>
+    // Datos de ejemplo (en un sistema real vendrían de una base de datos)
+    const products = [{
+            id: 1,
+            name: "Laptop HP Pavilion",
+            price: 899.99,
+            category: 1,
+            stock: 15,
+            image: "laptop.jpg"
+        },
+        {
+            id: 2,
+            name: "Smartphone Samsung Galaxy",
+            price: 499.99,
+            category: 1,
+            stock: 25,
+            image: "phone.jpg"
+        },
+        {
+            id: 3,
+            name: "Auriculares Bluetooth",
+            price: 79.99,
+            category: 1,
+            stock: 40,
+            image: "headphones.jpg"
+        },
+        {
+            id: 4,
+            name: "Camiseta Casual",
+            price: 29.99,
+            category: 2,
+            stock: 100,
+            image: "tshirt.jpg"
+        },
+        {
+            id: 5,
+            name: "Zapatos Deportivos",
+            price: 89.99,
+            category: 2,
+            stock: 30,
+            image: "shoes.jpg"
+        },
+        {
+            id: 6,
+            name: "Silla de Oficina",
+            price: 199.99,
+            category: 3,
+            stock: 18,
+            image: "chair.jpg"
+        },
+        {
+            id: 7,
+            name: "Mesa de Centro",
+            price: 149.99,
+            category: 3,
+            stock: 12,
+            image: "table.jpg"
+        },
+        {
+            id: 8,
+            name: "Balón de Fútbol",
+            price: 24.99,
+            category: 4,
+            stock: 50,
+            image: "ball.jpg"
+        },
+        {
+            id: 9,
+            name: "Raqueta de Tenis",
+            price: 69.99,
+            category: 4,
+            stock: 22,
+            image: "racket.jpg"
+        },
+        {
+            id: 10,
+            name: "Monitor 24\"",
+            price: 179.99,
+            category: 1,
+            stock: 5,
+            image: "monitor.jpg"
+        },
+        {
+            id: 11,
+            name: "Teclado Mecánico",
+            price: 89.99,
+            category: 1,
+            stock: 35,
+            image: "keyboard.jpg"
+        },
+        {
+            id: 12,
+            name: "Jeans Modernos",
+            price: 49.99,
+            category: 2,
+            stock: 60,
+            image: "jeans.jpg"
+        }
+    ];
 
-        let cart = [];
-        let currentCategory = 'all';
+    const categories = {
+        1: "Electrónicos",
+        2: "Ropa",
+        3: "Hogar",
+        4: "Deportes"
+    };
 
-        // Inicializar la pantalla de ventas
-        $(document).ready(function() {
-            loadProducts();
-            setupEventListeners();
-        });
+    let cart = [];
+    let currentCategory = 'all';
 
-        // Cargar productos en la interfaz
-        function loadProducts() {
-            const productList = $('#productList');
-            productList.empty();
+    // Inicializar la pantalla de ventas
+    $(document).ready(function() {
+        loadProducts();
+        setupEventListeners();
+    });
 
-            const filteredProducts = currentCategory === 'all' ?
-                products :
-                products.filter(p => p.category == currentCategory);
+    // Cargar productos en la interfaz
+    function loadProducts() {
+        const productList = $('#productList');
+        productList.empty();
 
-            if (filteredProducts.length === 0) {
-                productList.html('<div class="col-12 text-center py-4"><p class="text-muted">No hay productos en esta categoría</p></div>');
-                return;
-            }
+        const filteredProducts = currentCategory === 'all' ?
+            products :
+            products.filter(p => p.category == currentCategory);
 
-            filteredProducts.forEach(product => {
-                const stockClass = product.stock < 10 ?
-                    (product.stock === 0 ? 'out-of-stock' : 'low-stock') : '';
+        if (filteredProducts.length === 0) {
+            productList.html('<div class="col-12 text-center py-4"><p class="text-muted">No hay productos en esta categoría</p></div>');
+            return;
+        }
 
-                const productCard = `
+        filteredProducts.forEach(product => {
+            const stockClass = product.stock < 10 ?
+                (product.stock === 0 ? 'out-of-stock' : 'low-stock') : '';
+
+            const productCard = `
                     <div class="col-md-4 col-sm-6 mb-4">
                         <div class="card product-card" data-id="${product.id}">
                             <img src="../../assets/img/products/${product.image}" class="card-img-top" alt="${product.name}" style="height: 150px; object-fit: cover;">
@@ -470,68 +442,68 @@
                         </div>
                     </div>
                 `;
-                productList.append(productCard);
-            });
-        }
+            productList.append(productCard);
+        });
+    }
 
-        // Configurar event listeners
-        function setupEventListeners() {
-            // Filtrar por categoría
-            $('#categoryFilter').change(function() {
-                currentCategory = $(this).val();
-                loadProducts();
-            });
+    // Configurar event listeners
+    function setupEventListeners() {
+        // Filtrar por categoría
+        $('#categoryFilter').change(function() {
+            currentCategory = $(this).val();
+            loadProducts();
+        });
 
-            // Buscar productos
-            $('#productSearch').on('input', function() {
-                const query = $(this).val().toLowerCase();
-                if (query.length > 2) {
-                    const results = products.filter(p =>
-                        p.name.toLowerCase().includes(query) ||
-                        categories[p.category].toLowerCase().includes(query)
-                    );
-                    showSearchResults(results);
-                } else {
-                    $('#searchResults').hide();
-                }
-            });
-
-            // Agregar producto al carrito
-            $(document).on('click', '.add-to-cart', function() {
-                const productId = $(this).closest('.product-card').data('id');
-                addToCart(productId);
-            });
-
-            // Procesar venta
-            $('#processSale').click(processSale);
-
-            // Limpiar carrito
-            $('#clearCart').click(clearCart);
-
-            // Cambiar cantidad en carrito
-            $(document).on('click', '.quantity-btn', function() {
-                const itemId = $(this).closest('.cart-item').data('id');
-                const action = $(this).data('action');
-                updateCartItemQuantity(itemId, action);
-            });
-
-            // Eliminar item del carrito
-            $(document).on('click', '.remove-item', function() {
-                const itemId = $(this).closest('.cart-item').data('id');
-                removeFromCart(itemId);
-            });
-        }
-
-        // Mostrar resultados de búsqueda
-        function showSearchResults(results) {
-            const resultsContainer = $('#searchResults');
-            resultsContainer.empty();
-
-            if (results.length === 0) {
-                resultsContainer.html('<div class="search-item">No se encontraron productos</div>');
+        // Buscar productos
+        $('#productSearch').on('input', function() {
+            const query = $(this).val().toLowerCase();
+            if (query.length > 2) {
+                const results = products.filter(p =>
+                    p.name.toLowerCase().includes(query) ||
+                    categories[p.category].toLowerCase().includes(query)
+                );
+                showSearchResults(results);
             } else {
-                results.forEach(product => {
-                    const resultItem = `
+                $('#searchResults').hide();
+            }
+        });
+
+        // Agregar producto al carrito
+        $(document).on('click', '.add-to-cart', function() {
+            const productId = $(this).closest('.product-card').data('id');
+            addToCart(productId);
+        });
+
+        // Procesar venta
+        $('#processSale').click(processSale);
+
+        // Limpiar carrito
+        $('#clearCart').click(clearCart);
+
+        // Cambiar cantidad en carrito
+        $(document).on('click', '.quantity-btn', function() {
+            const itemId = $(this).closest('.cart-item').data('id');
+            const action = $(this).data('action');
+            updateCartItemQuantity(itemId, action);
+        });
+
+        // Eliminar item del carrito
+        $(document).on('click', '.remove-item', function() {
+            const itemId = $(this).closest('.cart-item').data('id');
+            removeFromCart(itemId);
+        });
+    }
+
+    // Mostrar resultados de búsqueda
+    function showSearchResults(results) {
+        const resultsContainer = $('#searchResults');
+        resultsContainer.empty();
+
+        if (results.length === 0) {
+            resultsContainer.html('<div class="search-item">No se encontraron productos</div>');
+        } else {
+            results.forEach(product => {
+                const resultItem = `
                         <div class="search-item" data-id="${product.id}">
                             <div class="d-flex justify-content-between">
                                 <span>${product.name}</span>
@@ -540,107 +512,107 @@
                             <small class="text-muted">${categories[product.category]} • Stock: ${product.stock}</small>
                         </div>
                     `;
-                    resultsContainer.append(resultItem);
-                });
+                resultsContainer.append(resultItem);
+            });
 
-                // Al hacer clic en un resultado
-                $('.search-item').click(function() {
-                    const productId = $(this).data('id');
-                    addToCart(productId);
-                    $('#productSearch').val('');
-                    resultsContainer.hide();
-                });
-            }
-
-            resultsContainer.show();
+            // Al hacer clic en un resultado
+            $('.search-item').click(function() {
+                const productId = $(this).data('id');
+                addToCart(productId);
+                $('#productSearch').val('');
+                resultsContainer.hide();
+            });
         }
 
-        // Agregar producto al carrito
-        function addToCart(productId) {
-            const product = products.find(p => p.id === productId);
+        resultsContainer.show();
+    }
 
-            if (!product) return;
+    // Agregar producto al carrito
+    function addToCart(productId) {
+        const product = products.find(p => p.id === productId);
 
-            // Verificar stock
-            if (product.stock === 0) {
-                showNotification('Error', 'Producto sin stock', 'error');
+        if (!product) return;
+
+        // Verificar stock
+        if (product.stock === 0) {
+            showNotification('Error', 'Producto sin stock', 'error');
+            return;
+        }
+
+        // Buscar si el producto ya está en el carrito
+        const existingItem = cart.find(item => item.id === productId);
+
+        if (existingItem) {
+            // Verificar que no exceda el stock disponible
+            if (existingItem.quantity >= product.stock) {
+                showNotification('Advertencia', 'No hay suficiente stock disponible', 'warning');
                 return;
             }
+            existingItem.quantity += 1;
+        } else {
+            cart.push({
+                id: product.id,
+                name: product.name,
+                price: product.price,
+                quantity: 1,
+                stock: product.stock
+            });
+        }
 
-            // Buscar si el producto ya está en el carrito
-            const existingItem = cart.find(item => item.id === productId);
+        updateCartDisplay();
+        showNotification('Éxito', 'Producto agregado al carrito', 'success');
+    }
 
-            if (existingItem) {
-                // Verificar que no exceda el stock disponible
-                if (existingItem.quantity >= product.stock) {
-                    showNotification('Advertencia', 'No hay suficiente stock disponible', 'warning');
-                    return;
-                }
-                existingItem.quantity += 1;
+    // Actualizar cantidad de un item en el carrito
+    function updateCartItemQuantity(itemId, action) {
+        const item = cart.find(item => item.id === itemId);
+        const product = products.find(p => p.id === itemId);
+
+        if (action === 'increase') {
+            if (item.quantity >= product.stock) {
+                showNotification('Advertencia', 'No hay suficiente stock disponible', 'warning');
+                return;
+            }
+            item.quantity += 1;
+        } else if (action === 'decrease') {
+            if (item.quantity > 1) {
+                item.quantity -= 1;
             } else {
-                cart.push({
-                    id: product.id,
-                    name: product.name,
-                    price: product.price,
-                    quantity: 1,
-                    stock: product.stock
-                });
+                removeFromCart(itemId);
+                return;
             }
-
-            updateCartDisplay();
-            showNotification('Éxito', 'Producto agregado al carrito', 'success');
         }
 
-        // Actualizar cantidad de un item en el carrito
-        function updateCartItemQuantity(itemId, action) {
-            const item = cart.find(item => item.id === itemId);
-            const product = products.find(p => p.id === itemId);
+        updateCartDisplay();
+    }
 
-            if (action === 'increase') {
-                if (item.quantity >= product.stock) {
-                    showNotification('Advertencia', 'No hay suficiente stock disponible', 'warning');
-                    return;
-                }
-                item.quantity += 1;
-            } else if (action === 'decrease') {
-                if (item.quantity > 1) {
-                    item.quantity -= 1;
-                } else {
-                    removeFromCart(itemId);
-                    return;
-                }
-            }
+    // Eliminar producto del carrito
+    function removeFromCart(productId) {
+        cart = cart.filter(item => item.id !== productId);
+        updateCartDisplay();
+        showNotification('Info', 'Producto eliminado del carrito', 'info');
+    }
 
-            updateCartDisplay();
-        }
+    // Actualizar visualización del carrito
+    function updateCartDisplay() {
+        const cartItemsContainer = $('#cartItems');
 
-        // Eliminar producto del carrito
-        function removeFromCart(productId) {
-            cart = cart.filter(item => item.id !== productId);
-            updateCartDisplay();
-            showNotification('Info', 'Producto eliminado del carrito', 'info');
-        }
-
-        // Actualizar visualización del carrito
-        function updateCartDisplay() {
-            const cartItemsContainer = $('#cartItems');
-
-            if (cart.length === 0) {
-                cartItemsContainer.html(`
+        if (cart.length === 0) {
+            cartItemsContainer.html(`
                     <div class="text-center text-muted py-4">
                         <i class="icon-base bx bx-cart-add display-4"></i>
                         <p class="mt-2">No hay productos en el carrito</p>
                     </div>
                 `);
-            } else {
-                let cartHTML = '';
-                let subtotal = 0;
+        } else {
+            let cartHTML = '';
+            let subtotal = 0;
 
-                cart.forEach(item => {
-                    const itemTotal = item.price * item.quantity;
-                    subtotal += itemTotal;
+            cart.forEach(item => {
+                const itemTotal = item.price * item.quantity;
+                subtotal += itemTotal;
 
-                    cartHTML += `
+                cartHTML += `
                         <div class="cart-item" data-id="${item.id}">
                             <div class="d-flex justify-content-between">
                                 <div>
@@ -661,52 +633,49 @@
                             </div>
                         </div>
                     `;
-                });
+            });
 
-                cartItemsContainer.html(cartHTML);
-            }
-
-            // Actualizar totales
-            const taxes = subtotal * 0.18;
-            const total = subtotal + taxes;
-
-            $('#subtotal').text('$' + subtotal.toFixed(2));
-            $('#taxes').text('$' + taxes.toFixed(2));
-            $('#total').text('$' + total.toFixed(2));
+            cartItemsContainer.html(cartHTML);
         }
 
-        // Procesar la venta
-        function processSale() {
-            if (cart.length === 0) {
-                showNotification('Error', 'No hay productos en el carrito', 'error');
-                return;
-            }
+        // Actualizar totales
+        const taxes = subtotal * 0.18;
+        const total = subtotal + taxes;
 
-            // Aquí iría la lógica para procesar la venta (guardar en base de datos, etc.)
-            // Por ahora solo mostramos un mensaje de éxito
+        $('#subtotal').text('$' + subtotal.toFixed(2));
+        $('#taxes').text('$' + taxes.toFixed(2));
+        $('#total').text('$' + total.toFixed(2));
+    }
 
-            const clientId = $('#clientSelect').val();
-            const clientName = clientId ? $('#clientSelect option:selected').text() : 'Cliente general';
-
-            showNotification('Venta procesada', `Venta realizada a ${clientName} por un total de ${$('#total').text()}`, 'success');
-
-            // Limpiar carrito después de la venta
-            clearCart();
+    // Procesar la venta
+    function processSale() {
+        if (cart.length === 0) {
+            showNotification('Error', 'No hay productos en el carrito', 'error');
+            return;
         }
 
-        // Limpiar carrito
-        function clearCart() {
-            cart = [];
-            updateCartDisplay();
-            showNotification('Info', 'Carrito vaciado', 'info');
-        }
+        // Aquí iría la lógica para procesar la venta (guardar en base de datos, etc.)
+        // Por ahora solo mostramos un mensaje de éxito
 
-        // Mostrar notificación
-        function showNotification(title, message, type) {
-            // Usar la librería de notificaciones de la plantilla o una simple alerta
-            alert(`${title}: ${message}`);
-        }
-    </script>
-</body>
+        const clientId = $('#clientSelect').val();
+        const clientName = clientId ? $('#clientSelect option:selected').text() : 'Cliente general';
 
-</html>
+        showNotification('Venta procesada', `Venta realizada a ${clientName} por un total de ${$('#total').text()}`, 'success');
+
+        // Limpiar carrito después de la venta
+        clearCart();
+    }
+
+    // Limpiar carrito
+    function clearCart() {
+        cart = [];
+        updateCartDisplay();
+        showNotification('Info', 'Carrito vaciado', 'info');
+    }
+
+    // Mostrar notificación
+    function showNotification(title, message, type) {
+        // Usar la librería de notificaciones de la plantilla o una simple alerta
+        alert(`${title}: ${message}`);
+    }
+</script>
