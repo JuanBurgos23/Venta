@@ -15,6 +15,7 @@ use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\ProveedorController;
 use App\Http\Controllers\SubcategoriaController;
 use App\Http\Controllers\UnidadMedidaController;
+use App\Http\Controllers\VentaController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -126,7 +127,7 @@ Route::put('almacen/{id}', [AlmacenController::class, 'update'])->name('almacen.
 Route::get('/almacen/{id}/edit', [AlmacenController::class, 'edit'])->name('almacen.edit');
 
 //pruebas de venta y compra
-Route::get('/venta', [AlmacenController::class, 'venta'])->name('venta');   
+
 Route::get('/compra', [ProveedorController::class, 'index'])->name('compra');
 
 
@@ -161,6 +162,18 @@ Route::get('/subcategorias/{id}/edit', [SubcategoriaController::class, 'edit'])-
 Route::post('/subcategorias',          [SubcategoriaController::class, 'store'])->name('subcategorias.store');
 Route::put('/subcategorias/{id}',      [SubcategoriaController::class, 'update'])->name('subcategorias.update');
 Route::delete('/subcategorias/{id}',   [SubcategoriaController::class, 'destroy'])->name('subcategorias.destroy');
+
+
+//venta\
+Route::get('/venta', [VentaController::class, 'index'])->name('Venta');
+Route::get('/productos/fetch', [VentaController::class, 'fetchProducto'])->name('productos.fetch');
+Route::get('/productos/search', [VentaController::class, 'search'])->name('productos.search');
+Route::get('/categorias/fetch-json', [VentaController::class, 'fetchJson'])->name('categorias.fetchJson');
+Route::get('/clientes/fetch-json', [VentaController::class, 'fetchClientes'])->name('clientes.fetch-json');
+Route::get('/buscar-producto/{codigo}', [VentaController::class, 'buscarPorCodigo'])
+    ->name('productos.buscar');
+
+
 
 
 require __DIR__ . '/auth.php';

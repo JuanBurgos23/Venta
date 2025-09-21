@@ -86,7 +86,7 @@ class ProductoController extends Controller
             $validated = $request->validate([
                 'codigo'          => 'required|string|max:100',
                 'nombre'          => 'required|string|max:200',
-                'foto'            => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+               
                 'descripcion'     => 'nullable|string',
                 'marca'           => 'nullable|string|max:100',
                 'modelo'          => 'nullable|string|max:100',
@@ -103,13 +103,11 @@ class ProductoController extends Controller
             $producto->id_empresa = auth()->user()->id_empresa;
 
             // subir imagen
+            $fotoPath = null;
             if ($request->hasFile('foto')) {
-                $file = $request->file('foto');
-                $filename = time() . '_' . $file->getClientOriginalName();
-                $file->storeAs('public/productos', $filename);
-                $producto->foto = 'productos/' . $filename;
+                $fotoPath = $request->file('foto')->store('productos', 'public');
             }
-
+            $producto->foto = $fotoPath;
             $producto->save();
 
             return response()->json([

@@ -13,12 +13,25 @@ return new class extends Migration
     {
         Schema::create('venta', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('cliente_id')->constrained('cliente')->onDelete('cascade');
-            $table->date('fecha_venta');
-            $table->decimal('total', 10, 2);
-            $table->integer('estado')->default(1); // 1: activo, 0: inactivo
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('producto_id')->constrained('producto')->onDelete('cascade');
+
+            // Cabecera / referencias
+            $table->string('codigo', 50)->unique(); // ej. V-00001
+            $table->dateTime('fecha'); // fecha y hora de la venta
+            $table->foreignId('cliente_id')->nullable()->constrained('cliente')->onDelete('set null');
+            $table->foreignId('usuario_id')->constrained('users')->onDelete('cascade'); // usuario que registró la venta
+            $table->foreignId('empresa_id')->nullable()->constrained('empresa')->onDelete('cascade');
+            $table->foreignId('almacen_id')->nullable()->constrained('almacen')->onDelete('set null');
+
+            // Totales
+            $table->decimal('descuento', 12, 2)->default(0);
+            $table->decimal('total', 12, 2)->default(0);
+
+            // Pago y estado
+            $table->enum('forma_pago', ['Efectivo', 'Tarjeta', 'Qr'])->nullable();
+            $table->enum('estado', ['Registrado', 'Pagado', 'Pendiente', 'Anulado'])->default('Registrado');
+
+            // Observaciones y timestamps
+            $table->text('observaciones')->nullable();
             $table->timestamps();
         });
     }

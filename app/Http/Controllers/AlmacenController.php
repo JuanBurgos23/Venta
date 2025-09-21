@@ -28,10 +28,7 @@ class AlmacenController extends Controller
 
         return view('almacen/almacen', compact('sucursal'));
     }
-    public function venta(){
-        return view('venta.venta');
-    }
-
+   
     public function fetch(Request $request)
     {
         $search     = (string) $request->input('search', '');
