@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cliente;
 use App\Models\Empresa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -98,7 +99,10 @@ class EmpresaController extends Controller
             'direccion' => $request->direccion,
             'nit'     => $request->nit,
         ]);
-
+        Cliente::create([
+            'nombre' => 'Cliente General',
+            'id_empresa' => $empresa->id,
+        ]);
         $user->id_empresa = $empresa->id;
         $user->save();
 

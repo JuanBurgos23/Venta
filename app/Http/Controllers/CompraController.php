@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\almacen;
 use App\Models\Compra;
+use App\Models\Producto;
 use App\Models\Producto_compra;
 use App\Models\Producto_almacen;
+use App\Models\Proveedor;
+use App\Models\Sucursal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -19,159 +23,232 @@ class CompraController extends Controller
         return view('compra.compra');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
-     * Store a newly created resource in storage.
+     * Buscar proveedores (para TomSelect en compras)
      */
-    public function store(Request $request)
+    public function ProveedorSearch(Request $request)
     {
-        // Aceptamos proveedor_id o id_proveedor
-        $proveedorId = $request->input('proveedor_id') ?? $request->input('id_proveedor');
+        $empresaId = auth()->user()->id_empresa; // filtrar por empresa
+        $query = $request->input('query');
 
-        $validated = $request->validate([
-            'almacen_id'        => ['required','exists:almacen,id'],
-            'sucursal_id'       => ['nullable','exists:sucursal,id'],
+        $proveedores = Proveedor::where('id_empresa', $empresaId)
+            ->where('estado', 1) // solo activos, opcional
+            ->where(function ($q) use ($query) {
+                $q->where('nombre', 'LIKE', "%{$query}%")
+                    ->orWhere('paterno', 'LIKE', "%{$query}%")
+                    ->orWhere('materno', 'LIKE', "%{$query}%")
+                    ->orWhere('telefono', 'LIKE', "%{$query}%")
+                    ->orWhere('correo', 'LIKE', "%{$query}%")
+                    ->orWhere('ci', 'LIKE', "%{$query}%");
+            })
+            ->limit(10)
+            ->get();
 
-            'proveedor_id'      => ['nullable','exists:proveedor,id'],
-            'id_proveedor'      => ['nullable','exists:proveedor,id'],
-
-            'fecha_esperada'    => ['nullable','date'],
-            'observacion'       => ['nullable','string','max:500'],
-
-            'items'                         => ['required','array','min:1'],
-            'items.*.producto_id'           => ['required','exists:producto,id'],
-            'items.*.cantidad'              => ['required','numeric','min:0.0001'],
-            'items.*.costo_unitario'        => ['required','numeric','min:0'],
-            'items.*.lote'                  => ['nullable','string','max:255'],
-            'items.*.id_lote'               => ['nullable','string','max:50'],
-            'items.*.fecha_vencimiento'     => ['nullable','date'],
-        ]);
-
-        if (!$proveedorId) {
-            return response()->json(['status'=>'error','message'=>'El proveedor es requerido'], 422);
-        }
-
-        $empresaId = Auth::user()->id_empresa ?? null;
-        $usuarioId = Auth::id();
-        if (!$empresaId) {
-            return response()->json(['status'=>'error','message'=>'No se pudo determinar la empresa del usuario'], 422);
-        }
-
-        // Totales
-        $subtotal = 0;
-        foreach ($validated['items'] as $it) {
-            $subtotal += (float)$it['cantidad'] * (float)$it['costo_unitario'];
-        }
-        $descuento = 0;
-        $total     = $subtotal - $descuento;
-
-        // Ejecuta TODO dentro de la transacción y DEVUELVE el modelo $compra
-        $compra = DB::transaction(function() use ($validated, $empresaId, $usuarioId, $proveedorId, $subtotal, $descuento, $total) {
-
-            // 1) Compra (cabecera)
-            $compra = Compra::create([
-                'id_empresa'    => $empresaId,
-                'sucursal_id'   => $validated['sucursal_id'] ?? null,
-                'almacen_id'    => $validated['almacen_id'],
-                'proveedor_id'  => $proveedorId,
-                'fecha_ingreso' => now(),
-                'tipo'          => 'OC',
-                'subtotal'      => $subtotal,
-                'descuento'     => $descuento,
-                'total'         => $total,
-                'estado'        => 1,
-                'observacion'   => $validated['observacion'] ?? null,
-                'recepcion'     => $validated['fecha_esperada'] ?? null,
-                'usuario_id'    => $usuarioId,
-            ]);
-
-            // 2) Detalle + Ingreso a inventario POR LOTE (SIEMPRE INSERT)
-            foreach ($validated['items'] as $it) {
-                $cant      = (float)$it['cantidad'];
-                $costoUnit = (float)$it['costo_unitario'];
-
-                $det = Producto_compra::create([
-                    'producto_id'       => $it['producto_id'],
-                    'compra_id'         => $compra->id,
-                    'empresa_id'        => $empresaId,
-                    // ¡OJO!: ya quitaste proveedor_id de producto_compra
-                    'lote'              => $it['lote'] ?? null,
-                    'fecha_vencimiento' => $it['fecha_vencimiento'] ?? null,
-                    'cantidad'          => $cant,
-                    'costo_unitario'    => $costoUnit,
-                    'costo_total'       => $cant * $costoUnit,
-                ]);
-
-                // Inserta SIEMPRE una fila por lote en producto_almacen
-                Producto_almacen::create([
-                    'producto_id'        => $it['producto_id'],
-                    'almacen_id'         => $validated['almacen_id'],
-                    'empresa_id'         => $empresaId,
-
-                    // nuevo control de lote en esta tabla
-                    'id_lote'            => $it['id_lote'] ?? null, // alfanumérico del cliente
-                    'lote'               => $it['lote'] ?? null,    // texto mostrado
-
-                    // referencia al detalle (útil para trazabilidad/egresos FIFO)
-                    'producto_compra_id' => $det->id,
-
-                    'stock'              => $cant,
-                    'estado'             => 1,
-                ]);
-            }
-
-            return $compra; // <- ¡muy importante!
+        $data = $proveedores->map(function ($p) {
+            return [
+                'id'       => $p->id,
+                'nombre'   => trim("{$p->nombre} {$p->paterno} {$p->materno}"),
+                'ruc'      => $p->ci,
+                'telefono' => $p->telefono,
+                'email'    => $p->correo,
+            ];
         });
 
-        // Fuera de la transacción ya tienes $compra válido
+        return response()->json($data);
+    }
+
+    /**
+     * Guardar un nuevo proveedor desde el modal
+     */
+    public function ProveedorStore(Request $request)
+    {
+        $empresaId = auth()->user()->id_empresa;
+
+        $validated = $request->validate([
+            'nombre'   => 'required|string|max:255',
+            'paterno'  => 'nullable|string|max:255',
+            'materno'  => 'nullable|string|max:255',
+            'telefono' => 'nullable|string|max:50',
+            'correo'   => 'nullable|email|max:255',
+            'ci'       => 'nullable|string|max:100',
+        ]);
+
+        $proveedor = Proveedor::create([
+            'nombre'    => $validated['nombre'],
+            'paterno'   => $validated['paterno'] ?? null,
+            'materno'   => $validated['materno'] ?? null,
+            'telefono'  => $validated['telefono'] ?? null,
+            'correo'    => $validated['correo'] ?? null,
+            'ci'        => $validated['ci'] ?? null,
+            'id_empresa' => $empresaId,
+            'estado'    => 1,
+        ]);
+
         return response()->json([
-            'status'  => 'success',
-            'message' => 'Compra registrada correctamente',
-            'compra'  => [
-                'id'        => $compra->id,
-                'subtotal'  => $subtotal,
-                'descuento' => $descuento,
-                'total'     => $total,
-            ]
+            'id'       => $proveedor->id,
+            'nombre'   => trim("{$proveedor->nombre} {$proveedor->paterno} {$proveedor->materno}"),
+            'ruc'      => $proveedor->ci,
+            'telefono' => $proveedor->telefono,
+            'email'    => $proveedor->correo,
         ]);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Compra $compra)
+    public function AlmacenList()
     {
-        //
+        $empresaId = auth()->user()->id_empresa;
+
+        // Obtener todos los almacenes de las sucursales de esta empresa
+        $almacenes = Almacen::whereHas('sucursal', function ($q) use ($empresaId) {
+            $q->where('empresa_id', $empresaId);
+        })->get();
+
+        // Transformar a JSON simple
+        $data = $almacenes->map(function ($a) {
+            return [
+                'id' => $a->id,
+                'nombre' => $a->nombre,
+            ];
+        });
+
+        return response()->json($data);
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Guarda un nuevo almacén.
      */
-    public function edit(Compra $compra)
+    public function AlmacenStore(Request $request)
     {
-        //
+        $request->validate([
+            'nombre' => 'required|string|max:255',
+            'direccion' => 'nullable|string|max:255',
+            'responsable' => 'nullable|string|max:255',
+            'telefono' => 'nullable|string|max:50',
+        ]);
+
+        $empresaId = auth()->user()->id_empresa;
+
+        // Por defecto asignar la primera sucursal de la empresa
+        $sucursal = Sucursal::where('empresa_id', $empresaId)->first();
+        if (!$sucursal) {
+            return response()->json(['error' => 'No hay sucursal asociada a la empresa'], 422);
+        }
+
+        $almacen = almacen::create([
+            'sucursal_id' => $sucursal->id,
+            'nombre' => $request->nombre,
+            'estado' => 1, // activo por defecto
+        ]);
+
+        return response()->json($almacen);
+    }
+    public function ProductoList(Request $request)
+    {
+        $empresaId = auth()->user()->id_empresa; // filtrar por empresa si aplica
+
+        $productos = Producto::where('id_empresa', $empresaId)
+            ->with(['categoria', 'tipoPrecio']) // incluir relaciones si quieres
+            ->limit(100) // limitar cantidad por rendimiento
+            ->get();
+
+        $data = $productos->map(function ($p) {
+            return [
+                'id'      => $p->id,
+                'name'    => $p->nombre,
+                'price'   => $p->tipoPrecio ? ($p->tipoPrecio->valor ?? 0) : 0,
+                'category' => $p->categoria ? $p->categoria->nombre : '-',
+                'brand'   => $p->marca ?? '-',
+                'model'   => $p->modelo ?? '-',
+                'origin'  => $p->origen ?? '-'
+            ];
+        });
+
+        return response()->json($data);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Compra $compra)
+    //registrar la compra
+    public function store(Request $request)
     {
-        //
-    }
+        $request->validate([
+            'proveedor_id' => 'required|exists:proveedor,id',
+            'almacen_id' => 'required|exists:almacen,id',
+            'fecha_ingreso' => 'required|date',
+            'tipo' => 'nullable|string',
+            'observacion' => 'nullable|string',
+            'productos' => 'required|array|min:1',
+            'productos.*.producto_id' => 'required|exists:producto,id',
+            'productos.*.cantidad' => 'required|numeric|min:0.01',
+            'productos.*.costo_unitario' => 'required|numeric|min:0',
+            'productos.*.total' => 'required|numeric|min:0',
+            'productos.*.lote' => 'nullable|string',
+            'productos.*.fecha_vencimiento' => 'nullable|date',
+            'factura' => 'nullable|boolean',
+            'numero_factura' => 'nullable|string',
+        ]);
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Compra $compra)
-    {
-        //
+        DB::beginTransaction();
+
+        try {
+            // 1️⃣ Crear la compra
+            $compra = Compra::create([
+                'id_empresa'   => Auth::user()->empresa_id,
+                'sucursal_id'  => Auth::user()->sucursal_id ?? 1,
+                'almacen_id'   => $request->almacen_id,
+                'proveedor_id' => $request->proveedor_id,
+                'fecha_ingreso' => $request->fecha_ingreso,
+                'tipo'         => $request->tipo ?? 'compra',
+                'subtotal'     => collect($request->productos)->sum(fn($p) => $p['cantidad'] * $p['costo_unitario']),
+                'descuento'    => $request->descuento ?? 0,
+                'total'        => collect($request->productos)->sum(fn($p) => $p['total']),
+                'estado'       => 'activo',
+                'observacion'  => $request->observacion,
+                'recepcion'    => $request->factura ?? 0,
+                'usuario_id'   => Auth::id(),
+            ]);
+
+            // 2️⃣ Recorrer los productos y crear detalle
+            foreach ($request->productos as $p) {
+                $detalle = Producto_compra::create([
+                    'producto_id'      => $p['producto_id'],
+                    'compra_id'        => $compra->id,
+                    'empresa_id'       => Auth::user()->empresa_id,
+                    'lote'             => $p['lote'] ?? null,
+                    'fecha_vencimiento' => $p['fecha_vencimiento'] ?? null,
+                    'cantidad'         => $p['cantidad'],
+                    'costo_unitario'   => $p['costo_unitario'],
+                    'costo_total'      => $p['total'],
+                ]);
+
+                // 3️⃣ Actualizar stock en producto_almacen
+                $productoAlmacen = Producto_almacen::firstOrCreate(
+                    [
+                        'producto_id' => $p['producto_id'],
+                        'almacen_id'  => $request->almacen_id,
+                        'empresa_id'  => Auth::user()->empresa_id,
+                        'lote'        => $p['lote'] ?? null,
+                    ],
+                    [
+                        'stock'       => 0,
+                        'estado'      => 'activo'
+                    ]
+                );
+
+                $productoAlmacen->increment('stock', $p['cantidad']);
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Compra registrada correctamente',
+                'compra_id' => $compra->id
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al registrar la compra: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }
