@@ -3,13 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Producto;
-use App\Http\Controllers\Controller;
 use App\Models\Categoria;
-use App\Models\Subcategoria;
 use App\Models\Tipo_precio;
+use App\Models\Subcategoria;
+use Illuminate\Http\Request;
 use App\Models\Tipo_producto;
 use App\Models\Unidad_medida;
-use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class ProductoController extends Controller
 {
@@ -86,7 +87,7 @@ class ProductoController extends Controller
             $validated = $request->validate([
                 'codigo'          => 'required|string|max:100',
                 'nombre'          => 'required|string|max:200',
-               
+
                 'descripcion'     => 'nullable|string',
                 'marca'           => 'nullable|string|max:100',
                 'modelo'          => 'nullable|string|max:100',
@@ -127,6 +128,51 @@ class ProductoController extends Controller
             ], 500);
         }
     }
+
+    public function fetch(Request $request)
+    {
+        $user      = Auth::user();
+        $empresaId = $user->id_empresa ?? null; // filtrar por empresa
+        $search    = $request->input('search', '');
+        $perPage   = 10;
+        $page      = (int)$request->input('page', 1);
+
+        $q = Producto::with(['categoria:id,nombre', 'subcategoria:id,nombre'])
+            ->when($empresaId, fn($qq) => $qq->where('id_empresa', $empresaId))
+            ->when($search, function ($qq) use ($search) {
+                $qq->where(function ($w) use ($search) {
+                    $w->where('nombre', 'like', "%{$search}%")
+                        ->orWhere('codigo', 'like', "%{$search}%")
+                        ->orWhere('marca', 'like', "%{$search}%")
+                        ->orWhere('modelo', 'like', "%{$search}%");
+                });
+            })
+            ->orderByDesc('id');
+
+        // Paginación
+        $paginator = $q->paginate($perPage, ['*'], 'page', $page);
+
+        $mapped = collect($paginator->items())->map(function ($p) {
+            return [
+                'id'           => (int)$p->id,
+                'nombre'       => $p->nombre,
+                'precio'       => 0, // por ahora fijo, ajusta si usas otra tabla de precios
+                'categoria'    => $p->categoria ? ['nombre' => $p->categoria->nombre] : null,
+                'subcategoria' => $p->subcategoria ? ['nombre' => $p->subcategoria->nombre] : null,
+                'stock_actual' => null, // si no manejas stock aún
+                'minimo'       => null,
+            ];
+        })->values();
+
+        return response()->json([
+            'data'         => $mapped,
+            'current_page' => $paginator->currentPage(),
+            'last_page'    => $paginator->lastPage(),
+            'total'        => $paginator->total(),
+        ]);
+    }
+
+
 
     /**
      * Display the specified resource.

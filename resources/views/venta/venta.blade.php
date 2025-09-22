@@ -89,10 +89,20 @@
                                     <h6 class="mb-3 font-weight-bolder">Detalle de Venta</h6>
 
                                     <!-- Información del cliente -->
-                                    <div class="mb-3">
-                                        <label class="form-label text-sm">Cliente</label>
-                                        <select class="form-select px-3" id="client-select" style="min-height: 44px;"></select>
+                                    <div class="mb-3 d-flex align-items-end gap-2">
+                                        <div class="flex-grow-1">
+                                            <label class="form-label text-sm">Cliente</label>
+                                            <select class="form-select px-3" id="client-select" style="min-height: 44px;"></select>
+                                        </div>
+                                        <div style="align-self: flex-end;">
+                                            <button type="button" class="btn btn-primary d-flex align-items-center justify-content-center"
+                                                style="height: 44px; padding: 0 12px;"
+                                                data-bs-toggle="modal" data-bs-target="#newClientModal">
+                                                <i class="bx bx-plus me-1"></i> Nuevo
+                                            </button>
+                                        </div>
                                     </div>
+
 
                                     <!-- Datos del cliente (solo lectura) -->
                                     <div class="card border-radius-lg p-3 mb-3 d-none" id="client-info-card">
@@ -197,11 +207,17 @@
             </div>
             <div class="mobile-cart-body">
                 <!-- Información del cliente -->
-                <div class="mb-3">
-                    <label class="form-label text-sm">Cliente</label>
-                    <select class="form-select px-3" id="mobile-client-select" style="min-height: 44px;"></select>
+                <div class="mb-3 d-flex align-items-center gap-2">
+                    <div class="flex-grow-1">
+                        <label class="form-label text-sm">Cliente</label>
+                        <select class="form-select px-3" id="mobile-client-select" style="min-height: 44px;"></select>
+                    </div>
+                    <div>
+                        <button type="button" class="btn btn-sm btn-primary mt-4" data-bs-toggle="modal" data-bs-target="#newClientModal">
+                            <i class="bx bx-plus"></i> Nuevo
+                        </button>
+                    </div>
                 </div>
-
                 <!-- Datos del cliente (solo lectura) -->
                 <div class="card border-radius-lg p-3 mb-3 d-none" id="mobile-client-info-card">
                     <div class="d-flex justify-content-between align-items-center mb-2">
@@ -309,6 +325,50 @@
     </div>
 
     <!-- Template Customizer va fuera de main y slot -->
+    <div class="modal fade" id="newClientModal" tabindex="-1" aria-labelledby="newClientModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <form id="newClientForm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="newClientModalLabel">Registrar Nuevo Cliente</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Nombre</label>
+                                <input type="text" class="form-control" name="nombre" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Apellido Paterno</label>
+                                <input type="text" class="form-control" name="paterno">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Apellido Materno</label>
+                                <input type="text" class="form-control" name="materno">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">CI</label>
+                                <input type="text" class="form-control" name="ci">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Teléfono</label>
+                                <input type="text" class="form-control" name="telefono">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Correo</label>
+                                <input type="email" class="form-control" name="correo">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Guardar Cliente</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <style>
         :root {
@@ -653,14 +713,7 @@
                         clientSelect.innerHTML = '';
                         mobileClientSelect.innerHTML = '';
 
-                        // Opción por defecto
-                        const defaultOption = document.createElement('option');
-                        defaultOption.value = '';
-                        defaultOption.textContent = 'Seleccionar cliente';
-                        clientSelect.appendChild(defaultOption);
-                        mobileClientSelect.appendChild(defaultOption.cloneNode(true));
-
-                        // Agregar <option> (fallback y accesibilidad)
+                        // Agregar <option> (solo clientes reales, nada de "Seleccionar cliente")
                         data.forEach(client => {
                             const option = document.createElement('option');
                             option.value = client.id;
@@ -671,43 +724,44 @@
                             mobileClientSelect.appendChild(option.cloneNode(true));
                         });
 
-                        // Helper para actualizar la tarjeta de cliente (desktop + mobile)
+                        // Helper para actualizar la tarjeta de cliente
                         function updateClientInfo(clientId) {
                             const cardDesktop = document.getElementById('client-info-card');
                             const cardMobile = document.getElementById('mobile-client-info-card');
 
-                            // Si no hay cliente o es el primer cliente → ocultar tarjetas
-                            if (!clientId || clientId == data[0]?.id) {
+                            // Si no hay cliente o es Cliente General (id=1) → ocultar tarjetas
+                            if (!clientId || Number(clientId) === 1) {
                                 if (cardDesktop) cardDesktop.classList.add('d-none');
                                 if (cardMobile) cardMobile.classList.add('d-none');
                                 return;
                             }
 
-                            // Buscar en el array guardado
+                            // Buscar cliente en el array global
                             let client = (window.clients || []).find(c => String(c.id) === String(clientId)) || null;
-
                             if (!client) return;
 
-                            // Desktop elements (si existen)
+                            // Desktop elements
                             if (cardDesktop) {
                                 cardDesktop.classList.remove('d-none');
-                                cardDesktop.classList.add('client-info-box'); // clase para theme adaptativo
-                                document.getElementById('client-name').textContent = `${client.nombre || ''} ${client.paterno || ''} ${client.materno || ''}`.trim() || '-';
+                                cardDesktop.classList.add('client-info-box');
+                                document.getElementById('client-name').textContent =
+                                    `${client.nombre || ''} ${client.paterno || ''} ${client.materno || ''}`.trim() || '-';
                                 document.getElementById('client-ci').textContent = client.ci || '-';
                                 document.getElementById('client-phone').textContent = client.telefono || '-';
                             }
 
-                            // Mobile elements (si existen)
+                            // Mobile elements
                             if (cardMobile) {
                                 cardMobile.classList.remove('d-none');
-                                cardMobile.classList.add('client-info-box'); // clase para theme adaptativo
-                                document.getElementById('mobile-client-name').textContent = `${client.nombre || ''} ${client.paterno || ''} ${client.materno || ''}`.trim() || '-';
+                                cardMobile.classList.add('client-info-box');
+                                document.getElementById('mobile-client-name').textContent =
+                                    `${client.nombre || ''} ${client.paterno || ''} ${client.materno || ''}`.trim() || '-';
                                 document.getElementById('mobile-client-ci').textContent = client.ci || '-';
                                 document.getElementById('mobile-client-phone').textContent = client.telefono || '-';
                             }
                         }
 
-                        // Inicializar TomSelect para escritorio y móvil con handlers que actualizan la info
+                        // Construir opciones para TomSelect
                         const tomOptions = data.map(c => ({
                             value: c.id,
                             text: `${c.nombre || ''}${c.paterno ? ' ' + c.paterno : ''}${c.ci ? ' — CI: ' + c.ci : ''}`,
@@ -722,14 +776,22 @@
                             searchField: ["text", "raw.ci", "raw.nombre", "raw.paterno", "raw.telefono"],
                             maxOptions: 100,
                             preload: true,
-                            allowEmptyOption: true,
                             onChange: function(value) {
                                 updateClientInfo(value);
                             },
                             onInitialize: function() {
                                 if (tomOptions.length > 0) {
-                                    this.setValue(tomOptions[0].value);
-                                    updateClientInfo(tomOptions[0].value);
+                                    // Buscar cliente con id = 1
+                                    const generalClient = tomOptions.find(opt => Number(opt.value) === 1);
+
+                                    if (generalClient) {
+                                        this.setValue(generalClient.value);
+                                        updateClientInfo(generalClient.value);
+                                    } else {
+                                        // fallback al primer cliente
+                                        this.setValue(tomOptions[0].value);
+                                        updateClientInfo(tomOptions[0].value);
+                                    }
                                 }
                             }
                         });
@@ -742,19 +804,27 @@
                             searchField: ["text", "raw.ci", "raw.nombre", "raw.paterno", "raw.telefono"],
                             maxOptions: 100,
                             preload: true,
-                            allowEmptyOption: true,
                             onChange: function(value) {
                                 updateClientInfo(value);
                             },
                             onInitialize: function() {
                                 if (tomOptions.length > 0) {
-                                    this.setValue(tomOptions[0].value);
-                                    updateClientInfo(tomOptions[0].value);
+                                    // Buscar cliente con id = 1
+                                    const generalClient = tomOptions.find(opt => Number(opt.value) === 1);
+
+                                    if (generalClient) {
+                                        this.setValue(generalClient.value);
+                                        updateClientInfo(generalClient.value);
+                                    } else {
+                                        // fallback al primer cliente
+                                        this.setValue(tomOptions[0].value);
+                                        updateClientInfo(tomOptions[0].value);
+                                    }
                                 }
                             }
                         });
 
-                        // Fallback: también enganchar eventos change directos en <select>
+                        // Fallback: eventos change normales
                         clientSelect.onchange = function() {
                             updateClientInfo(this.value);
                         };
@@ -766,6 +836,7 @@
                         console.error('Error cargando clientes:', error);
                     });
             }
+
 
 
 
@@ -1289,11 +1360,49 @@
                 }
             }
 
+            document.getElementById('newClientForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const form = e.target;
+                const formData = new FormData(form);
 
+                try {
+                    const res = await fetch("{{ route('clientes.store') }}", {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                            'Accept': 'application/json'
+                        },
+                        body: formData
+                    });
+                    const data = await res.json();
+                    if (data.success) {
+                        // Agregar nuevo cliente al select
+                        const select = document.getElementById('client-select');
+                        const option = document.createElement('option');
+                        option.value = data.cliente.id;
+                        option.textContent = data.cliente.nombre + (data.cliente.paterno ? ' ' + data.cliente.paterno : '');
+                        select.appendChild(option);
+                        select.value = data.cliente.id;
+
+                        // Cerrar modal
+                        bootstrap.Modal.getInstance(document.getElementById('newClientModal')).hide();
+
+                        // Opcional: mostrar mensaje
+                        showAlert(data.message, 'success');
+                        loadClients(); // recargar clientes para actualizar TomSelect
+                    }
+                } catch (err) {
+                    console.error(err);
+                    showAlert('Error al registrar cliente', 'danger');
+                }
+            });
 
             // ...
             loadProducts();
             loadClients();
         });
+    </script>
+    <script>
+        //registra cliente
     </script>
 </x-layout>

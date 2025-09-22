@@ -10,6 +10,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\SucursalController;
 use App\Http\Controllers\CategoriaController;
+use App\Http\Controllers\CompraController;
 use App\Http\Controllers\DashboardControoler;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\ProveedorController;
@@ -126,9 +127,22 @@ Route::post('/almacen/store', [AlmacenController::class, 'store'])->name('almace
 Route::put('almacen/{id}', [AlmacenController::class, 'update'])->name('almacen.update');
 Route::get('/almacen/{id}/edit', [AlmacenController::class, 'edit'])->name('almacen.edit');
 
-//pruebas de venta y compra
+//proveedor
+Route::get('/proveedores',        [ProveedorController::class, 'index'])->name('proveedore.index');
+Route::get('/proveedores/fetch',  [ProveedorController::class, 'fetch'])->name('proveedores.fetch');
+Route::post('/proveedores',       [ProveedorController::class, 'store'])->name('proveedores.store');
+Route::put('/proveedores/{id}',   [ProveedorController::class, 'update'])->name('proveedores.update');
+Route::post('/proveedores/{id}/delete', [ProveedorController::class, 'marcarBorrado'])->name('proveedores.delete');
 
-Route::get('/compra', [ProveedorController::class, 'index'])->name('compra');
+//compra
+
+Route::get('/compra', [CompraController::class, 'index'])->name('compra');
+Route::get('/proveedores/list', [CompraController::class, 'ProveedorSearch'])->name('proveedores.search');
+Route::post('/proveedores/store', [CompraController::class, 'ProveedorStore'])->name('proveedores.store');
+Route::get('almacenes/list', [CompraController::class, 'AlmacenList'])->name('almacenes.list');
+Route::post('/almacenes/store', [CompraController::class, 'AlmacenStore'])->name('almacenes.store');
+Route::get('/productos/list', [CompraController::class, 'ProductoList'])->name('productos.list');
+Route::post('/compras/store', [CompraController::class, 'store'])->name('compras.store');
 
 
 //unidad de medida
@@ -156,6 +170,14 @@ Route::get('/api/tipos-producto', [ProductoController::class, 'tiposProducto']);
 Route::get('/api/unidades-medida', [ProductoController::class, 'unidadesMedida']);
 Route::get('/api/tipos-precio', [ProductoController::class, 'tiposPrecio']);
 
+
+
+// Productos (solo lectura para búsqueda)
+Route::get('/productos/fetch', [ProductoController::class, 'fetch'])->name('productos.fetch');
+
+
+
+
 // Subcategorías (usadas desde la misma pantalla)
 Route::get('/subcategorias/fetch',     [SubcategoriaController::class, 'fetch'])->name('subcategorias.fetch'); // ?categoria_id=...
 Route::get('/subcategorias/{id}/edit', [SubcategoriaController::class, 'edit'])->name('subcategorias.edit');
@@ -172,6 +194,7 @@ Route::get('/categorias/fetch-json', [VentaController::class, 'fetchJson'])->nam
 Route::get('/clientes/fetch-json', [VentaController::class, 'fetchClientes'])->name('clientes.fetch-json');
 Route::get('/buscar-producto/{codigo}', [VentaController::class, 'buscarPorCodigo'])
     ->name('productos.buscar');
+Route::post('/clientes/store', [VentaController::class, 'store'])->name('clientes.store');
 
 
 

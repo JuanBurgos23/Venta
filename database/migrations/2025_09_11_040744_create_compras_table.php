@@ -24,9 +24,6 @@ return new class extends Migration
             $table->foreignId('almacen_id')
                   ->constrained('almacen');
 
-            $table->foreignId('proveedor_id')
-                  ->nullable()
-                  ->constrained('proveedor');
             $table->date('fecha_ingreso')->nullable();  
             $table->string('tipo', 30)->nullable(); 
             $table->decimal('subtotal', 18, 6)->default(0);

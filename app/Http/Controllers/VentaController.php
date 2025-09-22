@@ -6,6 +6,7 @@ use App\Models\Categoria;
 use App\Models\Cliente;
 use App\Models\Producto;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class VentaController extends Controller
 {
@@ -112,5 +113,33 @@ class VentaController extends Controller
         ];
 
         return response()->json($data);
+    }
+    public function store(Request $request)
+    {
+        $request->validate([
+            'nombre'   => 'required|string|max:255',
+            'paterno'  => 'nullable|string|max:255',
+            'materno'  => 'nullable|string|max:255',
+            'telefono' => 'nullable|string|max:50',
+            'ci'       => 'nullable|string|max:50',
+            'correo'   => 'nullable|email|max:255',
+        ]);
+
+        $cliente = Cliente::create([
+            'nombre'     => $request->nombre,
+            'paterno'    => $request->paterno,
+            'materno'    => $request->materno,
+            'telefono'   => $request->telefono,
+            'ci'         => $request->ci,
+            'correo'     => $request->correo,
+            'id_empresa' => Auth::user()->id_empresa ?? null,
+            'estado'     => 'Activo',
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Cliente registrado correctamente',
+            'cliente' => $cliente
+        ]);
     }
 }

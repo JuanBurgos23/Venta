@@ -23,6 +23,7 @@ class Producto extends Model
         'modelo',
         'origen',
         'estado',
+        'proveedor_id',
         'inventariable',
     ];
 
@@ -62,6 +63,11 @@ class Producto extends Model
     public function scopeDeEmpresa($q, $empresaId)
     {
         return $q->where('id_empresa', $empresaId);
+    }
+
+    public function proveedor()
+    {
+        return $this->belongsTo(Proveedor::class, 'proveedor_id');
     }
 
     // Búsqueda rápida

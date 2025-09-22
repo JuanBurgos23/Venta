@@ -1161,72 +1161,80 @@
                         <span class="menu-header-text" data-i18n="Modulo">Modulo</span>
                     </li>
                     <li class="menu-item {{ Request::routeIs('Empresa') ? 'active' : '' }}">
-                        <a href="{{ route('Empresa') }}" class="menu-link">
-                            <i class="menu-icon icon-base bx bx-user"></i>
-                            <div data-i18n="Empresa">Empresa</div>
-                        </a>
-                    </li>
-                    <li class="menu-item {{ Request::routeIs('Cliente') ? 'active' : '' }}">
-                        <a href="{{ route('Cliente') }}" class="menu-link">
-                            <i class="menu-icon icon-base bx bx-user"></i>
-                            <div data-i18n="Cliente">Cliente</div>
-                        </a>
-                    </li>
-                    <li class="menu-item {{ Request::routeIs('sucursal') ? 'active' : '' }}">
-                        <a href="{{ route('sucursal') }}" class="menu-link">
-                            <i class="menu-icon icon-base bx bx-user"></i>
-                            <div data-i18n="Sucursal">Sucursal</div>
-                        </a>
-                    </li>
-                    <li class="menu-item {{ Request::routeIs('almacen') ? 'active' : '' }}">
-                        <a href="{{ route('almacen') }}" class="menu-link">
-                            <i class="menu-icon icon-base bx bx-user"></i>
-                            <div data-i18n="almacen">Almacen</div>
-                        </a>
-                    </li>
-                    <li class="menu-item {{ Request::routeIs('unidad_medida') ? 'active' : '' }}">
-                        <a href="{{ route('unidad_medida') }}" class="menu-link">
-                            <i class="menu-icon icon-base bx bx-user"></i>
-                            <div data-i18n="unidad_medida">Unidad de medida</div>
-                        </a>
-                    </li>
-                    <li class="menu-item {{ Request::routeIs('categoria') ? 'active' : '' }}">
-                        <a href="{{ route('categoria') }}" class="menu-link">
-                            <i class="menu-icon icon-base bx bx-user"></i>
-                            <div data-i18n="categoria">Categoria</div>
-                        </a>
-                    </li>
-                    <li class="menu-item {{ Request::routeIs('Producto') ? 'active' : '' }}">
-                        <a href="{{ route('Producto') }}" class="menu-link">
-                            <i class="menu-icon icon-base bx bx-user"></i>
-                            <div data-i18n="Producto">Producto</div>
-                        </a>
-                    </li>
-                    <li class="menu-item {{ Request::routeIs('Crear Usuario') ? 'active' : '' }}">
-                        <a href="{{ route('Crear Usuario') }}" class="menu-link">
-                            <i class="menu-icon icon-base bx bx-user"></i>
-                            <div data-i18n="Crear Usuario">Crear Usuario</div>
-                        </a>
-                    </li>
+    <a href="{{ route('Empresa') }}" class="menu-link">
+        <i class="menu-icon icon-base bx bx-buildings"></i>
+        <div data-i18n="Empresa">Empresa</div>
+    </a>
+</li>
 
-                    <li class="menu-item {{ Request::routeIs('rol.*') ? 'active open' : '' }}">
-                        <a href="javascript:void(0);" class="menu-link menu-toggle">
-                            <i class="menu-icon icon-base bx bx-check-shield"></i>
-                            <div data-i18n="Roles &amp; Permissions">Roles &amp; Permissions</div>
-                        </a>
-                        <ul class="menu-sub">
-                            <li class="menu-item {{ Request::routeIs('rol.index') ? 'active' : '' }}">
-                                <a href="{{ route('rol.index') }}" class="menu-link">
-                                    <div data-i18n="Roles">Roles</div>
-                                </a>
-                            </li>
-                            <li class="menu-item {{ Request::routeIs('permiso.*') ? 'active' : '' }}">
-                                <a href="" class="menu-link">
-                                    <div data-i18n="Permisos">Permisos</div>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
+<li class="menu-item {{ Request::routeIs('Cliente') ? 'active' : '' }}">
+    <a href="{{ route('Cliente') }}" class="menu-link">
+        <i class="menu-icon icon-base bx bx-user-circle"></i>
+        <div data-i18n="Cliente">Cliente</div>
+    </a>
+</li>
+
+<li class="menu-item {{ Request::routeIs('sucursal') ? 'active' : '' }}">
+    <a href="{{ route('sucursal') }}" class="menu-link">
+        <i class="menu-icon icon-base bx bx-git-branch"></i>
+        <div data-i18n="Sucursal">Sucursal</div>
+    </a>
+</li>
+
+<li class="menu-item {{ Request::routeIs('almacen') ? 'active' : '' }}">
+    <a href="{{ route('almacen') }}" class="menu-link">
+        <i class="menu-icon icon-base bx bx-store-alt"></i>
+        <div data-i18n="Almacen">Almacén</div>
+    </a>
+</li>
+
+<li class="menu-item {{ Request::routeIs('unidad_medida') ? 'active' : '' }}">
+    <a href="{{ route('unidad_medida') }}" class="menu-link">
+        <i class="menu-icon icon-base bx bx-ruler"></i>
+        <div data-i18n="Unidad de medida">Unidad de medida</div>
+    </a>
+</li>
+
+<li class="menu-item {{ Request::routeIs('categoria') ? 'active' : '' }}">
+    <a href="{{ route('categoria') }}" class="menu-link">
+        <i class="menu-icon icon-base bx bx-purchase-tag"></i>
+        <div data-i18n="Categoria">Categoría</div>
+    </a>
+</li>
+
+<li class="menu-item {{ Request::routeIs('Producto') ? 'active' : '' }}">
+    <a href="{{ route('Producto') }}" class="menu-link">
+        <i class="menu-icon icon-base bx bx-package"></i>
+        <div data-i18n="Producto">Producto</div>
+    </a>
+</li>
+
+<li class="menu-item {{ Request::routeIs('Crear Usuario') ? 'active' : '' }}">
+    <a href="{{ route('Crear Usuario') }}" class="menu-link">
+        <i class="menu-icon icon-base bx bx-user-plus"></i>
+        <div data-i18n="Crear Usuario">Crear Usuario</div>
+    </a>
+</li>
+
+<li class="menu-item {{ Request::routeIs('rol.*') ? 'active open' : '' }}">
+    <a href="javascript:void(0);" class="menu-link menu-toggle">
+        <i class="menu-icon icon-base bx bx-check-shield"></i>
+        <div data-i18n="Roles &amp; Permissions">Roles &amp; Permissions</div>
+    </a>
+    <ul class="menu-sub">
+        <li class="menu-item {{ Request::routeIs('rol.index') ? 'active' : '' }}">
+            <a href="{{ route('rol.index') }}" class="menu-link">
+                <div data-i18n="Roles">Roles</div>
+            </a>
+        </li>
+        <li class="menu-item {{ Request::routeIs('permiso.*') ? 'active' : '' }}">
+            <a href="" class="menu-link">
+                <div data-i18n="Permisos">Permisos</div>
+            </a>
+        </li>
+    </ul>
+</li>
+
                     <li class="menu-item">
                         <a href="javascript:void(0);" class="menu-link menu-toggle">
                             <i class="menu-icon icon-base bx bx-dock-top"></i>
