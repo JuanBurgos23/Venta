@@ -120,32 +120,32 @@
                                             <input type="text" class="form-control" id="invoice-number" placeholder="Número de factura">
                                         </div>
                                     </div>
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-    const hasInvoiceYes = document.getElementById("hasInvoiceYes");
-    const hasInvoiceNo = document.getElementById("hasInvoiceNo");
-    const invoiceContainer = document.querySelector(".invoice-number-container");
+                                    <script>
+                                        document.addEventListener("DOMContentLoaded", function() {
+                                            const hasInvoiceYes = document.getElementById("hasInvoiceYes");
+                                            const hasInvoiceNo = document.getElementById("hasInvoiceNo");
+                                            const invoiceContainer = document.querySelector(".invoice-number-container");
 
-    function toggleInvoiceInput() {
-        if (hasInvoiceYes.checked) {
-            // Mostrar con animación
-            invoiceContainer.style.maxWidth = "100%";
-            invoiceContainer.style.opacity = "1";
-        } else {
-            // Ocultar con animación
-            invoiceContainer.style.maxWidth = "0";
-            invoiceContainer.style.opacity = "0";
-        }
-    }
+                                            function toggleInvoiceInput() {
+                                                if (hasInvoiceYes.checked) {
+                                                    // Mostrar con animación
+                                                    invoiceContainer.style.maxWidth = "100%";
+                                                    invoiceContainer.style.opacity = "1";
+                                                } else {
+                                                    // Ocultar con animación
+                                                    invoiceContainer.style.maxWidth = "0";
+                                                    invoiceContainer.style.opacity = "0";
+                                                }
+                                            }
 
-    // Inicializar según selección por defecto
-    toggleInvoiceInput();
+                                            // Inicializar según selección por defecto
+                                            toggleInvoiceInput();
 
-    // Escuchar cambios en los radios
-    hasInvoiceYes.addEventListener("change", toggleInvoiceInput);
-    hasInvoiceNo.addEventListener("change", toggleInvoiceInput);
-});
-</script>
+                                            // Escuchar cambios en los radios
+                                            hasInvoiceYes.addEventListener("change", toggleInvoiceInput);
+                                            hasInvoiceNo.addEventListener("change", toggleInvoiceInput);
+                                        });
+                                    </script>
                                     <div class="mb-3">
                                         <label class="form-label text-sm">Observación</label>
                                         <textarea class="form-control" id="observation" rows="2" placeholder="Observaciones adicionales..."></textarea>
@@ -796,7 +796,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
                 // Validar nombre
                 if (!newSupplier.nombre) {
-                    showAlert("El nombre es obligatorio.","warning");
+                    showAlert("El nombre es obligatorio.", "warning");
                     return;
                 }
 
@@ -973,7 +973,9 @@ document.addEventListener("DOMContentLoaded", function() {
             const mobileSummaryContainerEl = document.createElement("div");
             mobileSummaryContainerEl.id = "mobile-summary-products-list";
             const mobileProductsCount = document.getElementById("mobile-products-count");
-
+ // Referencias botones registrar
+            const completeEntryBtn = document.getElementById("complete-entry");
+            const mobileCompleteEntryBtn = document.getElementById("mobile-complete-entry");
             // Insertamos contenedores
             const desktopSaleSummary = document.querySelector(".sale-summary");
             desktopSaleSummary.insertBefore(summaryContainerEl, summaryTotalEl.parentElement);
@@ -1185,7 +1187,82 @@ document.addEventListener("DOMContentLoaded", function() {
                     productsTotalEl.textContent = formatCurrency(total);
                 }
             }
+// 👉 Registrar compra
+            function registerPurchase() {
+                const proveedorId = document.getElementById("supplier-select").value;
+                const almacenId = document.getElementById("warehouse-select").value;
+                const fecha = document.getElementById("entry-date").value;
+                const inventoryType = document.getElementById("inventory-type").value;
+                const reason = document.getElementById("reason").value;
+                const paymentForm = document.getElementById("payment-form").value;
+                const paymentType = document.getElementById("payment-type").value;
+                const observacion = document.getElementById("entry-observation")?.value || "";
+                const hasInvoice = document.querySelector('input[name="hasInvoice"]:checked').value === 'yes';
+                const numeroFactura = hasInvoice ? document.getElementById("invoice-number").value.trim() : null;
 
+                if (!proveedorId || !almacenId) {
+                    showAlert("Debe seleccionar proveedor y almacén.", "warning");
+                    return;
+                }
+                if (productsList.length === 0) {
+                    showAlert("Debe agregar al menos un producto.", "warning");
+                    return;
+                }
+
+                const payload = {
+                    proveedor_id: proveedorId,
+                    almacen_id: almacenId,
+                    fecha_ingreso: fecha,
+                    tipo: "compra",
+                    inventario: inventoryType,
+                    motivo: reason,
+                    forma_pago: paymentForm,
+                    tipo_pago: paymentType,
+                    observacion: observacion,
+                    factura: hasInvoice ? 1 : 0,
+                    numero_factura: numeroFactura,
+                    productos: productsList.map(p => ({
+                        producto_id: p.id,
+                        cantidad: p.quantity,
+                        costo_unitario: p.unitCost,
+                        costo_total: p.totalCost,
+                        lote: p.lot,
+                        fecha_vencimiento: p.expiryDate
+                    }))
+                };
+console.log("Payload de compra:", payload); // 🔍 Depuración
+                fetch("/compras/store", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
+                        },
+                        body: JSON.stringify(payload)
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            showAlert("Compra registrada correctamente. ID: " + data.compra_id, "success");
+                            productsList = [];
+                            renderProductsTable();
+                            updateSummary();
+                        } else {
+                            showAlert("Error: " + data.message, "danger");
+                        }
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        showAlert("Error al registrar la compra.", "danger");
+                    });
+            }
+
+            // 👉 Listeners para botones
+            if (completeEntryBtn) {
+                completeEntryBtn.addEventListener("click", registerPurchase);
+            }
+            if (mobileCompleteEntryBtn) {
+                mobileCompleteEntryBtn.addEventListener("click", registerPurchase);
+            }
             // Mostrar/ocultar botón flotante
             const mobileToggleBtn = document.getElementById("mobile-details-toggle");
             const observer = new IntersectionObserver(entries => {
@@ -1209,10 +1286,12 @@ document.addEventListener("DOMContentLoaded", function() {
             floatingCartBtn.addEventListener("click", function() {
                 mobileToggleBtn.click(); // dispara el mismo evento del botón original
             });
+
+
         });
     </script>
 
 
-
+  
 
 </x-layout>

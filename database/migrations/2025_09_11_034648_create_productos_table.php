@@ -45,6 +45,7 @@ return new class extends Migration
                   ->nullable()
                   ->constrained('proveedor');
             $table->integer('inventariable')->nullable()->default(1);
+            $table->decimal('precio', 12, 2)->default(0);
             $table->timestamps();
         });
     }

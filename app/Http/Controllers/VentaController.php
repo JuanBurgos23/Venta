@@ -21,19 +21,25 @@ class VentaController extends Controller
             ->with('categoria') // opcional, si quieres incluir nombre de categoría
             ->get();
 
-        $data = $productos->map(function ($p) {
+        $data = $productos->map(function ($p) use ($empresaId) {
+            // 🔹 sumar el stock de producto_almacen por empresa
+            $stock = \App\Models\Producto_almacen::where('producto_id', $p->id)
+                ->where('empresa_id', $empresaId)
+                ->sum('stock');
+
             return [
                 'id'       => $p->id,
                 'name'     => $p->nombre,
                 'price'    => $p->tipoPrecio ? $p->tipoPrecio->valor ?? 0 : 0, // ajustar si tienes precios
                 'category' => $p->categoria_id,
-                'stock'    => $p->inventariable ?? 0, // o usa tu campo real de stock
+                'stock'    => $stock, // ✅ stock real
                 'image'    => $p->foto ? asset('storage/' . $p->foto) : null,
             ];
         });
 
         return response()->json($data);
     }
+
     public function search(Request $request)
     {
         $empresaId = auth()->user()->id_empresa; // filtrar por empresa

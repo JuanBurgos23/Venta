@@ -23,6 +23,8 @@ return new class extends Migration
 
             $table->foreignId('almacen_id')
                   ->constrained('almacen');
+            $table->foreignId('proveedor_id')
+                  ->constrained('proveedor');
 
             $table->date('fecha_ingreso')->nullable();  
             $table->string('tipo', 30)->nullable(); 

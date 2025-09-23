@@ -23,7 +23,7 @@
 
                 $table->foreignId('empresa_id')
                     ->constrained('empresa');
-
+                $table->string('lote');
                 $table->integer('producto_compra_id');
     
             // Si manejas lotes ligados a una compra, usa unique de 3 columnas:
@@ -41,6 +41,6 @@
          */
         public function down(): void
         {
-            Schema::dropIfExists('producto_almacens');
+            Schema::dropIfExists('producto_almacen');
         }
     };

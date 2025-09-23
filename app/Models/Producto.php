@@ -25,6 +25,7 @@ class Producto extends Model
         'estado',
         'proveedor_id',
         'inventariable',
+        'precio',
     ];
 
     // --------------- BelongsTo ---------------

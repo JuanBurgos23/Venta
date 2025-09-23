@@ -179,7 +179,7 @@ class CompraController extends Controller
             'productos.*.producto_id' => 'required|exists:producto,id',
             'productos.*.cantidad' => 'required|numeric|min:0.01',
             'productos.*.costo_unitario' => 'required|numeric|min:0',
-            'productos.*.total' => 'required|numeric|min:0',
+            'productos.*.costo_total' => 'required|numeric|min:0', // ✅ corregido
             'productos.*.lote' => 'nullable|string',
             'productos.*.fecha_vencimiento' => 'nullable|date',
             'factura' => 'nullable|boolean',
@@ -191,7 +191,7 @@ class CompraController extends Controller
         try {
             // 1️⃣ Crear la compra
             $compra = Compra::create([
-                'id_empresa'   => Auth::user()->empresa_id,
+                'id_empresa'   => Auth::user()->id_empresa,
                 'sucursal_id'  => Auth::user()->sucursal_id ?? 1,
                 'almacen_id'   => $request->almacen_id,
                 'proveedor_id' => $request->proveedor_id,
@@ -199,8 +199,8 @@ class CompraController extends Controller
                 'tipo'         => $request->tipo ?? 'compra',
                 'subtotal'     => collect($request->productos)->sum(fn($p) => $p['cantidad'] * $p['costo_unitario']),
                 'descuento'    => $request->descuento ?? 0,
-                'total'        => collect($request->productos)->sum(fn($p) => $p['total']),
-                'estado'       => 'activo',
+                'total'        => collect($request->productos)->sum(fn($p) => $p['costo_total']), // ✅ corregido
+                'estado'       => 1,
                 'observacion'  => $request->observacion,
                 'recepcion'    => $request->factura ?? 0,
                 'usuario_id'   => Auth::id(),
@@ -209,14 +209,14 @@ class CompraController extends Controller
             // 2️⃣ Recorrer los productos y crear detalle
             foreach ($request->productos as $p) {
                 $detalle = Producto_compra::create([
-                    'producto_id'      => $p['producto_id'],
-                    'compra_id'        => $compra->id,
-                    'empresa_id'       => Auth::user()->empresa_id,
-                    'lote'             => $p['lote'] ?? null,
+                    'producto_id'       => $p['producto_id'],
+                    'compra_id'         => $compra->id,
+                    'empresa_id'        => Auth::user()->id_empresa,
+                    'lote'              => $p['lote'] ?? null,
                     'fecha_vencimiento' => $p['fecha_vencimiento'] ?? null,
-                    'cantidad'         => $p['cantidad'],
-                    'costo_unitario'   => $p['costo_unitario'],
-                    'costo_total'      => $p['total'],
+                    'cantidad'          => $p['cantidad'],
+                    'costo_unitario'    => $p['costo_unitario'],
+                    'costo_total'       => $p['costo_total'], // ✅ corregido
                 ]);
 
                 // 3️⃣ Actualizar stock en producto_almacen
@@ -224,12 +224,13 @@ class CompraController extends Controller
                     [
                         'producto_id' => $p['producto_id'],
                         'almacen_id'  => $request->almacen_id,
-                        'empresa_id'  => Auth::user()->empresa_id,
+                        'producto_compra_id' => $detalle->id,
+                        'empresa_id'  => Auth::user()->id_empresa,
                         'lote'        => $p['lote'] ?? null,
                     ],
                     [
-                        'stock'       => 0,
-                        'estado'      => 'activo'
+                        'stock'  => 0,
+                        'estado' => 1
                     ]
                 );
 
