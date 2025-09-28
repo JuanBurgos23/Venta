@@ -23,6 +23,10 @@ class Compra extends Model
         'recepcion',
         'usuario_id'
     ];
+    public function almacen()
+    {
+        return $this->belongsTo(Almacen::class, 'almacen_id');
+    }
 
     public function proveedor()
     {

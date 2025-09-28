@@ -22,6 +22,10 @@ class CompraController extends Controller
     {
         return view('compra.compra');
     }
+    public function crud()
+    {
+        return view('compra.crud'); // la tabla CRUD
+    }
 
 
     /**
@@ -166,6 +170,84 @@ class CompraController extends Controller
         return response()->json($data);
     }
 
+
+    public function apiIndex(Request $request)
+    {
+        $empresaId = auth()->user()->id_empresa;
+
+        $q = Compra::query()
+            ->with(['proveedor:id,nombre,paterno,materno', 'almacen:id,nombre'])
+            ->where('id_empresa', $empresaId);
+
+        // filtros
+        if ($s = trim($request->get('search', ''))) {
+            $q->where(function($qq) use ($s) {
+                $qq->where('observacion','like',"%{$s}%")
+                ->orWhere('numero_factura','like',"%{$s}%")
+                ->orWhereHas('proveedor', function($qp) use ($s){
+                    $qp->where(DB::raw("CONCAT(IFNULL(nombre,''),' ',IFNULL(paterno,''),' ',IFNULL(materno,''))"), 'like', "%{$s}%");
+                });
+            });
+        }
+        if ($from = $request->get('from')) $q->whereDate('fecha_ingreso','>=',$from);
+        if ($to   = $request->get('to'))   $q->whereDate('fecha_ingreso','<=',$to);
+
+        $perPage = max(10, (int) $request->get('per_page', 10));
+        $rows = $q->orderByDesc('id')->paginate($perPage);
+
+        // adapta nombres al front
+        $rows->getCollection()->transform(function($c){
+            return [
+                'id'               => $c->id,
+                'proveedor'        => trim(($c->proveedor->nombre ?? '').' '.($c->proveedor->paterno ?? '')),
+                'numero_factura'   => $c->numero_factura,
+                'fecha'            => $c->fecha_ingreso,
+                'almacen_nombre'   => $c->almacen->nombre ?? '—',
+                'total'            => $c->total,
+                'estado'           => $c->estado,
+            ];
+        });
+
+        return response()->json([
+            'data' => $rows->items(),
+            'meta' => [
+                'current_page' => $rows->currentPage(),
+                'last_page'    => $rows->lastPage(),
+                'from'         => $rows->firstItem(),
+                'to'           => $rows->lastItem(),
+                'total'        => $rows->total(),
+            ],
+        ]);
+    }
+
+    /** Detalle para una compra (filas del desplegable) */
+    public function apiDetalles($id)
+    {
+        $empresaId = auth()->user()->id_empresa;
+
+        $detalles = Producto_compra::with('producto:id,nombre,codigo,marca,modelo')
+            ->whereHas('compra', function($q) use ($empresaId, $id) {
+                $q->where('id_empresa', $empresaId)->where('id', $id);
+            })
+            ->orderBy('id')
+            ->get()
+            ->map(function($d){
+                return [
+                    'producto'          => $d->producto->nombre ?? '—',
+                    'codigo'            => $d->producto->codigo ?? '—',
+                    'marca'             => $d->producto->marca ?? '—',
+                    'modelo'            => $d->producto->modelo ?? '—',
+                    'lote'              => $d->lote,
+                    'fecha_vencimiento' => $d->fecha_vencimiento,
+                    'cantidad'          => $d->cantidad,
+                    'costo_unitario'    => $d->costo_unitario,
+                    'costo_total'       => $d->costo_total,
+                ];
+            });
+
+        return response()->json(['items' => $detalles]);
+    }
+
     //registrar la compra
     public function store(Request $request)
     {
@@ -251,5 +333,11 @@ class CompraController extends Controller
                 'message' => 'Error al registrar la compra: ' . $e->getMessage()
             ], 500);
         }
+    }
+    public function create()
+    {
+        // Aquí retornas la vista del formulario de nueva compra
+        return view('compra.compra'); 
+        // ⚠️ asegúrate de que exista resources/views/compra/compra.blade.php
     }
 }
