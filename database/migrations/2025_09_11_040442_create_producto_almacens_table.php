@@ -26,6 +26,17 @@
 
                 $table->foreignId('empresa_id')
                     ->constrained('empresa');
+<<<<<<< HEAD
+=======
+                $table->string('lote')->nullable();
+                $table->integer('producto_compra_id');
+    
+            // Si manejas lotes ligados a una compra, usa unique de 3 columnas:
+                $table->unique(['producto_id', 'almacen_id']);
+                $table->decimal('stock', 12, 2)->default(0);
+                $table->integer('estado')->default(1); // 1: activo, 0: inactivo
+                $table->timestamps();
+>>>>>>> 6020095fbc22d81bc8b8744b4eac3ea2e1a860c6
 
                 // lote VARCHAR(100) NULL con índice (MUL)
                 $table->string('lote', 100)->nullable()->index();

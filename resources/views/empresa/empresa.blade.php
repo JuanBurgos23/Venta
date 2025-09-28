@@ -1,7 +1,7 @@
 <x-layout bodyClass="g-sidenav-show bg-gray-200">
     <script src="{{asset('assets/vendor/js/template-customizer.js')}}"></script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
         <!-- Navbar -->
         <nav class="navbar ..."></nav>
@@ -32,17 +32,19 @@
                                 <tr>
                                     <th>#</th>
                                     <th>Logotipo</th>
+
                                     <th data-column="nombre">Nombre</th>
                                     <th data-column="telefono">Teléfono</th>
                                     <th data-column="correo">Correo</th>
                                     <th data-column="direccion">Dirección</th>
                                     <th data-column="nit">NIT</th>
+                                    <th>QR</th>
                                     <th class="text-center">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody id="empresas-body">
                                 <tr>
-                                    <td colspan="8" class="text-center">Cargando...</td>
+                                    <td colspan="9" class="text-center">Cargando...</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -87,6 +89,18 @@
                                         <div class="col-md-6">
                                             <label for="logo" class="form-label">Logo (opcional)</label>
                                             <input type="file" class="form-control" id="logo" name="logo" accept="image/*">
+                                            <div id="previewLogo" style="display:none;">
+                                                <img id="previewLogoImg" class="img-thumbnail" style="max-height:100px;cursor:pointer">
+                                                <button type="button" id="btnQuitarLogo" class="btn btn-sm btn-danger mt-1">Quitar</button>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="qr" class="form-label">QR (opcional)</label>
+                                            <input type="file" class="form-control" id="qr" name="qr" accept="image/*">
+                                            <div id="previewQr" style="display:none;">
+                                                <img id="previewQrImg" class="img-thumbnail" style="max-height:100px;cursor:pointer">
+                                                <button type="button" id="btnQuitarQr" class="btn btn-sm btn-danger mt-1">Quitar</button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -139,6 +153,14 @@
                                                 <button type="button" id="btnQuitarLogoEdit" class="btn btn-sm btn-danger mt-1">Quitar</button>
                                             </div>
                                         </div>
+                                        <div class="col-md-6">
+                                            <label for="editar-qr" class="form-label">QR (opcional)</label>
+                                            <input type="file" class="form-control" name="qr" id="editar-qr" accept="image/*">
+                                            <div id="editPreviewQr" style="display:none;">
+                                                <img id="editQrPreviewImg" class="img-thumbnail" style="max-height:100px;cursor:pointer">
+                                                <button type="button" id="btnQuitarQrEdit" class="btn btn-sm btn-danger mt-1">Quitar</button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="modal-footer">
@@ -149,6 +171,17 @@
                         </div>
                     </div>
                 </div>
+                <!-- Modal de preview -->
+                <div class="modal fade" id="imagePreviewModal" tabindex="-1">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content bg-transparent border-0 shadow-none">
+                            <div class="modal-body text-center">
+                                <img id="previewImage" src="" alt="Preview" class="img-fluid rounded shadow">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
                 <script>
                     const storageBaseUrl = "{{ asset('logos_empresas') }}";
                 </script>
@@ -187,25 +220,29 @@
                                     tableBody.innerHTML = '';
 
                                     if (!data.data || data.data.length === 0) {
-                                        tableBody.innerHTML = '<tr><td colspan="6" class="text-center">No hay empresas registradas</td></tr>';
+                                        tableBody.innerHTML = '<tr><td colspan="8" class="text-center">No hay empresas registradas</td></tr>';
                                         pagination.innerHTML = '';
                                         return;
                                     }
 
                                     data.data.forEach((empresa, index) => {
                                         const logoUrl = empresa.logo ? `/storage/${empresa.logo}` : '';
+                                        const qrUrl = empresa.qr ? `/storage/${empresa.qr}` : '';
 
                                         tableBody.innerHTML += `
-                    <tr data-id="${empresa.id}" data-logo="${logoUrl}">
+                    <tr data-id="${empresa.id}">
                         <td>${highlight(empresa.id, search)}</td>
                         <td>
-                            ${logoUrl ? `<img src="${logoUrl}" class="logo-thumb" style="width:50px;height:50px;cursor:pointer" onclick="openLogoPreview('${logoUrl}')">` : '-'}
+                            ${logoUrl ? `<img src="${logoUrl}" class="logo-thumb" style="width:50px;height:50px;cursor:pointer" onclick="openImagePreview('${logoUrl}')">` : '-'}
                         </td>
                         <td>${highlight(empresa.nombre, search)}</td>
                         <td>${highlight(empresa.telefono ?? '-', search)}</td>
                         <td>${highlight(empresa.correo ?? '-', search)}</td>
                         <td>${highlight(empresa.direccion ?? '-', search)}</td>
                         <td>${highlight(empresa.nit ?? '-', search)}</td>
+                        <td>
+                            ${qrUrl ? `<img src="${qrUrl}" class="qr-thumb" style="width:50px;height:50px;cursor:pointer" onclick="openImagePreview('${qrUrl}')">` : '-'}
+                        </td>
                         <td class="text-center">
                             <button class="btn btn-sm btn-primary btn-editar" data-id="${empresa.id}">Editar</button>
                             <button class="btn btn-sm btn-danger btn-eliminar" data-id="${empresa.id}">Eliminar</button>
@@ -214,37 +251,26 @@
                 `;
                                     });
 
+                                    // Función única para abrir el modal con cualquier imagen (logo o QR)
+                                    window.openImagePreview = function(url) {
+                                        document.getElementById('previewImage').src = url;
+                                        const modal = new bootstrap.Modal(document.getElementById('imagePreviewModal'));
+                                        modal.show();
+                                    };
 
-                                    // Función para abrir SweetAlert2 al hacer clic en la imagen
-                                    function openLogoPreview(url) {
-                                        Swal.fire({
-                                            imageUrl: url,
-                                            imageAlt: 'Logo Empresa',
-                                            showConfirmButton: false,
-                                            background: '#fff',
-                                            width: 'auto',
-                                            heightAuto: true,
-                                            customClass: {
-                                                popup: 'swal-wide'
-                                            },
-                                            didOpen: () => {
-                                                document.querySelector('.swal-wide').style.zIndex = 20000;
-                                            }
-                                        });
-                                    }
                                     // Paginación
                                     const totalPages = data.last_page;
                                     let pagHtml = `<li class="page-item ${data.current_page===1?'disabled':''}">
-                    <a href="#" class="page-link" data-page="${data.current_page-1}">Anterior</a>
-                </li>`;
+                <a href="#" class="page-link" data-page="${data.current_page-1}">Anterior</a>
+            </li>`;
                                     for (let i = 1; i <= totalPages; i++) {
                                         pagHtml += `<li class="page-item ${i===data.current_page?'active':''}">
-                        <a href="#" class="page-link" data-page="${i}">${i}</a>
-                    </li>`;
+                    <a href="#" class="page-link" data-page="${i}">${i}</a>
+                </li>`;
                                     }
                                     pagHtml += `<li class="page-item ${data.current_page===totalPages?'disabled':''}">
-                    <a href="#" class="page-link" data-page="${data.current_page+1}">Siguiente</a>
-                </li>`;
+                <a href="#" class="page-link" data-page="${data.current_page+1}">Siguiente</a>
+            </li>`;
                                     pagination.innerHTML = pagHtml;
 
                                     document.querySelectorAll('#empresas-pagination a').forEach(a => {
@@ -285,7 +311,47 @@
                             });
                         });
 
-                        // --- Registro de empresa
+                        // Previsualizar logo
+                        document.getElementById('logo').addEventListener('change', function(e) {
+                            const file = e.target.files[0];
+                            const previewDiv = document.getElementById('previewLogo');
+                            const previewImg = document.getElementById('previewLogoImg');
+                            if (file) {
+                                previewDiv.style.display = 'block';
+                                previewImg.src = URL.createObjectURL(file);
+                            }
+                        });
+
+                        // Previsualizar QR
+                        document.getElementById('qr').addEventListener('change', function(e) {
+                            const file = e.target.files[0];
+                            const previewDiv = document.getElementById('previewQr');
+                            const previewImg = document.getElementById('previewQrImg');
+                            if (file) {
+                                previewDiv.style.display = 'block';
+                                previewImg.src = URL.createObjectURL(file);
+                            }
+                        });
+
+                        // Quitar logo
+                        document.getElementById('btnQuitarLogo').addEventListener('click', function() {
+                            document.getElementById('logo').value = '';
+                            const previewDiv = document.getElementById('previewLogo');
+                            const previewImg = document.getElementById('previewLogoImg');
+                            previewDiv.style.display = 'none';
+                            previewImg.src = '';
+                        });
+
+                        // Quitar QR
+                        document.getElementById('btnQuitarQr').addEventListener('click', function() {
+                            document.getElementById('qr').value = '';
+                            const previewDiv = document.getElementById('previewQr');
+                            const previewImg = document.getElementById('previewQrImg');
+                            previewDiv.style.display = 'none';
+                            previewImg.src = '';
+                        });
+
+                        // Enviar formulario
                         const form = document.getElementById('formRegistrarEmpresa');
                         form.addEventListener('submit', function(e) {
                             e.preventDefault();
@@ -303,6 +369,10 @@
                                     showToast(data.message, data.status === 'success' ? 'success' : 'danger');
                                     if (data.status === 'success') {
                                         form.reset();
+                                        document.getElementById('previewLogo').style.display = 'none';
+                                        document.getElementById('previewLogoImg').src = '';
+                                        document.getElementById('previewQr').style.display = 'none';
+                                        document.getElementById('previewQrImg').src = '';
                                         const modal = bootstrap.Modal.getInstance(document.getElementById('modalRegistrarEmpresa'));
                                         modal.hide();
                                         fetchEmpresas(1, currentSearch, sortColumn, sortDirection);
@@ -318,11 +388,10 @@
                             if (e.target.classList.contains('btn-editar')) {
                                 const id = e.target.dataset.id;
 
-                                // Llamada al servidor para traer datos de la empresa
                                 fetch(`/empresa/${id}/edit`)
                                     .then(res => res.json())
                                     .then(data => {
-                                        // Llenar campos del modal
+                                        // Llenar campos
                                         document.getElementById('editar-id').value = data.id;
                                         document.getElementById('editar-nombre').value = data.nombre;
                                         document.getElementById('editar-telefono').value = data.telefono ?? '';
@@ -333,13 +402,23 @@
                                         // Previsualizar logo
                                         const previewDiv = document.getElementById('editPreviewLogo');
                                         const previewImg = document.getElementById('editLogoPreviewImg');
-
                                         if (data.logo) {
                                             previewDiv.style.display = 'block';
                                             previewImg.src = `/storage/${data.logo}`;
                                         } else {
                                             previewDiv.style.display = 'none';
                                             previewImg.src = '';
+                                        }
+
+                                        // Previsualizar QR
+                                        const previewDivQr = document.getElementById('editPreviewQr');
+                                        const previewImgQr = document.getElementById('editQrPreviewImg');
+                                        if (data.qr) {
+                                            previewDivQr.style.display = 'block';
+                                            previewImgQr.src = `/storage/${data.qr}`;
+                                        } else {
+                                            previewDivQr.style.display = 'none';
+                                            previewImgQr.src = '';
                                         }
 
                                         // Abrir modal
@@ -360,7 +439,18 @@
                             }
                         });
 
-                        // Quitar logo en edición
+                        // Cambiar QR en edición
+                        document.getElementById('editar-qr').addEventListener('change', function(e) {
+                            const file = e.target.files[0];
+                            const previewDivQr = document.getElementById('editPreviewQr');
+                            const previewImgQr = document.getElementById('editQrPreviewImg');
+                            if (file) {
+                                previewDivQr.style.display = 'block';
+                                previewImgQr.src = URL.createObjectURL(file);
+                            }
+                        });
+
+                        // Quitar logo
                         document.getElementById('btnQuitarLogoEdit').addEventListener('click', function() {
                             document.getElementById('editar-logo').value = '';
                             const previewDiv = document.getElementById('editPreviewLogo');
@@ -369,25 +459,13 @@
                             previewImg.src = '';
                         });
 
-                        // Ver logo en grande con SweetAlert2 (con zIndex alto para sobre el modal)
-                        document.getElementById('editLogoPreviewImg').addEventListener('click', function() {
-                            if (this.src) {
-                                Swal.fire({
-                                    imageUrl: this.src,
-                                    imageAlt: 'Logo',
-                                    showConfirmButton: false,
-                                    background: '#fff',
-                                    width: 'auto',
-                                    heightAuto: true,
-                                    customClass: {
-                                        popup: 'swal-wide'
-                                    },
-                                    // Asegura que esté sobre el modal
-                                    didOpen: () => {
-                                        document.querySelector('.swal-wide').style.zIndex = 20000;
-                                    }
-                                });
-                            }
+                        // Quitar QR
+                        document.getElementById('btnQuitarQrEdit').addEventListener('click', function() {
+                            document.getElementById('editar-qr').value = '';
+                            const previewDivQr = document.getElementById('editPreviewQr');
+                            const previewImgQr = document.getElementById('editQrPreviewImg');
+                            previewDivQr.style.display = 'none';
+                            previewImgQr.src = '';
                         });
 
                         // --- Submit de edición

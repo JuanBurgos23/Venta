@@ -21,8 +21,8 @@ return new class extends Migration
             $table->string('materno')->nullable();
             $table->string('foto')->nullable();
             $table->string('telefono')->nullable();
-            $table->string('estado')->default('Activo')->nullable();
-            $table->foreignId('id_empresa')->nullable()->constrained('empresa')->onDelete('cascade');
+            $table->string('estado')->default('1')->nullable();
+            $table->foreignId('id_empresa')->nullable()->constrained('empresa');
             $table->rememberToken();
             $table->timestamps();
         });

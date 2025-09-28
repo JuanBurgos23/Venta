@@ -65,9 +65,6 @@ class EmpresaController extends Controller
 
         return response()->json($empresas);
     }
-
-
-
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -75,6 +72,7 @@ class EmpresaController extends Controller
             'telefono' => 'nullable|string|max:20',
             'correo'   => 'nullable|email|max:255',
             'logo'     => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048', // max 2MB
+            'qr'       => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048', // max 2MB
         ]);
 
         if ($validator->fails()) {
@@ -86,23 +84,29 @@ class EmpresaController extends Controller
 
         $user = Auth::user();
 
-        $logoPath = null;
-        if ($request->hasFile('logo')) {
-            $logoPath = $request->file('logo')->store('logos_empresas', 'public');
-        }
+        $logoPath = $request->hasFile('logo')
+            ? $request->file('logo')->store('logos_empresas', 'public')
+            : null;
+
+        $qrPath = $request->hasFile('qr')
+            ? $request->file('qr')->store('qr_empresas', 'public')
+            : null;
 
         $empresa = Empresa::create([
-            'nombre'   => $request->nombre,
-            'telefono' => $request->telefono,
-            'correo'   => $request->correo,
-            'logo'     => $logoPath,
+            'nombre'    => $request->nombre,
+            'telefono'  => $request->telefono,
+            'correo'    => $request->correo,
+            'logo'      => $logoPath,
+            'qr'        => $qrPath,
             'direccion' => $request->direccion,
-            'nit'     => $request->nit,
+            'nit'       => $request->nit,
         ]);
+
         Cliente::create([
-            'nombre' => 'Cliente General',
+            'nombre'     => 'Cliente General',
             'id_empresa' => $empresa->id,
         ]);
+
         $user->id_empresa = $empresa->id;
         $user->save();
 
@@ -112,6 +116,7 @@ class EmpresaController extends Controller
             'empresa' => $empresa
         ], 200);
     }
+
 
     public function update(Request $request, $id)
     {
@@ -129,6 +134,7 @@ class EmpresaController extends Controller
             'telefono' => 'nullable|string|max:20',
             'correo'   => 'nullable|email|max:255',
             'logo'     => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'qr'       => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
         if ($validator->fails()) {
@@ -147,11 +153,20 @@ class EmpresaController extends Controller
             $empresa->logo = $request->file('logo')->store('logos_empresas', 'public');
         }
 
-        $empresa->nombre   = $request->nombre;
-        $empresa->telefono = $request->telefono;
-        $empresa->correo   = $request->correo;
+        // Subida de nuevo QR (opcional)
+        if ($request->hasFile('qr')) {
+            // eliminar qr anterior si existe
+            if ($empresa->qr && Storage::disk('public')->exists($empresa->qr)) {
+                Storage::disk('public')->delete($empresa->qr);
+            }
+            $empresa->qr = $request->file('qr')->store('qr_empresas', 'public');
+        }
+
+        $empresa->nombre    = $request->nombre;
+        $empresa->telefono  = $request->telefono;
+        $empresa->correo    = $request->correo;
         $empresa->direccion = $request->direccion;
-        $empresa->nit      = $request->nit;
+        $empresa->nit       = $request->nit;
         $empresa->save();
 
         return response()->json([
@@ -159,5 +174,27 @@ class EmpresaController extends Controller
             'message' => 'Empresa actualizada correctamente',
             'empresa' => $empresa
         ], 200);
+    }
+    public function getQr($id)
+    {
+        $user = Auth::user();
+
+        $query = Empresa::query();
+
+        // Si el usuario no es Administrador, solo puede acceder a su empresa
+        if (!$user->hasRole('Administrador')) {
+            $query->where('id', $user->id_empresa ?? 0);
+        }
+
+        $empresa = $query->findOrFail($id);
+
+        // URL completa del QR si existe
+        $qrUrl = $empresa->qr ? asset('storage/' . $empresa->qr) : null;
+
+        return response()->json([
+            'id' => $empresa->id,
+            'nombre' => $empresa->nombre,
+            'qr_url' => $qrUrl,
+        ]);
     }
 }

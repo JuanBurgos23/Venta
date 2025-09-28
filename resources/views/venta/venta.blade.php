@@ -19,10 +19,17 @@
                                 <i class="fa fa-user me-1" aria-hidden="true"></i>
                                 Atendiendo: <span id="user-name" class="ms-1 fw-bold">{{ Auth::user()->name ?? 'Usuario' }}</span>
                             </span>
+                            <input type="text" name="empresa_id" id="empresa_id" value="{{ Auth::user()->id_empresa }}" hidden>
                             <span class="d-flex align-items-center">
                                 <i class="fa fa-calendar me-1" aria-hidden="true"></i>
                                 <input type="date" class="form-control form-control-sm border-0 bg-transparent p-0 ms-1 text-dark" id="sale-date" value="{{ date('Y-m-d') }}" style="width: auto; display: inline-block;">
                             </span>
+                        <div class="mb-3">
+                            <label for="almacen-select" class="form-label">Selecciona Almacén</label>
+                            <select id="almacen-select" class="form-select">
+                                <!-- Se llenará dinámicamente desde JS -->
+                            </select>
+                        </div>
                         </p>
                     </div>
                     <div class="card-body p-3 pt-4">
@@ -134,14 +141,22 @@
                                             <span class="text-sm">Subtotal:</span>
                                             <span class="text-sm font-weight-bold" id="subtotal">Bs/ 0.00</span>
                                         </div>
-                                        <div class="d-flex justify-content-between mb-2">
-                                            <span class="text-sm">IGV (18%):</span>
-                                            <span class="text-sm font-weight-bold" id="tax">Bs/ 0.00</span>
+
+                                        <div class="mb-2">
+                                            <label class="form-label text-sm mb-0">Descuento:</label>
+                                            <input type="number" class="form-control form-control-sm" id="discount-input" value="0" min="0">
                                         </div>
-                                        <div class="d-flex justify-content-between mb-2">
-                                            <span class="text-sm">Descuento:</span>
-                                            <span class="text-sm font-weight-bold" id="discount">Bs/ 0.00</span>
+
+                                        <div class="mb-2">
+                                            <label class="form-label text-sm mb-0">Billete:</label>
+                                            <input type="number" class="form-control form-control-sm" id="billete" placeholder="Ej: 100">
                                         </div>
+
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span class="text-sm">Cambio:</span>
+                                            <span class="text-sm font-weight-bold" id="cambio">Bs/ 0.00</span>
+                                        </div>
+
                                         <hr class="my-2">
                                         <div class="d-flex justify-content-between fw-bold">
                                             <span class="text-dark">Total:</span>
@@ -153,7 +168,8 @@
                                     <div class="mb-3">
                                         <label class="form-label text-sm">Método de Pago</label>
                                         <select class="form-select px-3" id="payment-method" style="min-height: 44px;">
-                                            <option value="cash">Efectivo</option>
+                                            <option value="Efectivo">Efectivo</option>
+                                            <option value="Tarjeta">Tarjeta</option>
                                             <option value="qr">QR</option>
                                         </select>
                                     </div>
@@ -162,8 +178,8 @@
                                     <div class="mb-3">
                                         <label class="form-label text-sm">Tipo de Venta</label>
                                         <select class="form-select px-3" id="sale-type" style="min-height: 44px;">
-                                            <option value="cash">Contado</option>
-                                            <option value="credit">Crédito</option>
+                                            <option value="contado">Contado</option>
+                                            <option value="credito">Crédito</option>
                                         </select>
                                     </div>
 
@@ -194,7 +210,11 @@
             </div>
         </div>
     </main>
-
+    <!-- Botón flotante de carrito (móvil) -->
+    <button id="floating-sale-cart-btn" class="btn btn-primary floating-sale-cart-btn d-lg-none">
+        <i class="menu-icon icon-base bx bx-cart fs-5"></i>
+        <span id="floating-sale-cart-count" class="cart-bubble"></span>
+    </button>
     <!-- Panel lateral para móviles -->
     <div class="mobile-cart-sidebar d-lg-none" id="mobile-cart-sidebar">
         <div class="mobile-cart-overlay" id="mobile-cart-overlay"></div>
@@ -248,14 +268,22 @@
                         <span class="text-sm">Subtotal:</span>
                         <span class="text-sm font-weight-bold" id="mobile-subtotal">Bs/ 0.00</span>
                     </div>
-                    <div class="d-flex justify-content-between mb-2">
-                        <span class="text-sm">IGV (18%):</span>
-                        <span class="text-sm font-weight-bold" id="mobile-tax">Bs/ 0.00</span>
+
+                    <div class="mb-2">
+                        <label class="form-label text-sm mb-0">Descuento:</label>
+                        <input type="number" class="form-control form-control-sm" id="mobile-discount-input" value="0" min="0">
                     </div>
-                    <div class="d-flex justify-content-between mb-2">
-                        <span class="text-sm">Descuento:</span>
-                        <span class="text-sm font-weight-bold" id="mobile-discount">Bs/ 0.00</span>
+
+                    <div class="mb-2">
+                        <label class="form-label text-sm mb-0">Billete:</label>
+                        <input type="number" class="form-control form-control-sm" id="mobile-billete" placeholder="Ej: 100">
                     </div>
+
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-sm">Cambio:</span>
+                        <span class="text-sm font-weight-bold" id="mobile-cambio">Bs/ 0.00</span>
+                    </div>
+
                     <hr class="my-2">
                     <div class="d-flex justify-content-between fw-bold">
                         <span class="text-dark">Total:</span>
@@ -267,7 +295,8 @@
                 <div class="mb-3">
                     <label class="form-label text-sm">Método de Pago</label>
                     <select class="form-select px-3" id="mobile-payment-method" style="min-height: 44px;">
-                        <option value="cash">Efectivo</option>
+                        <option value="Efectivo">Efectivo</option>
+                        <option value="Tarjeta">Tarjeta</option>
                         <option value="qr">QR</option>
                     </select>
                 </div>
@@ -276,8 +305,8 @@
                 <div class="mb-3">
                     <label class="form-label text-sm">Tipo de Venta</label>
                     <select class="form-select px-3" id="mobile-sale-type" style="min-height: 44px;">
-                        <option value="cash">Contado</option>
-                        <option value="credit">Crédito</option>
+                        <option value="contado">Contado</option>
+                        <option value="credito">Crédito</option>
                     </select>
                 </div>
 
@@ -374,6 +403,76 @@
         :root {
             --primary-gradient: linear-gradient(195deg, #42424a, #191919);
             --secondary-gradient: linear-gradient(195deg, #49a3f1, #1A73E8);
+        }
+
+        /* Botón flotante */
+        .floating-sale-cart-btn {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            color: #fff;
+            border: none;
+            outline: none;
+            z-index: 1050;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            opacity: 0;
+            transform: scale(0);
+            transition: all 0.3s ease-in-out;
+        }
+
+        /* Estado visible */
+        .floating-sale-cart-btn.show {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Burbuja del contador */
+        .cart-bubble {
+            position: absolute;
+            top: -2px;
+            /* ahora encima */
+            right: -2px;
+            /* pegada al borde */
+            background: #ff3b30;
+            color: white;
+            border-radius: 50%;
+            padding: 3px 7px;
+            font-size: 12px;
+            font-weight: bold;
+            transform: scale(0);
+            transition: transform 0.2s ease;
+        }
+
+        /* Cuando tenga valor, se anima */
+        .cart-bubble.active {
+            transform: scale(1);
+            animation: bubble-pop 0.3s ease;
+        }
+
+        /* Animación burbuja */
+        @keyframes bubble-pop {
+            0% {
+                transform: scale(0.5);
+                opacity: 0.5;
+            }
+
+            50% {
+                transform: scale(1.3);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
         }
 
         .product-card {
@@ -668,20 +767,72 @@
             clientSelect.addEventListener('change', updateClientInfo);
             mobileClientSelect.addEventListener('change', updateMobileClientInfo);
 
-            // Función para cargar todos los productos
-            function loadProducts() {
-                // URL del endpoint para productos - REEMPLAZAR CON TU ENDPOINT
-                const url = '/productos/fetch';
+            async function loadAlmacenes() {
+                try {
+                    const res = await fetch('/venta/almacenes');
+                    const almacenes = await res.json();
 
-                fetch(url)
-                    .then(response => response.json())
+                    const select = document.getElementById('almacen-select');
+                    select.innerHTML = '';
+
+                    if (almacenes.length === 0) {
+                        console.warn('No hay almacenes disponibles');
+                        return;
+                    }
+
+                    almacenes.forEach((a, i) => {
+                        const option = document.createElement('option');
+                        option.value = a.id;
+                        option.textContent = a.nombre;
+                        select.appendChild(option);
+                    });
+
+                    // Seleccionamos el primer almacen
+                    select.selectedIndex = 0;
+
+                    // Llamamos loadProducts usando el value del select
+                    const almacenId = select.value;
+                    console.log('Cargando productos para almacen ID:', almacenId);
+                    loadProducts(almacenId);
+
+                    // Cambios en el select
+                    select.addEventListener('change', () => {
+                        loadProducts(select.value);
+                    });
+
+                } catch (error) {
+                    console.error('Error cargando almacenes:', error);
+                }
+            }
+
+            // Ajustar loadProducts para convertir price/stock a número
+            function loadProducts(almacenId) {
+                console.log('Fetch productos con almacenId:', almacenId);
+                if (!almacenId) {
+                    console.error('No hay almacenId, abortando fetch.');
+                    return;
+                }
+                fetch(`/producto/venta?almacen_id=${almacenId}`)
+                    .then(response => {
+                        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                        return response.json();
+                    })
                     .then(data => {
-                        allProducts = data;
+                        // Convertir price y stock a número
+                        allProducts = data.map(p => ({
+                            ...p,
+                            price: Number(p.price),
+                            stock: Number(p.stock)
+                        }));
+                        console.log('Productos cargados:', allProducts);
                         renderNewProducts();
                         renderBestSellers();
                     })
-                    .catch(error => console.error('Error:', error));
+                    .catch(error => console.error('Error cargando productos:', error));
             }
+
+            // Inicializar
+            loadAlmacenes();
 
             // Función para cargar clientes
 
@@ -945,7 +1096,7 @@
 
                 if (searchTerm.length > 2) {
                     // URL del endpoint para búsqueda - REEMPLAZAR CON TU ENDPOINT
-                    const url = `/productos/search?query=${encodeURIComponent(searchTerm)}`;
+                    const url = `/producto/search?query=${encodeURIComponent(searchTerm)}`;
 
                     fetch(url)
                         .then(response => response.json())
@@ -969,6 +1120,7 @@
             // Función para añadir producto al carrito
             function addToCart(product) {
                 const existingItem = cart.find(item => item.id === product.id);
+                const empresaId = "{{ session('empresa_id') }}"; // Obtener empresa_id desde Blade
 
                 if (existingItem) {
                     if (existingItem.quantity < product.stock) {
@@ -997,31 +1149,45 @@
 
                 // Si el método de pago es QR, mostrar el modal
                 if (paymentMethodSelect.value === 'qr') {
-                    showQrModal();
+                    showQrModal(empresaId);
                 }
             }
 
             // Función para actualizar el carrito
             function updateCart() {
-                updateCartUI(cartItemsContainer, subtotalElement, taxElement, discountElement, totalElement);
-                updateCartUI(mobileCartItemsContainer, mobileSubtotalElement, mobileTaxElement, mobileDiscountElement, mobileTotalElement);
+                updateCartUI(
+                    cartItemsContainer,
+                    subtotalElement,
+                    document.getElementById('discount-input'),
+                    totalElement,
+                    document.getElementById('billete'),
+                    document.getElementById('cambio')
+                );
+
+                updateCartUI(
+                    mobileCartItemsContainer,
+                    mobileSubtotalElement,
+                    document.getElementById('mobile-discount-input'),
+                    mobileTotalElement,
+                    document.getElementById('mobile-billete'),
+                    document.getElementById('mobile-cambio')
+                );
             }
 
             // Función para actualizar la UI del carrito
-            function updateCartUI(container, subtotalEl, taxEl, discountEl, totalEl) {
+            function updateCartUI(container, subtotalEl, discountEl, totalEl, billeteInput, cambioEl) {
                 if (cart.length === 0) {
                     container.innerHTML = `
-                <div class="text-center p-3 text-muted">
-                    <i class="fa fa-shopping-cart fa-2x mb-2" aria-hidden="true"></i>
-                    <p class="mb-0">No hay productos en el carrito</p>
-                </div>
-            `;
+            <div class="text-center p-3 text-muted">
+                <i class="fa fa-shopping-cart fa-2x mb-2" aria-hidden="true"></i>
+                <p class="mb-0">No hay productos en el carrito</p>
+            </div>
+        `;
 
                     subtotalEl.textContent = 'Bs/ 0.00';
-                    taxEl.textContent = 'Bs/ 0.00';
-                    discountEl.textContent = 'Bs/ 0.00';
+                    discountEl.value = 0;
                     totalEl.textContent = 'Bs/ 0.00';
-
+                    if (cambioEl) cambioEl.textContent = 'Bs/ 0.00';
                     return;
                 }
 
@@ -1033,58 +1199,52 @@
                     subtotal += itemTotal;
 
                     cartHTML += `
-                <div class="cart-item">
-                    <div class="d-flex justify-content-between align-items-start">
-                        <div class="flex-grow-1">
-                            <h6 class="my-0 text-sm">${item.name}</h6>
-                            <p class="text-xs text-muted mb-1">Bs/ ${item.price.toFixed(2)} c/u</p>
-                        </div>
-                        <button class="btn btn-sm btn-link text-danger remove-item" data-id="${item.id}">
-                            <i class="fa fa-trash" aria-hidden="true"></i>
-                        </button>
+            <div class="cart-item">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="flex-grow-1">
+                        <h6 class="my-0 text-sm">${item.name}</h6>
+                        <p class="text-xs text-muted mb-1">Bs/ ${item.price.toFixed(2)} c/u</p>
                     </div>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div class="quantity-controls">
-                            <span class="quantity-btn decrease-quantity" data-id="${item.id}">-</span>
-                            <span class="mx-2">${item.quantity}</span>
-                            <span class="quantity-btn increase-quantity" data-id="${item.id}">+</span>
-                        </div>
-                        <span class="font-weight-bold">Bs/ ${itemTotal.toFixed(2)}</span>
-                    </div>
+                    <button class="btn btn-sm btn-link text-danger remove-item" data-id="${item.id}">
+                        <i class="fa fa-trash" aria-hidden="true"></i>
+                    </button>
                 </div>
-            `;
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="quantity-controls">
+                        <span class="quantity-btn decrease-quantity" data-id="${item.id}">-</span>
+                        <span class="mx-2">${item.quantity}</span>
+                        <span class="quantity-btn increase-quantity" data-id="${item.id}">+</span>
+                    </div>
+                    <span class="font-weight-bold">Bs/ ${itemTotal.toFixed(2)}</span>
+                </div>
+            </div>
+        `;
                 });
 
-                const tax = subtotal * 0.18;
-                const discount = 0; // Puedes implementar lógica de descuentos si es necesario
-                const total = subtotal + tax - discount;
+                // 🔹 descuento desde input
+                const discount = parseFloat(discountEl.value || 0);
+                const total = subtotal - discount;
 
                 container.innerHTML = cartHTML;
                 subtotalEl.textContent = `Bs/ ${subtotal.toFixed(2)}`;
-                taxEl.textContent = `Bs/ ${tax.toFixed(2)}`;
-                discountEl.textContent = `Bs/ ${discount.toFixed(2)}`;
                 totalEl.textContent = `Bs/ ${total.toFixed(2)}`;
 
-                // Agregar eventos a los botones de cantidad
+                // 🔹 calcular cambio si hay billete
+                if (billeteInput && cambioEl) {
+                    const billete = parseFloat(billeteInput.value || 0);
+                    const cambio = billete > 0 ? billete - total : 0;
+                    cambioEl.textContent = `Bs/ ${cambio.toFixed(2)}`;
+                }
+
+                // Eventos
                 container.querySelectorAll('.increase-quantity').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const productId = parseInt(this.getAttribute('data-id'));
-                        increaseQuantity(productId);
-                    });
+                    btn.addEventListener('click', () => increaseQuantity(parseInt(btn.dataset.id)));
                 });
-
                 container.querySelectorAll('.decrease-quantity').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const productId = parseInt(this.getAttribute('data-id'));
-                        decreaseQuantity(productId);
-                    });
+                    btn.addEventListener('click', () => decreaseQuantity(parseInt(btn.dataset.id)));
                 });
-
                 container.querySelectorAll('.remove-item').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const productId = parseInt(this.getAttribute('data-id'));
-                        removeFromCart(productId);
-                    });
+                    btn.addEventListener('click', () => removeFromCart(parseInt(btn.dataset.id)));
                 });
             }
 
@@ -1126,11 +1286,25 @@
             }
 
             // Función para mostrar modal de QR
-            function showQrModal() {
-                // En una implementación real, aquí cargarías el QR desde tu base de datos
-                // Por ahora, usamos un placeholder
-                document.getElementById('qr-image').src = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=EjemploQR';
-                qrModal.show();
+            const empresaId = document.getElementById('empresa_id').value;
+            console.log('Empresa ID para QR:', empresaId);
+
+            function showQrModal(empresaId) {
+                fetch(`/empresa/${empresaId}/qr`)
+                    .then(res => res.json())
+                    .then(data => {
+                        const qrImage = document.getElementById('qr-image');
+                        if (data.qr_url) {
+                            qrImage.src = data.qr_url;
+                        } else {
+                            qrImage.src = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=SinQR';
+                        }
+                        qrModal.show();
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        showToast('No se pudo cargar el QR', 'danger');
+                    });
             }
 
             // Función para confirmar pago con QR
@@ -1139,16 +1313,21 @@
                 completeSale();
             }
 
-            // Función para completar la venta
-            function completeSale() {
+            // Función para completar la venta con confirmación SweetAlert2
+            async function completeSale() {
                 if (cart.length === 0) {
                     showAlert('Agrega al menos un producto para realizar la venta', 'warning');
                     return;
                 }
 
                 const clientId = clientSelect.value;
+                const almacenId = document.getElementById('almacen-select').value; // 📌 almacén seleccionado
                 if (!clientId) {
                     showAlert('Selecciona un cliente para continuar', 'warning');
+                    return;
+                }
+                if (!almacenId) {
+                    showAlert('Selecciona un almacén para continuar', 'warning');
                     return;
                 }
 
@@ -1157,14 +1336,14 @@
 
                 const saleData = {
                     client_id: clientId,
+                    almacen_id: almacenId,
                     payment_method: paymentMethod,
                     sale_type: saleType,
                     items: cart,
                     date: document.getElementById('sale-date').value
                 };
 
-                // Si es crédito, agregar campos adicionales
-                if (saleType === 'credit') {
+                if (saleType === 'credito') {
                     saleData.due_date = document.getElementById('due-date').value;
                     saleData.installments = document.getElementById('installments').value;
 
@@ -1174,23 +1353,66 @@
                     }
                 }
 
-                // Aquí enviarías los datos al servidor
-                console.log('Datos de venta:', saleData);
+                // 🔹 Confirmación antes de registrar la venta
+                const confirm = await Swal.fire({
+                    title: '¿Estás seguro?',
+                    text: "Se registrará la venta. ¿Deseas continuar?",
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Sí, registrar venta',
+                    cancelButtonText: 'Cancelar'
+                });
 
-                // Simular envío exitoso
-                showAlert('Venta registrada correctamente', 'success');
+                if (confirm.isConfirmed) {
+                    try {
+                        const response = await fetch('/venta/store', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                            },
+                            body: JSON.stringify(saleData)
+                        });
 
-                // Limpiar carrito y formulario
-                cart = [];
-                updateCart();
-                updateMobileCartCount();
-                resetForm();
+                        const result = await response.json();
 
-                // Cerrar carrito móvil si está abierto
-                if (mobileCartSidebar.classList.contains('active')) {
-                    toggleMobileCart();
+                        if (result.success) {
+                            // 🔹 Mostrar segundo SweetAlert para elegir acción
+                            const nextAction = await Swal.fire({
+                                title: 'Venta registrada',
+                                text: result.message,
+                                icon: 'success',
+                                showCancelButton: true,
+                                confirmButtonText: 'Seguir registrando ventas',
+                                cancelButtonText: 'Ir a la lista de ventas'
+                            });
+
+                            // 🔹 Limpiar carrito y recargar productos
+                            loadProducts(almacenId);
+                            cart = [];
+                            updateCart();
+                            updateMobileCartCount();
+                            resetForm();
+                            if (mobileCartSidebar.classList.contains('active')) {
+                                toggleMobileCart();
+                            }
+
+                            if (!nextAction.isConfirmed) {
+                                // Redirigir a lista de ventas
+                                window.location.href = '/venta';
+                            }
+
+                        } else {
+                            showAlert(result.message || 'Ocurrió un error al registrar la venta', 'danger');
+                            console.error(result.error);
+                        }
+                    } catch (error) {
+                        console.error('Error al enviar la venta:', error);
+                        showAlert('Error al registrar la venta. Intenta nuevamente.', 'danger');
+                    }
                 }
             }
+
 
             // Función para resetear formulario
             function resetForm() {
@@ -1214,7 +1436,7 @@
 
             // Función para mostrar/ocultar campos de crédito
             function toggleCreditFields() {
-                if (this.value === 'credit') {
+                if (this.value === 'credito') {
                     creditFields.style.maxHeight = creditFields.scrollHeight + 'px';
                 } else {
                     creditFields.style.maxHeight = '0';
@@ -1223,7 +1445,7 @@
 
             // Función para mostrar/ocultar campos de crédito móviles
             function toggleMobileCreditFields() {
-                if (this.value === 'credit') {
+                if (this.value === 'credito') {
                     mobileCreditFields.style.maxHeight = mobileCreditFields.scrollHeight + 'px';
                 } else {
                     mobileCreditFields.style.maxHeight = '0';
@@ -1233,14 +1455,14 @@
             // Función para manejar cambio de método de pago
             function handlePaymentMethodChange() {
                 if (this.value === 'qr' && cart.length > 0) {
-                    showQrModal();
+                    showQrModal(empresaId);
                 }
             }
 
             // Función para manejar cambio de método de pago móvil
             function handleMobilePaymentMethodChange() {
                 if (this.value === 'qr' && cart.length > 0) {
-                    showQrModal();
+                    showQrModal(empresaId);
                 }
             }
 
@@ -1396,13 +1618,59 @@
                     showAlert('Error al registrar cliente', 'danger');
                 }
             });
+            const floatingSaleCartBtn = document.getElementById("floating-sale-cart-btn");
+            const floatingSaleCartCount = document.getElementById("floating-sale-cart-count");
 
+            // 👉 Evento: abrir sidebar desde el botón flotante
+            floatingSaleCartBtn.addEventListener("click", () => {
+                mobileCartSidebar.classList.add("active");
+                mobileCartOverlay.classList.add("active");
+            });
+
+            // 👉 Evento: cerrar sidebar
+            closeMobileCart.addEventListener("click", () => {
+                mobileCartSidebar.classList.remove("active");
+                mobileCartOverlay.classList.remove("active");
+            });
+            mobileCartOverlay.addEventListener("click", () => {
+                mobileCartSidebar.classList.remove("active");
+                mobileCartOverlay.classList.remove("active");
+            });
+            // 👉 Mostrar/ocultar botón con scroll
+            window.addEventListener("scroll", () => {
+                if (window.scrollY > 100) {
+                    floatingSaleCartBtn.classList.add("show");
+                } else {
+                    floatingSaleCartBtn.classList.remove("show");
+                }
+            });
+            // 👉 Función: actualizar contador de productos
+            function updateMobileCartCount() {
+                const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+
+                // 👉 contador flotante
+                if (document.getElementById("floating-sale-cart-count")) {
+                    const floatingCount = document.getElementById("floating-sale-cart-count");
+                    floatingCount.textContent = totalItems;
+                    if (totalItems > 0) {
+                        floatingCount.classList.add("active");
+                    } else {
+                        floatingCount.classList.remove("active");
+                    }
+                }
+
+                // 👉 contador del botón "Ver Carrito"
+                if (document.getElementById("mobile-cart-count")) {
+                    const toggleCount = document.getElementById("mobile-cart-count");
+                    toggleCount.textContent = totalItems;
+                }
+            }
             // ...
             loadProducts();
             loadClients();
         });
     </script>
     <script>
-        //registra cliente
+
     </script>
 </x-layout>
