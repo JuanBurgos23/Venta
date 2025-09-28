@@ -14,6 +14,7 @@ class Empresa extends Model
         'correo',
         'direccion',
         'nit',
+        'qr'
 
     ];
     public function users()

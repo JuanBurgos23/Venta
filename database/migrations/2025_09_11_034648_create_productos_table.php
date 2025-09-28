@@ -40,7 +40,7 @@ return new class extends Migration
             $table->string('marca', 100)->nullable();
             $table->string('modelo', 100)->nullable();
             $table->string('origen', 100)->nullable();
-            $table->integer('estado')->nullable()->default(1);
+            $table->string('estado', 100)->nullable()->default('Activo');
             $table->foreignId('proveedor_id')
                   ->nullable()
                   ->constrained('proveedor');

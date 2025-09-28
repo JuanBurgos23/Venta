@@ -133,7 +133,7 @@
               sortDirection = 'asc',
               currentSearch = '';
 
-            // Fetch
+            // Fetch de almacenes
             async function fetchAlmacenes(page = 1, search = '', sortCol = '', sortDir = '') {
               try {
                 const url = new URL(`{{ route('almacen.fetch') }}`, window.location.origin);
@@ -147,54 +147,59 @@
                     'Accept': 'application/json'
                   }
                 });
+
                 const data = await res.json();
 
                 tableBody.innerHTML = '';
+
                 if (!data.data || data.data.length === 0) {
                   tableBody.innerHTML = '<tr><td colspan="5" class="text-center">Sin almacenes</td></tr>';
                   pagination.innerHTML = '';
                   return;
                 }
-
+                // Renderizamos cada almacén
                 data.data.forEach(a => {
-                  // Estado legible
                   const estadoTxt = (+a.estado === 1) ? 'Activo' : 'Inactivo';
+                  const sucursalNombre = a.sucursal_nombre ?? '-';
 
                   tableBody.insertAdjacentHTML('beforeend', `
-                    <tr data-id="${a.id}"
-                        data-sucursal-id="${a.sucursal_id}"
-                        data-sucursal-nombre="${a.sucursal?.nombre ?? ''}"
-                        data-nombre="${a.nombre ?? ''}"
-                        data-estado="${a.estado ?? 1}">
-                      <td>${a.id}</td>
-                      <td>${highlight(a.nombre ?? '', search)}</td>
-                      <td>${highlight(a.sucursal?.nombre ?? '-', search)}</td>
-                      <td>${estadoTxt}</td>
-                      <td class="text-center">
-                        <button class="btn btn-sm btn-warning btn-edit">Editar</button>
-                        <button class="btn btn-sm btn-danger btn-delete">Eliminar</button>
-                      </td>
-                    </tr>
-                  `);
+<tr data-id="${a.id}"
+    data-sucursal-id="${a.sucursal_id}"
+    data-nombre="${a.nombre ?? ''}"
+    data-estado="${a.estado ?? 1}">
+  <td>${a.id}</td>
+  <td>${highlight(a.nombre ?? '', search)}</td>
+  <td>${highlight(sucursalNombre, search)}</td>
+  <td>${estadoTxt}</td>
+  <td class="text-center">
+    <button class="btn btn-sm btn-warning btn-edit">Editar</button>
+    <button class="btn btn-sm btn-danger btn-delete">Eliminar</button>
+  </td>
+</tr>
+  `);
                 });
 
                 // Paginación
                 const totalPages = data.last_page;
                 let pagHtml = `
-                  <li class="page-item ${data.current_page===1?'disabled':''}">
-                    <a href="#" class="page-link" data-page="${data.current_page-1}">Anterior</a>
-                  </li>`;
+<li class="page-item ${data.current_page === 1 ? 'disabled' : ''}">
+  <a href="#" class="page-link" data-page="${data.current_page - 1}">Anterior</a>
+</li>`;
+
                 for (let i = 1; i <= totalPages; i++) {
-                  pagHtml += `<li class="page-item ${i===data.current_page?'active':''}">
-                    <a href="#" class="page-link" data-page="${i}">${i}</a>
-                  </li>`;
+                  pagHtml += `<li class="page-item ${i === data.current_page ? 'active' : ''}">
+  <a href="#" class="page-link" data-page="${i}">${i}</a>
+</li>`;
                 }
+
                 pagHtml += `
-                  <li class="page-item ${data.current_page===totalPages?'disabled':''}">
-                    <a href="#" class="page-link" data-page="${data.current_page+1}">Siguiente</a>
-                  </li>`;
+<li class="page-item ${data.current_page === totalPages ? 'disabled' : ''}">
+  <a href="#" class="page-link" data-page="${data.current_page + 1}">Siguiente</a>
+</li>`;
+
                 pagination.innerHTML = pagHtml;
 
+                // Agregar eventos a los enlaces de paginación
                 document.querySelectorAll('#almacenes-pagination a').forEach(a => {
                   a.addEventListener('click', (e) => {
                     e.preventDefault();
@@ -205,6 +210,7 @@
                     }
                   });
                 });
+
               } catch (err) {
                 console.error(err);
                 showToast('Error al cargar almacenes', 'danger');
@@ -213,6 +219,7 @@
 
             // Inicial
             fetchAlmacenes();
+
 
             // Buscar
             searchInput.addEventListener('keyup', function() {

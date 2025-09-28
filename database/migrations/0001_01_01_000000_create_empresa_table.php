@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('correo')->nullable();
             $table->string('direccion')->nullable();
             $table->string('nit')->nullable();
+            $table->string('qr')->nullable();
             $table->timestamps();
         });
     }

@@ -18,7 +18,7 @@ class AlmacenController extends Controller
     {
         $user = Auth::user();
 
-        $sucursal = Sucursal::select('id','nombre')
+        $sucursal = Sucursal::select('id', 'nombre')
             ->when(!$user->hasRole('Administrador'), function ($q) use ($user) {
                 $q->where('empresa_id', $user->id_empresa ?? 0);
             })
@@ -26,28 +26,21 @@ class AlmacenController extends Controller
             ->orderBy('nombre')
             ->get();
 
-        return view('almacen/almacen', compact('sucursal'));
+        return view('almacen.almacen', compact('sucursal'));
     }
-   
+
     public function fetch(Request $request)
     {
-        $search     = (string) $request->input('search', '');
-        $perPage    = (int) $request->input('per_page', 10);
-        $page       = (int) $request->input('page', 1);
-        $sucursalId = $request->input('sucursal_id');
+        $search  = $request->input('search', '');
+        $perPage = $request->input('per_page', 10);
+        $page    = $request->input('page', 1);
 
         $user = Auth::user();
 
-        $q = Almacen::query()
-            ->with(['sucursal:id,empresa_id,nombre', 'sucursal.empresa:id,nombre'])
+        $q = Almacen::with('sucursal') // traemos la sucursal
             ->where('estado', '!=', 0);
 
-        // Filtro por sucursal si llega
-        if ($sucursalId) {
-            $q->where('sucursal_id', $sucursalId);
-        }
-
-        // Scope por empresa si NO es Admin
+        // Scope por empresa si NO es admin
         if (!$user->hasRole('Administrador')) {
             $empresaId = $user->id_empresa ?? 0;
             $q->whereHas('sucursal', function ($w) use ($empresaId) {
@@ -58,13 +51,13 @@ class AlmacenController extends Controller
         if ($search !== '') {
             $q->where(function ($w) use ($search) {
                 $w->where('nombre', 'like', "%{$search}%")
-                  ->orWhereHas('sucursal', function ($ws) use ($search) {
-                      $ws->where('nombre', 'like', "%{$search}%");
-                  });
+                    ->orWhereHas('sucursal', function ($ws) use ($search) {
+                        $ws->where('nombre', 'like', "%{$search}%");
+                    });
             });
         }
 
-        $data = $q->orderByDesc('id')->paginate($perPage, ['*'], 'page', $page);
+        $data = $q->with('sucursal')->orderByDesc('id')->paginate($perPage, ['*'], 'page', $page);
 
         return response()->json($data);
     }
@@ -111,16 +104,16 @@ class AlmacenController extends Controller
         }
 
         $user      = Auth::user();
-        $sucursal  = Sucursal::select('id','empresa_id')->find($request->sucursal_id);
+        $sucursal  = Sucursal::select('id', 'empresa_id')->find($request->sucursal_id);
 
         if (!$sucursal) {
-            return response()->json(['status'=>'error','message'=>'Sucursal no encontrada.'], 200);
+            return response()->json(['status' => 'error', 'message' => 'Sucursal no encontrada.'], 200);
         }
 
         // Scope por empresa si NO es Admin
         if (!$user->hasRole('Administrador')) {
             if (($user->id_empresa ?? 0) != $sucursal->empresa_id) {
-                return response()->json(['status'=>'error','message'=>'No autorizado para usar esta sucursal.'], 200);
+                return response()->json(['status' => 'error', 'message' => 'No autorizado para usar esta sucursal.'], 200);
             }
         }
 
@@ -133,7 +126,7 @@ class AlmacenController extends Controller
         return response()->json([
             'status'  => 'success',
             'message' => 'Almacén creado correctamente',
-            'almacen' => $almacen->load(['sucursal:id,empresa_id,nombre','sucursal.empresa:id,nombre']),
+            'almacen' => $almacen->load(['sucursal:id,empresa_id,nombre', 'sucursal.empresa:id,nombre']),
         ], 200);
     }
 
@@ -156,7 +149,7 @@ class AlmacenController extends Controller
         $almacen = $q->find($id);
 
         if (!$almacen || (int)$almacen->estado === 0) {
-            return response()->json(['status'=>'error','message'=>'Almacén no encontrado'], 200);
+            return response()->json(['status' => 'error', 'message' => 'Almacén no encontrado'], 200);
         }
 
         $v = Validator::make($request->all(), [
@@ -175,13 +168,13 @@ class AlmacenController extends Controller
 
         // Si piden mover a otra sucursal, validar pertenencia
         if ($request->filled('sucursal_id') && (int)$request->sucursal_id !== (int)$almacen->sucursal_id) {
-            $nueva = Sucursal::select('id','empresa_id')->find($request->sucursal_id);
+            $nueva = Sucursal::select('id', 'empresa_id')->find($request->sucursal_id);
             if (!$nueva) {
-                return response()->json(['status'=>'error','message'=>'Sucursal destino no encontrada.'], 200);
+                return response()->json(['status' => 'error', 'message' => 'Sucursal destino no encontrada.'], 200);
             }
             if (!$user->hasRole('Administrador')) {
                 if (($user->id_empresa ?? 0) != $nueva->empresa_id) {
-                    return response()->json(['status'=>'error','message'=>'No autorizado para mover a esta sucursal.'], 200);
+                    return response()->json(['status' => 'error', 'message' => 'No autorizado para mover a esta sucursal.'], 200);
                 }
             }
             $almacen->sucursal_id = $nueva->id;
@@ -196,7 +189,7 @@ class AlmacenController extends Controller
         return response()->json([
             'status'  => 'success',
             'message' => 'Almacén actualizado correctamente',
-            'almacen' => $almacen->load(['sucursal:id,empresa_id,nombre','sucursal.empresa:id,nombre']),
+            'almacen' => $almacen->load(['sucursal:id,empresa_id,nombre', 'sucursal.empresa:id,nombre']),
         ], 200);
     }
 
@@ -218,12 +211,12 @@ class AlmacenController extends Controller
 
         $almacen = $q->find($id);
         if (!$almacen) {
-            return response()->json(['status'=>'error','message'=>'Almacén no encontrado'], 200);
+            return response()->json(['status' => 'error', 'message' => 'Almacén no encontrado'], 200);
         }
 
         $almacen->estado = 0;
         $almacen->save();
 
-        return response()->json(['status'=>'success','message'=>'Almacén eliminado'], 200);
+        return response()->json(['status' => 'success', 'message' => 'Almacén eliminado'], 200);
     }
 }

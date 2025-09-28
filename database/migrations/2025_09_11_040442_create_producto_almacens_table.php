@@ -23,7 +23,7 @@
 
                 $table->foreignId('empresa_id')
                     ->constrained('empresa');
-                $table->string('lote');
+                $table->string('lote')->nullable();
                 $table->integer('producto_compra_id');
     
             // Si manejas lotes ligados a una compra, usa unique de 3 columnas:

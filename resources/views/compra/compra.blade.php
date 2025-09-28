@@ -156,7 +156,7 @@
                                 <div class="card card-body border-radius-lg shadow-none border-dashed">
                                     <div class="d-flex justify-content-between align-items-center mb-3">
                                         <h6 class="mb-0 font-weight-bolder">Lista de Productos</h6>
-                                        <a href="{{route('Producto')}}" class="btn btn-sm btn-outline-primary mb-0" id="add-product-btn">
+                                        <a href="{{route('productos.index')}}" class="btn btn-sm btn-outline-primary mb-0" id="add-product-btn">
                                             <i class="fa fa-plus me-1" aria-hidden="true"></i>
                                             Agregar Producto
                                         </a>

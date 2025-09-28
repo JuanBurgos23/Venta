@@ -47,47 +47,21 @@
 
     <!-- Core CSS -->
     <!-- build:css assets/vendor/css/theme.css  -->
-
+    <script src="{{asset('assets/vendor/js/menu.js')}}"></script>
 
     <link rel="stylesheet" href="{{asset('assets/vendor/libs/pickr/pickr-themes.css')}}">
 
     <link rel="stylesheet" href="{{asset('assets/vendor/css/core.css')}}">
     <link rel="stylesheet" href="{{asset('assets/css/demo.css')}}">
+    <link rel="stylesheet" href="{{asset('assets/vendor/libs/dropzone/dropzone.css')}}">
+
 
 
     <!-- Vendors CSS -->
 
     <link rel="stylesheet" href="{{asset('assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css')}}">
-    <link rel="modulepreload" href="https://demos.themeselection.com/sneat-bootstrap-html-laravel-admin-template/demo/build/assets/pickr-71-TLRtn.js">
     <link rel="stylesheet" href="{{asset('assets/vendor/fonts/flag-icons.css')}}">
-    <!-- endbuild 
 
-    
-    <link rel="stylesheet" href="{{asset('assets/vendor/libs/apex-charts/apex-charts.css')}}">
-    <link rel="stylesheet" href="{{ asset('build/assets/template-customizer-CvTzP1B2.css') }}">
-    <link rel="stylesheet" href="{{ asset('build/assets/apex-charts-DWhxKQx9.css') }}">
-
-    <link rel="stylesheet" href="{{ asset('build/assets/app-HWlFZfeI.css') }}">
-    <link rel="stylesheet" href="{{ asset('build/assets/autocomplete-js-BLyOkDc2.js') }}">
-
-    <link rel="stylesheet" href="{{ asset('build/assets/config-BoP0Nie5.js') }}">
-    <link rel="stylesheet" href="{{ asset('build/assets/core-CsLdeUI9.css') }}">
-    <link rel="stylesheet" href="{{ asset('build/assets/demo-kASxDmGZ.css') }}">
-    <link rel="stylesheet" href="{{ asset('build/assets/flag-icons-TUQATJgS.css') }}">
-    <script src="{{ asset('build/assets/hammer-DLEdXtvS.js') }}"></script>
-    <script src="{{ asset('build/assets/helpers-0nSKkh37.js') }}"></script>
-    <link rel="stylesheet" href="{{ asset('build/assets/iconify-DDZnTNbY.css') }}">
-    <script src="{{ asset('build/assets/jquery-Bou6iJJX.js') }}"></script>
-    <script src="{{ asset('build/assets/main-CGh5h70G.js') }}"></script>
-    <script src="{{ asset('build/assets/menu-Cc3Gq5JA.js') }}"></script>
-    <link rel="stylesheet" href="{{ asset('build/assets/perfect-scrollbar-CfyPsj0y.css') }}">
-    <link rel="stylesheet" href="{{ asset('build/assets/perfect-scrollbar-D2XDwrzR.js') }}">
-    <script src="{{ asset('build/assets/pickr-71-TLRtn.js') }}"></script>
-    <link rel="stylesheet" href="{{ asset('build/assets/pickr-themes-CFnMLNHJ.css') }}">
-    <script src="{{ asset('build/assets/popper-MwzM93Hw.js') }}"></script>
-    <link rel="stylesheet" href="{{ asset('build/assets/template-customizer-CvTzP1B2.css') }}">
-    <script src="{{ asset('build/assets/template-customizer-CZZ3zmqW.js') }}"></script>
-    <link rel="stylesheet" href="{{ asset('build/assets/typeahead-CtVgDGc0.css') }}">-->
 
     <script>
         window.CUSTOMIZER_BASE = "{{ asset('assets/img/customizer') }}";
@@ -97,6 +71,9 @@
 
     <!-- Helpers -->
     <script src="{{asset('assets/vendor/js/helpers.js')}}"></script>
+    <script src="{{asset('assets/vendor/libs/dropzone/dropzone.js')}}"></script>
+    <script src="{{asset('assets/js/forms-file-upload.js')}}"></script>
+
     <style type="text/css">
         .layout-menu-fixed .layout-navbar-full .layout-menu,
         .layout-menu-fixed-offcanvas .layout-navbar-full .layout-menu {
@@ -1066,6 +1043,26 @@
         .command-item.active {
             background: #f5f5f5;
         }
+         #commandResults {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* dos columnas */
+    gap: 0.75rem; /* espacio entre columnas y filas */
+    max-height: 400px; /* altura máxima */
+    overflow-y: auto;  /* scroll vertical */
+  }
+
+  /* Cada item del listado */
+  #commandResults .command-item {
+    background: #f8f9fa;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+
+  #commandResults .command-item:hover {
+    background: #e9ecef;
+  }
     </style>
     <script>
         (function() {
@@ -1161,80 +1158,95 @@
                         <span class="menu-header-text" data-i18n="Modulo">Modulo</span>
                     </li>
                     <li class="menu-item {{ Request::routeIs('Empresa') ? 'active' : '' }}">
-    <a href="{{ route('Empresa') }}" class="menu-link">
-        <i class="menu-icon icon-base bx bx-buildings"></i>
-        <div data-i18n="Empresa">Empresa</div>
-    </a>
-</li>
+                        <a href="{{ route('Empresa') }}" class="menu-link">
+                            <i class="menu-icon icon-base bx bx-buildings"></i>
+                            <div data-i18n="Empresa">Empresa</div>
+                        </a>
+                    </li>
 
-<li class="menu-item {{ Request::routeIs('Cliente') ? 'active' : '' }}">
-    <a href="{{ route('Cliente') }}" class="menu-link">
-        <i class="menu-icon icon-base bx bx-user-circle"></i>
-        <div data-i18n="Cliente">Cliente</div>
-    </a>
-</li>
+                    <li class="menu-item {{ Request::routeIs('Cliente') ? 'active' : '' }}">
+                        <a href="{{ route('Cliente') }}" class="menu-link">
+                            <i class="menu-icon icon-base bx bx-user-circle"></i>
+                            <div data-i18n="Cliente">Cliente</div>
+                        </a>
+                    </li>
 
-<li class="menu-item {{ Request::routeIs('sucursal') ? 'active' : '' }}">
-    <a href="{{ route('sucursal') }}" class="menu-link">
-        <i class="menu-icon icon-base bx bx-git-branch"></i>
-        <div data-i18n="Sucursal">Sucursal</div>
-    </a>
-</li>
+                    <li class="menu-item {{ Request::routeIs('sucursal.index') ? 'active' : '' }}">
+                        <a href="{{ route('sucursal.index') }}" class="menu-link">
+                            <i class="menu-icon icon-base bx bx-git-branch"></i>
+                            <div data-i18n="Sucursal">Sucursal</div>
+                        </a>
+                    </li>
 
-<li class="menu-item {{ Request::routeIs('almacen') ? 'active' : '' }}">
-    <a href="{{ route('almacen') }}" class="menu-link">
-        <i class="menu-icon icon-base bx bx-store-alt"></i>
-        <div data-i18n="Almacen">Almacén</div>
-    </a>
-</li>
+                    <li class="menu-item {{ Request::routeIs('almacen.index') ? 'active' : '' }}">
+                        <a href="{{ route('almacen.index') }}" class="menu-link">
+                            <i class="menu-icon icon-base bx bx-store-alt"></i>
+                            <div data-i18n="Almacen">Almacén</div>
+                        </a>
+                    </li>
 
-<li class="menu-item {{ Request::routeIs('unidad_medida') ? 'active' : '' }}">
-    <a href="{{ route('unidad_medida') }}" class="menu-link">
-        <i class="menu-icon icon-base bx bx-ruler"></i>
-        <div data-i18n="Unidad de medida">Unidad de medida</div>
-    </a>
-</li>
+                    <li class="menu-item {{ Request::routeIs('productos.index') || Request::routeIs('categorias.index') || Request::routeIs('unidad_medida.index') ? 'active open' : '' }}">
+                        <a href="javascript:void(0);" class="menu-link menu-toggle">
+                            <i class="menu-icon icon-base bx bx-package"></i>
+                            <div data-i18n="Productos">Productos</div>
+                        </a>
+                        <ul class="menu-sub">
+                            <li class="menu-item {{ Request::routeIs('categorias.index') ? 'active' : '' }}">
+                                <a href="{{ route('categorias.index') }}" class="menu-link">
+                                    <div data-i18n="Categoría">Categoría</div>
+                                </a>
+                            </li>
+                            <li class="menu-item {{ Request::routeIs('unidad_medida.index') ? 'active' : '' }}">
+                                <a href="{{ route('unidad_medida.index') }}" class="menu-link">
+                                    <div data-i18n="Unidad de medida">Unidad de medida</div>
+                                </a>
+                            </li>
+                            <li class="menu-item {{ Request::routeIs('productos.index') ? 'active' : '' }}">
+                                <a href="{{ route('productos.index') }}" class="menu-link">
+                                    <div data-i18n="Registrar Producto">Registrar Producto</div>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
 
-<li class="menu-item {{ Request::routeIs('categoria') ? 'active' : '' }}">
-    <a href="{{ route('categoria') }}" class="menu-link">
-        <i class="menu-icon icon-base bx bx-purchase-tag"></i>
-        <div data-i18n="Categoria">Categoría</div>
-    </a>
-</li>
+                    <li class="menu-item {{ Request::routeIs('Crear Usuario') ? 'active' : '' }}">
+                        <a href="{{ route('Crear Usuario') }}" class="menu-link">
+                            <i class="menu-icon icon-base bx bx-user-plus"></i>
+                            <div data-i18n="Crear Usuario">Crear Usuario</div>
+                        </a>
+                    </li>
 
-<li class="menu-item {{ Request::routeIs('Producto') ? 'active' : '' }}">
-    <a href="{{ route('Producto') }}" class="menu-link">
-        <i class="menu-icon icon-base bx bx-package"></i>
-        <div data-i18n="Producto">Producto</div>
-    </a>
-</li>
+                    <li class="menu-item {{ Request::routeIs('rol.*') ? 'active open' : '' }}">
+                        <a href="javascript:void(0);" class="menu-link menu-toggle">
+                            <i class="menu-icon icon-base bx bx-check-shield"></i>
+                            <div data-i18n="Roles &amp; Permissions">Roles &amp; Permissions</div>
+                        </a>
+                        <ul class="menu-sub">
+                            <li class="menu-item {{ Request::routeIs('rol.index') ? 'active' : '' }}">
+                                <a href="{{ route('rol.index') }}" class="menu-link">
+                                    <div data-i18n="Roles">Roles</div>
+                                </a>
+                            </li>
+                            <li class="menu-item {{ Request::routeIs('permiso.*') ? 'active' : '' }}">
+                                <a href="" class="menu-link">
+                                    <div data-i18n="Permisos">Permisos</div>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="menu-item {{ Request::routeIs('ventas.index') ? 'active' : '' }}">
+                        <a href="{{ route('ventas.index') }}" class="menu-link">
+                            <i class="menu-icon bx bx-cart"></i>
+                            <div data-i18n="Venta">Venta</div>
+                        </a>
+                    </li>
 
-<li class="menu-item {{ Request::routeIs('Crear Usuario') ? 'active' : '' }}">
-    <a href="{{ route('Crear Usuario') }}" class="menu-link">
-        <i class="menu-icon icon-base bx bx-user-plus"></i>
-        <div data-i18n="Crear Usuario">Crear Usuario</div>
-    </a>
-</li>
-
-<li class="menu-item {{ Request::routeIs('rol.*') ? 'active open' : '' }}">
-    <a href="javascript:void(0);" class="menu-link menu-toggle">
-        <i class="menu-icon icon-base bx bx-check-shield"></i>
-        <div data-i18n="Roles &amp; Permissions">Roles &amp; Permissions</div>
-    </a>
-    <ul class="menu-sub">
-        <li class="menu-item {{ Request::routeIs('rol.index') ? 'active' : '' }}">
-            <a href="{{ route('rol.index') }}" class="menu-link">
-                <div data-i18n="Roles">Roles</div>
-            </a>
-        </li>
-        <li class="menu-item {{ Request::routeIs('permiso.*') ? 'active' : '' }}">
-            <a href="" class="menu-link">
-                <div data-i18n="Permisos">Permisos</div>
-            </a>
-        </li>
-    </ul>
-</li>
-
+                    <li class="menu-item {{ Request::routeIs('compra.index') ? 'active' : '' }}">
+                        <a href="{{ route('compra.index') }}" class="menu-link">
+                            <i class="menu-icon bx bx-shopping-bag"></i>
+                            <div data-i18n="Compra">Compra</div>
+                        </a>
+                    </li>
                     <li class="menu-item">
                         <a href="javascript:void(0);" class="menu-link menu-toggle">
                             <i class="menu-icon icon-base bx bx-dock-top"></i>
@@ -2845,7 +2857,8 @@
             </div>
             <div class="toast-body"></div>
         </div>
-
+        <link rel="stylesheet" href="{{asset('assets/vendor/libs/select2/select2.css')}}">
+        <script src="{{asset('assets/vendor/libs/select2/select2.js')}}"></script>
         <script>
             //colores picker
             document.addEventListener("DOMContentLoaded", function() {
@@ -3476,11 +3489,11 @@
 
                 // Iconos por categoría
                 const categoryIcons = {
-                    'Dashboard': ['bx bx-speedometer2', 'bx bx-home-circle'],
-                    'Clientes': ['bx bx-people', 'bx bx-user-voice', 'bx bx-user-check'],
-                    'Empresas': ['bx bx-building', 'bx bx-store', 'bx bx-briefcase'],
-                    'Perfil': ['bx bx-user', 'bx bx-id-card', 'bx bx-user-circle'],
-                    'Otras rutas': ['bx bx-link', 'bx bx-link-alt']
+                    'Dashboard': ['menu-icon icon-base bx bx-home-circle', 'menu-icon icon-base bx bx-grid-alt', 'menu-icon icon-base bx bx-bar-chart'],
+                    'Clientes': ['menu-icon icon-base bx bx-user-circle', 'menu-icon icon-base bx bx-user', 'menu-icon icon-base bx bx-group'],
+                    'Empresas': ['menu-icon icon-base bx bx-building', 'menu-icon icon-base bx bx-briefcase', 'menu-icon icon-base bx bx-store'],
+                    'Perfil': ['menu-icon icon-base bx bx-id-card', 'menu-icon icon-base bx bx-cog', 'menu-icon icon-base bx bx-shield'],
+                    'Otras rutas': ['menu-icon icon-base bx bx-link', 'menu-icon icon-base bx bx-folder', 'menu-icon icon-base bx bx-layer']
                 };
 
                 Object.keys(grouped).forEach(section => {
@@ -3500,10 +3513,14 @@
                         a.className = 'suggestion-item d-flex align-items-center';
 
                         // Elegir icono al azar de la categoría
-                        const icons = categoryIcons[section] || ['bx bx-link'];
+                        const icons = categoryIcons[section] || ['menu-icon icon-base bx bx-link'];
                         const iconClass = icons[Math.floor(Math.random() * icons.length)];
 
-                        a.innerHTML = `<i class="icon-base ${iconClass} me-2"></i><span>${r.name}</span>`;
+                        // Formatear nombre de la ruta
+                        let displayName = r.name.includes('.') ? r.name.split('.')[0] : r.name;
+                        displayName = displayName.charAt(0).toUpperCase() + displayName.slice(1);
+
+                        a.innerHTML = `<i class="${iconClass} me-2"></i><span>${displayName}</span>`;
                         container.appendChild(a);
                     });
 
