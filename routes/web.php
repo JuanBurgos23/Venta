@@ -136,7 +136,24 @@ Route::post('/proveedores/{id}/delete', [ProveedorController::class, 'marcarBorr
 
 //compra
 
-Route::get('/compra', [CompraController::class, 'index'])->name('compra');
+// CRUD (listado)
+Route::get('/compras', [CompraController::class, 'crud'])->name('compras.index');
+
+// API tabla y detalles
+Route::get('/api/compras', [CompraController::class, 'apiIndex'])->name('compras.api.index');
+Route::get('/api/compras/{id}/detalles', [CompraController::class, 'apiDetalles'])->name('compras.api.detalles');
+
+// Formulario nueva compra
+Route::get('/compras/create', [CompraController::class, 'create'])->name('compras.create');
+Route::post('/compras', [CompraController::class, 'store'])->name('compras.store');
+
+// Acciones
+Route::get('/compras/{id}', [CompraController::class, 'show'])->name('compras.show');      // si lo usas
+Route::get('/compras/{id}/edit', [CompraController::class, 'edit'])->name('compras.edit'); // si lo usas
+Route::delete('/compras/{id}', [CompraController::class, 'destroy'])->name('compras.destroy');
+
+
+
 Route::get('/proveedores/list', [CompraController::class, 'ProveedorSearch'])->name('proveedores.search');
 Route::post('/proveedores/store', [CompraController::class, 'ProveedorStore'])->name('proveedores.store');
 Route::get('almacenes/list', [CompraController::class, 'AlmacenList'])->name('almacenes.list');
