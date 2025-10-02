@@ -137,7 +137,6 @@ Route::post('/proveedores/{id}/delete', [ProveedorController::class, 'marcarBorr
 
 //compra
 
-<<<<<<< HEAD
 // CRUD (listado)
 Route::get('/compras', [CompraController::class, 'crud'])->name('compras.index');
 
@@ -156,9 +155,6 @@ Route::delete('/compras/{id}', [CompraController::class, 'destroy'])->name('comp
 
 
 
-=======
-Route::get('/compra', [CompraController::class, 'index'])->name('compra.index');
->>>>>>> 6020095fbc22d81bc8b8744b4eac3ea2e1a860c6
 Route::get('/proveedores/list', [CompraController::class, 'ProveedorSearch'])->name('proveedores.search');
 Route::post('/proveedores/store', [CompraController::class, 'ProveedorStore'])->name('proveedores.store');
 Route::get('almacenes/list', [CompraController::class, 'AlmacenList'])->name('almacenes.list');
@@ -219,6 +215,10 @@ Route::get('/buscar-producto/{codigo}', [VentaController::class, 'buscarPorCodig
     ->name('productos.buscar');
 Route::post('/clientes/store', [VentaController::class, 'ClienteStore'])->name('clientes.store');
 Route::post('/venta/store', [VentaController::class, 'store'])->name('venta.store');
+Route::get('/venta/registradas', [VentaController::class, 'ventasRegistradas'])->name('ventas.registradas');
+Route::get('/ventas/fetch', [VentaController::class, 'fetchVentas'])->name('ventas.fetch');
+//impirmir venta
+Route::get('/ventas/print/{id}', [VentaController::class, 'imprimir'])->name('ventas.print');
 
 
 

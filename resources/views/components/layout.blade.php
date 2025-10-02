@@ -1234,15 +1234,32 @@
                             </li>
                         </ul>
                     </li>
-                    <li class="menu-item {{ Request::routeIs('ventas.index') ? 'active' : '' }}">
-                        <a href="{{ route('ventas.index') }}" class="menu-link">
+                    <li class="menu-item {{ Request::routeIs('venta.*') ? 'active open' : '' }}">
+                        <a href="javascript:void(0);" class="menu-link menu-toggle">
                             <i class="menu-icon bx bx-cart"></i>
-                            <div data-i18n="Venta">Venta</div>
+                            <div data-i18n="Ventas">Ventas</div>
                         </a>
+                        <ul class="menu-sub">
+                            <li class="menu-item {{ Request::routeIs('ventas.index') ? 'active' : '' }}">
+                                <a href="{{ route('ventas.index') }}" class="menu-link">
+                                    <div data-i18n="Registrar Venta">Registrar Venta</div>
+                                </a>
+                            </li>
+                            <li class="menu-item {{ Request::routeIs('ventas.registradas') ? 'active' : '' }}">
+                                <a href="{{ route('ventas.registradas') }}" class="menu-link">
+                                    <div data-i18n="Lista de Ventas">Lista de Ventas</div>
+                                </a>
+                            </li>
+                            <li class="menu-item ">
+                                <a href="" class="menu-link">
+                                    <div data-i18n="Reportes de Ventas">Reportes de Ventas</div>
+                                </a>
+                            </li>
+                        </ul>
                     </li>
 
-                    <li class="menu-item {{ Request::routeIs('compra.index') ? 'active' : '' }}">
-                        <a href="{{ route('compra.index') }}" class="menu-link">
+                    <li class="menu-item {{ Request::routeIs('compras.index') ? 'active' : '' }}">
+                        <a href="{{ route('compras.index') }}" class="menu-link">
                             <i class="menu-icon bx bx-shopping-bag"></i>
                             <div data-i18n="Compra">Compra</div>
                         </a>

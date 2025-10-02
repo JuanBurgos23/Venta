@@ -1399,7 +1399,7 @@
 
                             if (!nextAction.isConfirmed) {
                                 // Redirigir a lista de ventas
-                                window.location.href = '/venta';
+                                window.location.href = '/venta/registradas';
                             }
 
                         } else {

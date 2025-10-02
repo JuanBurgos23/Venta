@@ -6,9 +6,11 @@ use App\Models\Almacen;
 use App\Models\Categoria;
 use App\Models\Cliente;
 use App\Models\DetalleVenta;
+use App\Models\Empresa;
 use App\Models\Producto;
 use App\Models\Producto_almacen;
 use App\Models\Venta;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -223,9 +225,10 @@ class VentaController extends Controller
                 'observaciones' => null,
             ]);
 
-            // Insertar detalles y descontar stock del almacén correcto
+            // Insertar detalles y descontar stock por lotes (FIFO)
             foreach ($request->items as $item) {
-                DetalleVenta::create([
+                // Registrar el detalle de venta
+                $detalle = DetalleVenta::create([
                     'venta_id'       => $venta->id,
                     'producto_id'    => $item['id'],
                     'cantidad'       => $item['quantity'],
@@ -233,14 +236,35 @@ class VentaController extends Controller
                     'subtotal'       => $item['price'] * $item['quantity'],
                 ]);
 
-                $productoAlmacen = Producto_almacen::where('producto_id', $item['id'])
-                    ->where('empresa_id', Auth::user()->id_empresa)
-                    ->where('almacen_id', $almacenId) // 🔹 almacén seleccionado
-                    ->first();
+                $cantidadPendiente = $item['quantity'];
 
-                if ($productoAlmacen) {
-                    $productoAlmacen->stock -= $item['quantity'];
-                    $productoAlmacen->save();
+                // Buscar los lotes de ese producto en el almacén, ordenados por fecha de creación (FIFO)
+                $lotes = Producto_almacen::where('producto_id', $item['id'])
+                    ->where('empresa_id', Auth::user()->id_empresa)
+                    ->where('almacen_id', $almacenId)
+                    ->where('stock', '>', 0)
+                    ->orderBy('created_at', 'asc') // primer lote registrado primero
+                    ->get();
+
+                foreach ($lotes as $lote) {
+                    if ($cantidadPendiente <= 0) break; // ya se completó la venta
+
+                    if ($lote->stock >= $cantidadPendiente) {
+                        // El lote puede cubrir toda la cantidad pendiente
+                        $lote->stock -= $cantidadPendiente;
+                        $lote->save();
+                        $cantidadPendiente = 0;
+                    } else {
+                        // El lote no cubre todo, se descuenta lo que tiene y se sigue al siguiente
+                        $cantidadPendiente -= $lote->stock;
+                        $lote->stock = 0;
+                        $lote->save();
+                    }
+                }
+
+                if ($cantidadPendiente > 0) {
+                    $productoNombre = Producto::find($item['id'])->nombre ?? 'Desconocido';
+                    throw new \Exception("No hay stock suficiente para el producto '{$productoNombre}' en el almacén seleccionado.");
                 }
             }
 
@@ -260,5 +284,76 @@ class VentaController extends Controller
                 'error'   => $e->getMessage()
             ], 500);
         }
+    }
+
+    public function ventasRegistradas()
+    {
+        return view('venta.ventaRegistrada');
+    }
+    public function fetchVentas(Request $request)
+    {
+        $empresaId = auth()->user()->id_empresa;
+
+        $query = Venta::with([
+            'cliente',
+            'usuario',
+            'almacen',
+            'detalles.producto',
+            'detalles.unidadMedida'
+        ])->whereHas('almacen.sucursal', function ($q) use ($empresaId) {
+            $q->where('empresa_id', $empresaId);
+        });
+
+        // 📅 Filtro fechas
+        if ($request->filled('from') && $request->filled('to')) {
+            $query->whereBetween('fecha', [$request->from, $request->to]);
+        }
+
+        // 🔍 Buscador general
+        if ($request->filled('q')) {
+            $search = $request->q;
+            $query->where(function ($q) use ($search) {
+                $q->where('codigo', 'like', "%{$search}%")
+                    ->orWhere('forma_pago', 'like', "%{$search}%")
+                    ->orWhere('estado', 'like', "%{$search}%")
+                    ->orWhereHas('cliente', fn($qc) =>
+                    $qc->where('nombre', 'like', "%{$search}%")
+                        ->orWhere('apellido_paterno', 'like', "%{$search}%")
+                        ->orWhere('ci', 'like', "%{$search}%"))
+                    ->orWhereHas('usuario', fn($qu) =>
+                    $qu->where('name', 'like', "%{$search}%"))
+                    ->orWhereHas('almacen', fn($qa) =>
+                    $qa->where('nombre', 'like', "%{$search}%"));
+            });
+        }
+
+        // 📌 Filtro estado (opcional)
+        if ($request->filled('status') && $request->status !== 'Todos') {
+            $query->where('estado', $request->status);
+        }
+
+        // 📄 Paginación
+        $perPage = $request->get('per_page', 10);
+        $ventas = $query->orderBy('fecha', 'desc')->paginate($perPage);
+
+        return response()->json($ventas);
+    }
+
+
+    // Imprimir venta
+    public function imprimir($id)
+    {
+        $venta = Venta::with(['cliente', 'usuario', 'detalles', 'detalles.producto'])->findOrFail($id);
+        $empresa = Empresa::first();
+
+        $logoBase64 = null;
+        if ($empresa && $empresa->logo) {
+            $path = storage_path('app/public/' . $empresa->logo);
+            if (file_exists($path)) {
+                $logoBase64 = 'data:image/' . pathinfo($path, PATHINFO_EXTENSION) . ';base64,' . base64_encode(file_get_contents($path));
+            }
+        }
+
+        return view('venta.imprimir.imprimirVenta', compact('venta', 'empresa', 'logoBase64'));
     }
 }
