@@ -1,58 +1,49 @@
 <?php
 
-    use Illuminate\Database\Migrations\Migration;
-    use Illuminate\Database\Schema\Blueprint;
-    use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
-    return new class extends Migration
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
     {
-        /**
-         * Run the migrations.
-         */
-        public function up(): void
-        {
-            Schema::create('producto_almacen', function (Blueprint $table) {
-                // id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY
-                $table->id();
+        Schema::create('producto_almacen', function (Blueprint $table) {
+            $table->id();
 
-                // BIGINT UNSIGNED (con índices tipo MUL)
-                $table->foreignId('producto_id')
-                    ->constrained('producto')   // si tus tablas se llaman exactamente 'producto', 'almacen', 'empresa'
-                    ->cascadeOnDelete();        // opcional; quítalo si no quieres FK
+            $table->foreignId('producto_id')->constrained('producto');
+            $table->foreignId('almacen_id')->constrained('almacen');
+            $table->foreignId('empresa_id')->constrained('empresa');
 
-                $table->foreignId('almacen_id')
-                    ->constrained('almacen')
-                    ->cascadeOnDelete();
+            $table->string('lote', 100)->nullable()->index();
+            $table->integer('id_lote')->nullable();
 
+<<<<<<< HEAD
                 $table->foreignId('empresa_id')
                     ->constrained('empresa');
+=======
+            // 🔹 este campo ya no debe ser único globalmente
+            $table->unsignedBigInteger('producto_compra_id')->nullable();
+>>>>>>> 8a1715c3e3c466815bbe8a55b11de5e612b618e6
 
-                // lote VARCHAR(100) NULL con índice (MUL)
-                $table->string('lote', 100)->nullable()->index();
+            $table->decimal('stock', 12, 2)->default(0.00);
+            $table->integer('estado')->default(1);
 
-                // id_lote INT(11) NULL
-                $table->integer('id_lote')->nullable();
+            $table->timestamps();
 
-                // producto_compra_id INT(11) NOT NULL UNIQUE
-                $table->integer('producto_compra_id');
-                $table->unique('producto_compra_id');
+            // 🔹 índice único: producto+almacén+lote
+            $table->unique(['producto_id', 'almacen_id', 'lote'], 'producto_almacen_unique');
+        });
+    }
 
-                // stock DECIMAL(12,2) NOT NULL DEFAULT 0.00
-                $table->decimal('stock', 12, 2)->default(0.00);
-
-                // estado INT(11) NOT NULL DEFAULT 1
-                $table->integer('estado')->default(1);
-
-                // created_at / updated_at -> NULL por defecto
-                $table->timestamps();
-            });
-        }
-
-        /**
-         * Reverse the migrations.
-         */
-        public function down(): void
-        {
-            Schema::dropIfExists('producto_almacen');
-        }
-    };
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('producto_almacen');
+    }
+};

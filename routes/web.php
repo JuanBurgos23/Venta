@@ -228,6 +228,10 @@ Route::get('/buscar-producto/{codigo}', [VentaController::class, 'buscarPorCodig
     ->name('productos.buscar');
 Route::post('/clientes/store', [VentaController::class, 'ClienteStore'])->name('clientes.store');
 Route::post('/venta/store', [VentaController::class, 'store'])->name('venta.store');
+Route::get('/venta/registradas', [VentaController::class, 'ventasRegistradas'])->name('ventas.registradas');
+Route::get('/ventas/fetch', [VentaController::class, 'fetchVentas'])->name('ventas.fetch');
+//impirmir venta
+Route::get('/ventas/print/{id}', [VentaController::class, 'imprimir'])->name('ventas.print');
 
 
 

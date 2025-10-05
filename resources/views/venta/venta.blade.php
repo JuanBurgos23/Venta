@@ -1399,7 +1399,7 @@
 
                             if (!nextAction.isConfirmed) {
                                 // Redirigir a lista de ventas
-                                window.location.href = '/venta';
+                                window.location.href = '/venta/registradas';
                             }
 
                         } else {
@@ -1564,7 +1564,7 @@
             // Función que consulta la base de datos y agrega al carrito
             async function processBarcode(code) {
                 try {
-                    let response = await fetch(`/buscar-producto/${code}`);
+                    const response = await fetch(`/buscar-producto/${code}`);
                     if (!response.ok) {
                         showAlert('Error en la búsqueda', 'danger');
                         return;
@@ -1573,7 +1573,12 @@
                     let product = await response.json();
 
                     if (product) {
-                        addToCart(product); // tu función para agregar al detalle
+                        // 🔹 Convertimos price y stock a números
+                        product.price = parseFloat(product.price);
+                        product.stock = parseFloat(product.stock);
+
+                        // Ahora addToCart puede usar .toFixed sin errores
+                        addToCart(product);
                     } else {
                         showAlert('Producto no encontrado', 'warning');
                     }
@@ -1581,7 +1586,6 @@
                     showAlert('Error al procesar el código: ' + error.message, 'danger');
                 }
             }
-
             document.getElementById('newClientForm').addEventListener('submit', async function(e) {
                 e.preventDefault();
                 const form = e.target;
