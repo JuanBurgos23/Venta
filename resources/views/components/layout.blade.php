@@ -1241,115 +1241,11 @@
                         </a>
                     </li>
 
-                    <li class="menu-item {{ Request::routeIs('compra.index') ? 'active' : '' }}">
-                        <a href="{{ route('compra.index') }}" class="menu-link">
+                    <li class="menu-item {{ Request::routeIs('compras.index') ? 'active' : '' }}">
+                        <a href="{{ route('compras.index') }}" class="menu-link">
                             <i class="menu-icon bx bx-shopping-bag"></i>
                             <div data-i18n="Compra">Compra</div>
                         </a>
-                    </li>
-                    <li class="menu-item">
-                        <a href="javascript:void(0);" class="menu-link menu-toggle">
-                            <i class="menu-icon icon-base bx bx-dock-top"></i>
-                            <div data-i18n="Pages">Pages</div>
-                        </a>
-                        <ul class="menu-sub">
-                            <li class="menu-item">
-                                <a href="javascript:void(0);" class="menu-link menu-toggle">
-                                    <div data-i18n="User Profile">User Profile</div>
-                                </a>
-                                <ul class="menu-sub">
-                                    <li class="menu-item">
-                                        <a href="pages-profile-user.html" class="menu-link">
-                                            <div data-i18n="Profile">Profile</div>
-                                        </a>
-                                    </li>
-                                    <li class="menu-item">
-                                        <a href="pages-profile-teams.html" class="menu-link">
-                                            <div data-i18n="Teams">Teams</div>
-                                        </a>
-                                    </li>
-                                    <li class="menu-item">
-                                        <a href="pages-profile-projects.html" class="menu-link">
-                                            <div data-i18n="Projects">Projects</div>
-                                        </a>
-                                    </li>
-                                    <li class="menu-item">
-                                        <a href="pages-profile-connections.html" class="menu-link">
-                                            <div data-i18n="Connections">Connections</div>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="menu-item">
-                                <a href="javascript:void(0);" class="menu-link menu-toggle">
-                                    <div data-i18n="Account Settings">Account Settings</div>
-                                </a>
-                                <ul class="menu-sub">
-                                    <li class="menu-item">
-                                        <a href="pages-account-settings-account.html" class="menu-link">
-                                            <div data-i18n="Account">Account</div>
-                                        </a>
-                                    </li>
-                                    <li class="menu-item">
-                                        <a href="pages-account-settings-security.html" class="menu-link">
-                                            <div data-i18n="Security">Security</div>
-                                        </a>
-                                    </li>
-                                    <li class="menu-item">
-                                        <a href="pages-account-settings-billing.html" class="menu-link">
-                                            <div data-i18n="Billing &amp; Plans">Billing &amp; Plans</div>
-                                        </a>
-                                    </li>
-                                    <li class="menu-item">
-                                        <a href="pages-account-settings-notifications.html" class="menu-link">
-                                            <div data-i18n="Notifications">Notifications</div>
-                                        </a>
-                                    </li>
-                                    <li class="menu-item">
-                                        <a href="pages-account-settings-connections.html" class="menu-link">
-                                            <div data-i18n="Connections">Connections</div>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="menu-item">
-                                <a href="pages-faq.html" class="menu-link">
-                                    <div data-i18n="FAQ">FAQ</div>
-                                </a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="pages-pricing.html" class="menu-link">
-                                    <div data-i18n="Pricing">Pricing</div>
-                                </a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="javascript:void(0);" class="menu-link menu-toggle">
-                                    <div data-i18n="Misc">Misc</div>
-                                </a>
-                                <ul class="menu-sub">
-                                    <li class="menu-item">
-                                        <a href="pages-misc-error.html" class="menu-link" target="_blank">
-                                            <div data-i18n="Error">Error</div>
-                                        </a>
-                                    </li>
-                                    <li class="menu-item">
-                                        <a href="pages-misc-under-maintenance.html" class="menu-link" target="_blank">
-                                            <div data-i18n="Under Maintenance">Under Maintenance</div>
-                                        </a>
-                                    </li>
-                                    <li class="menu-item">
-                                        <a href="pages-misc-comingsoon.html" class="menu-link" target="_blank">
-                                            <div data-i18n="Coming Soon">Coming Soon</div>
-                                        </a>
-                                    </li>
-                                    <li class="menu-item">
-                                        <a href="pages-misc-not-authorized.html" class="menu-link" target="_blank">
-                                            <div data-i18n="Not Authorized">Not Authorized</div>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-                        </ul>
                     </li>
                     <li class="menu-item">
                         <a href="javascript:void(0);" class="menu-link menu-toggle">
@@ -1504,13 +1400,13 @@
                     <li class="menu-item">
                         <a href="javascript:void(0);" class="menu-link menu-toggle">
                             <i class="menu-icon icon-base bx bx-collection"></i>
-                            <div data-i18n="Cards">Cards</div>
+                            <div data-i18n="Inventario">Inventario</div>
                             <div class="badge text-bg-primary rounded-pill ms-auto">6</div>
                         </a>
                         <ul class="menu-sub">
                             <li class="menu-item">
                                 <a href="cards-basic.html" class="menu-link">
-                                    <div data-i18n="Basic">Basic</div>
+                                    <div data-i18n="Rep. Inventario">Rep. Inventario</div>
                                 </a>
                             </li>
                             <li class="menu-item">

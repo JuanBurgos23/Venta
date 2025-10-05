@@ -12,6 +12,7 @@ use App\Http\Controllers\SucursalController;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\CompraController;
 use App\Http\Controllers\DashboardControoler;
+use App\Http\Controllers\ProductoAlmacenController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\ProveedorController;
 use App\Http\Controllers\SubcategoriaController;
@@ -137,7 +138,6 @@ Route::post('/proveedores/{id}/delete', [ProveedorController::class, 'marcarBorr
 
 //compra
 
-<<<<<<< HEAD
 // CRUD (listado)
 Route::get('/compras', [CompraController::class, 'crud'])->name('compras.index');
 
@@ -156,9 +156,6 @@ Route::delete('/compras/{id}', [CompraController::class, 'destroy'])->name('comp
 
 
 
-=======
-Route::get('/compra', [CompraController::class, 'index'])->name('compra.index');
->>>>>>> 6020095fbc22d81bc8b8744b4eac3ea2e1a860c6
 Route::get('/proveedores/list', [CompraController::class, 'ProveedorSearch'])->name('proveedores.search');
 Route::post('/proveedores/store', [CompraController::class, 'ProveedorStore'])->name('proveedores.store');
 Route::get('almacenes/list', [CompraController::class, 'AlmacenList'])->name('almacenes.list');
@@ -192,6 +189,18 @@ Route::get('/api/tipos-producto', [ProductoController::class, 'tiposProducto']);
 Route::get('/api/unidades-medida', [ProductoController::class, 'unidadesMedida']);
 Route::get('/api/tipos-precio', [ProductoController::class, 'tiposPrecio']);
 
+Route::get('/producto/importar', function () {
+    return view('producto.importar'); // nombre de tu blade
+})->name('producto.importar');
+
+Route::post('/productos/importar', [ProductoController::class, 'importarMasivo'])
+    ->name('productos.importar.store');
+
+//inventario
+Route::get('/inventario/reporte', [ProductoAlmacenController::class, 'reporteInventario'])
+    ->name('inventario.reporte');
+Route::get('/inventario/producto/{productoId}/lotes', [ProductoAlmacenController::class, 'lotesPorProducto'])
+    ->name('inventario.lotes');
 // Productos (solo lectura para búsqueda)
 Route::get('/productos', [ProductoController::class, 'fetch']);
 Route::get('/productos/{id}', [ProductoController::class, 'show']);   // obtener producto por ID
