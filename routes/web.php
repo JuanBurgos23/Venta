@@ -2,22 +2,24 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RolController;
+use App\Http\Controllers\VentaController;
+use App\Http\Controllers\CompraController;
 use App\Http\Controllers\PerfilController;
 use App\Http\Controllers\AlmacenController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UsuarioController;
+use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\SucursalController;
 use App\Http\Controllers\CategoriaController;
-use App\Http\Controllers\CompraController;
 use App\Http\Controllers\DashboardControoler;
-use App\Http\Controllers\ProductoAlmacenController;
-use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\ProveedorController;
 use App\Http\Controllers\SubcategoriaController;
 use App\Http\Controllers\UnidadMedidaController;
-use App\Http\Controllers\VentaController;
+use App\Http\Controllers\ImportProductosController;
+use App\Http\Controllers\ProductoAlmacenController;
+use App\Http\Controllers\InventarioReporteController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -193,13 +195,18 @@ Route::get('/producto/importar', function () {
     return view('producto.importar'); // nombre de tu blade
 })->name('producto.importar');
 
-Route::post('/productos/importar', [ProductoController::class, 'importarMasivo'])
+Route::post('/productos/importar', [ImportProductosController::class, 'store'])
     ->name('productos.importar.store');
 
-//inventario
-Route::get('/inventario/reporte', [ProductoAlmacenController::class, 'reporteInventario'])
+Route::get('/inventario/reporte', [InventarioReporteController::class, 'index'])
+    ->name('inventario.view');
+    
+    // DATOS (JSON)
+Route::get('/inventario/reporte/data', [InventarioReporteController::class, 'reporte'])
     ->name('inventario.reporte');
-Route::get('/inventario/producto/{productoId}/lotes', [ProductoAlmacenController::class, 'lotesPorProducto'])
+
+// LOTES
+Route::get('/inventario/reporte/{productoId}/lotes', [InventarioReporteController::class, 'lotes'])
     ->name('inventario.lotes');
 // Productos (solo lectura para búsqueda)
 Route::get('/productos', [ProductoController::class, 'fetch']);

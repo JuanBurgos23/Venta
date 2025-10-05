@@ -1206,6 +1206,11 @@
                                     <div data-i18n="Registrar Producto">Registrar Producto</div>
                                 </a>
                             </li>
+                            <li class="menu-item {{ Request::routeIs('producto.importar') ? 'active' : '' }}">
+                                <a href="{{ route('producto.importar') }}" class="menu-link">
+                                    <div data-i18n="Importar productos">Importar productos</div>
+                                </a>
+                            </li>
                         </ul>
                     </li>
 
@@ -1421,9 +1426,9 @@
                             <div class="badge text-bg-primary rounded-pill ms-auto">6</div>
                         </a>
                         <ul class="menu-sub">
-                            <li class="menu-item">
-                                <a href="cards-basic.html" class="menu-link">
-                                    <div data-i18n="Rep. Inventario">Rep. Inventario</div>
+                            <li class="menu-item {{ Request::routeIs('inventario.reporte') ? 'active' : '' }}">
+                                <a href="{{ route('inventario.reporte') }}" class="menu-link">
+                                    <div data-i18n="Rep. de inventario">Rep. de inventario</div>
                                 </a>
                             </li>
                             <li class="menu-item">
