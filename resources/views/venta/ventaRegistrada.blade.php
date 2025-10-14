@@ -37,9 +37,6 @@
                                     </select>
                                 </div>
 
-                                <button class="btn btn-primary btn-sm" id="btnExportPdf">
-                                    <i class="bx bx-printer"></i> Imprimir vista
-                                </button>
                             </div>
                         </div>
 
@@ -199,7 +196,7 @@
             const today = new Date().toISOString().slice(0, 10);
             filterFrom.value = today;
             filterTo.value = today;
-
+            loadSales(1);
             // Debounce helper
             function debounce(fn, delay = 250) {
                 let t;
@@ -416,14 +413,14 @@
                     };
                 });
 
-                    // Imprimir
-                    document.querySelectorAll('.btn-print').forEach(btn => {
-                        btn.onclick = () => {
-                            const id = btn.dataset.id;
-                            window.open(PRINT_URL(id), '_blank');
-                        };
-                    });
-                }
+                // Imprimir
+                document.querySelectorAll('.btn-print').forEach(btn => {
+                    btn.onclick = () => {
+                        const id = btn.dataset.id;
+                        window.open(PRINT_URL(id), '_blank');
+                    };
+                });
+            }
 
             // Render paginación
             function renderPagination() {

@@ -1185,7 +1185,7 @@
                         </a>
                     </li>
 
-                    <li class="menu-item {{ Request::routeIs('productos.index') || Request::routeIs('categorias.index') || Request::routeIs('unidad_medida.index') ? 'active open' : '' }}">
+                    <li class="menu-item {{ Request::routeIs('productos.index') || Request::routeIs('categorias.index') || Request::routeIs('unidad_medida.index') || Request::routeIs('producto.importar') ? 'active open' : '' }}">
                         <a href="javascript:void(0);" class="menu-link menu-toggle">
                             <i class="menu-icon icon-base bx bx-package"></i>
                             <div data-i18n="Productos">Productos</div>
@@ -1239,7 +1239,7 @@
                             </li>
                         </ul>
                     </li>
-                    <li class="menu-item {{ Request::routeIs('venta.*') ? 'active open' : '' }}">
+                    <li class="menu-item {{ Request::routeIs('ventas.*') ? 'active open' : '' }}">
                         <a href="javascript:void(0);" class="menu-link menu-toggle">
                             <i class="menu-icon bx bx-cart"></i>
                             <div data-i18n="Ventas">Ventas</div>
@@ -1426,8 +1426,8 @@
                             <div class="badge text-bg-primary rounded-pill ms-auto">6</div>
                         </a>
                         <ul class="menu-sub">
-                            <li class="menu-item {{ Request::routeIs('inventario.reporte') ? 'active' : '' }}">
-                                <a href="{{ route('inventario.reporte') }}" class="menu-link">
+                            <li class="menu-item {{ Request::routeIs('inventario.view') ? 'active' : '' }}">
+                                <a href="{{ route('inventario.view') }}" class="menu-link">
                                     <div data-i18n="Rep. de inventario">Rep. de inventario</div>
                                 </a>
                             </li>

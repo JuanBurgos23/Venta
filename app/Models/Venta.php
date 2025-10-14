@@ -15,6 +15,8 @@ class Venta extends Model
         'empresa_id',
         'almacen_id',
         'descuento',
+        'billete',
+        'cambio',
         'total',
         'forma_pago',
         'estado',

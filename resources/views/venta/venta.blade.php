@@ -22,8 +22,16 @@
                             <input type="text" name="empresa_id" id="empresa_id" value="{{ Auth::user()->id_empresa }}" hidden>
                             <span class="d-flex align-items-center">
                                 <i class="fa fa-calendar me-1" aria-hidden="true"></i>
-                                <input type="date" class="form-control form-control-sm border-0 bg-transparent p-0 ms-1 text-dark" id="sale-date" value="{{ date('Y-m-d') }}" style="width: auto; display: inline-block;">
+                                <input type="datetime-local"
+                                    class="form-control form-control-sm border-0 bg-transparent p-0 ms-1 text-dark"
+                                    id="sale-date"
+                                    style="width: auto; display: inline-block;">
                             </span>
+                        <div class="text-end mb-3">
+                            <button class="btn btn-success" id="btnCajaAccion">
+                                <i class="fas fa-cash-register"></i> Apertura/Cierre de Caja
+                            </button>
+                        </div>
                         <div class="mb-3">
                             <label for="almacen-select" class="form-label">Selecciona Almacén</label>
                             <select id="almacen-select" class="form-select">
@@ -398,6 +406,197 @@
             </form>
         </div>
     </div>
+    <!-- 🔸 Modal de apertura de caja -->
+    <div class="modal fade" id="modalAperturaCaja" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title">Apertura de Caja</h5>
+                </div>
+                <div class="modal-body">
+                    <form id="formAperturaCaja">
+                        <div class="mb-3">
+                            <label for="fecha_apertura" class="form-label">Fecha y hora de apertura</label>
+                            <input type="datetime-local" id="fecha_apertura" name="fecha_apertura" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="monto_inicial" class="form-label">Monto de apertura</label>
+                            <input type="number" step="0.01" id="monto_inicial" name="monto_inicial" class="form-control" required>
+                        </div>
+                        <select name="sucursal_id" class="form-select">
+                            @foreach($sucursales as $sucursal)
+                            <option value="{{ $sucursal->id }}">{{ $sucursal->nombre }}</option>
+                            @endforeach
+                        </select>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="btnCancelarCaja">Cancelar</button>
+                    <button type="submit" form="formAperturaCaja" class="btn btn-primary">Abrir caja</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Cierre de caja modal-->
+    <div class="modal fade" id="modalCierreCaja" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title">Cierre de Caja</h5>
+                </div>
+                <div class="modal-body">
+                    <form id="formCierreCaja">
+                        <div class="mb-3">
+                            <label for="fecha_apertura_cierre" class="form-label">Fecha y hora de apertura</label>
+                            <input type="text" id="fecha_apertura_cierre" class="form-control" readonly>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="monto_inicial_cierre" class="form-label">Monto de apertura</label>
+                            <input type="text" id="monto_inicial_cierre" class="form-control" readonly>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="fecha_cierre" class="form-label">Fecha y hora de cierre</label>
+                            <input type="datetime-local" id="fecha_cierre" name="fecha_cierre" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="monto_final" class="form-label">Monto de cierre</label>
+                            <input type="number" id="monto_final" name="monto_final" class="form-control" step="0.01" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="observacion" class="form-label">Observaciones</label>
+                            <textarea id="observacion" name="observacion" rows="3" class="form-control" placeholder="Observaciones sobre el cierre..."></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" form="formCierreCaja" class="btn btn-danger">Cerrar Caja</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            const modalApertura = new bootstrap.Modal(document.getElementById('modalAperturaCaja'));
+            const modalCierre = new bootstrap.Modal(document.getElementById('modalCierreCaja'));
+            let cajaActiva = null;
+
+            // Función para obtener caja activa
+            async function verificarCaja() {
+                const res = await fetch('/caja/verificar');
+                const data = await res.json();
+                cajaActiva = data.activa ? data.caja : null;
+                return data;
+            }
+
+            // Mostrar modal si no hay caja activa
+            const estado = await verificarCaja();
+            if (!estado.activa) {
+                setDefaultDatetime('fecha_apertura');
+                modalApertura.show();
+                document.querySelector("#contenedorProductos")?.classList.add("d-none");
+            }
+
+            // Configurar botón principal
+            document.getElementById('btnCajaAccion').addEventListener('click', () => {
+                if (!cajaActiva) {
+                    setDefaultDatetime('fecha_apertura');
+                    modalApertura.show();
+                } else {
+                    // Llenar datos de la caja activa en el modal de cierre
+                    document.getElementById('fecha_apertura_cierre').value = cajaActiva.fecha_apertura;
+                    document.getElementById('monto_inicial_cierre').value = cajaActiva.monto_inicial;
+                    setDefaultDatetime('fecha_cierre');
+                    modalCierre.show();
+                }
+            });
+
+            // Abrir caja
+            document.getElementById('formAperturaCaja').addEventListener('submit', async e => {
+                e.preventDefault();
+                const formData = new FormData(e.target);
+
+                const res = await fetch('/caja/abrir', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: formData
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Caja abierta correctamente',
+                        timer: 1500,
+                        showConfirmButton: false,
+                        didClose: () => {
+                            location.reload();
+                        }
+                    });
+                    modalApertura.hide();
+                    document.querySelector("#contenedorProductos")?.classList.remove("d-none");
+                    cajaActiva = data.caja;
+
+                }
+            });
+
+            // Cerrar caja
+            document.getElementById('formCierreCaja').addEventListener('submit', async e => {
+                e.preventDefault();
+                const formData = new FormData(e.target);
+
+                const res = await fetch('/caja/cerrar', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: formData
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Caja cerrada correctamente',
+                        timer: 1500,
+                        showConfirmButton: false,
+                        didClose: () => {
+                            location.reload();
+                        }
+                    });
+                    modalCierre.hide();
+                    cajaActiva = null;
+                    document.querySelector("#contenedorProductos")?.classList.add("d-none");
+                }
+            });
+
+            // Cancelar apertura sin abrir caja
+            document.getElementById('btnCancelarCaja').addEventListener('click', () => {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'No puedes realizar ventas sin abrir una caja activa',
+                    text: 'Por favor abre una caja para continuar.',
+                    confirmButtonText: 'Entendido'
+                });
+            });
+
+            // Función para establecer fecha/hora actual
+            function setDefaultDatetime(id) {
+                const input = document.getElementById(id);
+                const now = new Date();
+                const local = new Date(now.getTime() - now.getTimezoneOffset() * 60000)
+                    .toISOString().slice(0, 16);
+                input.value = local;
+            }
+        });
+    </script>
 
     <style>
         :root {
@@ -699,7 +898,7 @@
     </style>
     <script>
         // aquí Laravel ya resuelve la ruta real de la imagen
-        const defaultImage = "{{ asset('assets/img/avatars/perfil1.jpg') }}";
+        const defaultImage = "{{ asset('assets/img/backgrounds/default.jpg') }}";
     </script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -738,11 +937,33 @@
             const closeMobileCart = document.getElementById('close-mobile-cart');
             const mobileCartOverlay = document.getElementById('mobile-cart-overlay');
             const mobileCartCount = document.getElementById('mobile-cart-count');
+            const saleDateInput = document.getElementById('sale-date');
+            const now = new Date();
+
+            // Ajusta la hora local para datetime-local (YYYY-MM-DDTHH:mm)
+            const offset = now.getTimezoneOffset();
+            const localISOTime = new Date(now.getTime() - (offset * 60000))
+                .toISOString()
+                .slice(0, 16);
+
+            saleDateInput.value = localISOTime;
 
             // Cargar productos y clientes al iniciar
             loadProducts();
             loadClients();
+            const discountInput = document.getElementById("discount-input");
+            const billeteInput = document.getElementById("billete");
 
+            const mobileDiscountInput = document.getElementById("mobile-discount-input");
+            const mobileBilleteInput = document.getElementById("mobile-billete");
+
+            // Escritorio
+            discountInput.addEventListener("input", () => updateCart());
+            billeteInput.addEventListener("input", () => updateCart());
+
+            // Móvil
+            mobileDiscountInput.addEventListener("input", () => updateCart());
+            mobileBilleteInput.addEventListener("input", () => updateCart());
             // Event listeners
             document.getElementById('load-more-new').addEventListener('click', loadMoreNewProducts);
             document.getElementById('load-more-best').addEventListener('click', loadMoreBestSellers);
@@ -766,6 +987,8 @@
             // Evento para selección de cliente
             clientSelect.addEventListener('change', updateClientInfo);
             mobileClientSelect.addEventListener('change', updateMobileClientInfo);
+
+
 
             async function loadAlmacenes() {
                 try {
@@ -1332,7 +1555,10 @@
                 }
 
                 const paymentMethod = paymentMethodSelect.value;
-                const saleType = saleTypeSelect.value;
+                // Detectar el select visible o disponible
+                const saleTypeElement = document.getElementById('sale-type') || document.getElementById('mobile-sale-type');
+                const saleType = saleTypeElement.value; // "contado" o "credito"
+
 
                 const saleData = {
                     client_id: clientId,
@@ -1340,9 +1566,14 @@
                     payment_method: paymentMethod,
                     sale_type: saleType,
                     items: cart,
-                    date: document.getElementById('sale-date').value
+                    date: document.getElementById('sale-date').value,
+                    subtotal: parseFloat(document.getElementById('subtotal').textContent.replace(/[^\d.-]/g, '')) || 0,
+                    descuento: parseFloat(document.getElementById('discount-input').value) || 0, // 👈 cuidado con el id
+                    total: parseFloat(document.getElementById('total').textContent.replace(/[^\d.-]/g, '')) || 0,
+                    billete: parseFloat(document.getElementById('billete').value) || 0,
+                    cambio: parseFloat(document.getElementById('cambio').textContent.replace(/[^\d.-]/g, '')) || 0,
                 };
-
+                console.log('Datos de la venta:', saleData);
                 if (saleType === 'credito') {
                     saleData.due_date = document.getElementById('due-date').value;
                     saleData.installments = document.getElementById('installments').value;

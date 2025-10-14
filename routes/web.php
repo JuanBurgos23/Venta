@@ -6,6 +6,7 @@ use App\Http\Controllers\VentaController;
 use App\Http\Controllers\CompraController;
 use App\Http\Controllers\PerfilController;
 use App\Http\Controllers\AlmacenController;
+use App\Http\Controllers\CajaController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\ProfileController;
@@ -192,7 +193,7 @@ Route::get('/api/unidades-medida', [ProductoController::class, 'unidadesMedida']
 Route::get('/api/tipos-precio', [ProductoController::class, 'tiposPrecio']);
 
 Route::get('/producto/importar', function () {
-    return view('producto.importar'); // nombre de tu blade
+    return view('producto.importar');
 })->name('producto.importar');
 
 Route::post('/productos/importar', [ImportProductosController::class, 'store'])
@@ -200,8 +201,8 @@ Route::post('/productos/importar', [ImportProductosController::class, 'store'])
 
 Route::get('/inventario/reporte', [InventarioReporteController::class, 'index'])
     ->name('inventario.view');
-    
-    // DATOS (JSON)
+
+// DATOS (JSON)
 Route::get('/inventario/reporte/data', [InventarioReporteController::class, 'reporte'])
     ->name('inventario.reporte');
 
@@ -239,6 +240,11 @@ Route::get('/venta/registradas', [VentaController::class, 'ventasRegistradas'])-
 Route::get('/ventas/fetch', [VentaController::class, 'fetchVentas'])->name('ventas.fetch');
 //impirmir venta
 Route::get('/ventas/print/{id}', [VentaController::class, 'imprimir'])->name('ventas.print');
+
+//caja
+Route::get('/caja/verificar', [CajaController::class, 'verificarCajaActiva']);
+Route::post('/caja/abrir', [CajaController::class, 'abrirCaja']);
+Route::post('/caja/cerrar', [CajaController::class, 'cerrarCaja']);
 
 
 
