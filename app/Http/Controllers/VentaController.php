@@ -21,29 +21,44 @@ class VentaController extends Controller
 {
     public function index()
     {
-        return view('venta.venta');
+        $sucursales = Sucursal::where('empresa_id', Auth::user()->id_empresa)->get();
+        return view('venta.venta', compact('sucursales'));
     }
     public function fetchProducto(Request $request)
     {
-        $empresaId = auth()->user()->id_empresa;
-        $almacenId = $request->input('almacen_id'); // viene del frontend
+        $usuario = auth()->user();
+        $empresaId = $usuario->id_empresa;
+        $almacenId = $request->input('almacen_id');
 
-        if (!$almacenId) {
-            return response()->json([], 400); // si no envían almacén
+        // ⚠️ 1️⃣ Verificar si el usuario tiene caja activa
+        $cajaActiva = \App\Models\Caja::where('usuario_id', $usuario->id)
+            ->where('empresa_id', $empresaId)
+            ->where('estado', 1)
+            ->first();
+
+        if (!$cajaActiva) {
+            return response()->json([
+                'error' => true,
+                'message' => 'No hay una caja activa. Debes abrir una caja para realizar ventas.'
+            ], 403);
         }
 
-        $productos = Producto::deEmpresa($empresaId)
+        // ⚠️ 2️⃣ Verificar que se haya enviado el almacén
+        if (!$almacenId) {
+            return response()->json([], 400);
+        }
+
+        // ✅ 3️⃣ Cargar productos normalmente
+        $productos = \App\Models\Producto::deEmpresa($empresaId)
             ->with('categoria')
             ->get();
 
         $data = $productos->map(function ($p) use ($empresaId, $almacenId) {
-            // 🔹 stock solo del almacen seleccionado
-            $stock = Producto_almacen::where('producto_id', $p->id)
+            $stock = \App\Models\Producto_almacen::where('producto_id', $p->id)
                 ->where('empresa_id', $empresaId)
                 ->where('almacen_id', $almacenId)
                 ->sum('stock');
 
-            // solo devolver productos con stock > 0
             if ($stock <= 0) return null;
 
             return [
@@ -54,10 +69,11 @@ class VentaController extends Controller
                 'stock'    => $stock,
                 'image'    => $p->foto ? asset('storage/' . $p->foto) : null,
             ];
-        })->filter()->values(); // eliminar nulls
+        })->filter()->values();
 
         return response()->json($data);
     }
+
 
     public function fetchAlmacenes()
     {
@@ -196,6 +212,11 @@ class VentaController extends Controller
             'sale_type'      => 'required|string',
             'date'           => 'required|date',
             'items'          => 'required|array|min:1',
+            'subtotal'       => 'required|numeric',
+            'descuento'      => 'nullable|numeric|min:0',
+            'total'          => 'required|numeric|min:0',
+            'billete'        => 'nullable|numeric|min:0',
+            'cambio'         => 'nullable|numeric|min:0',
         ]);
 
         try {
@@ -215,16 +236,20 @@ class VentaController extends Controller
 
             // Crear venta
             $venta = Venta::create([
-                'codigo'       => $codigo,
-                'fecha'        => $request->date,
-                'cliente_id'   => $request->client_id,
-                'usuario_id'   => Auth::id(),
-                'empresa_id'   => Auth::user()->id_empresa ?? null,
-                'almacen_id'   => $almacenId, // usar almacén seleccionado
-                'descuento'    => 0,
-                'total'        => $total,
-                'forma_pago'   => $request->payment_method,
+                'codigo'        => $codigo,
+                'fecha'         => $request->date,
+                'cliente_id'    => $request->client_id,
+                'usuario_id'    => Auth::id(),
+                'empresa_id'    => Auth::user()->id_empresa ?? null,
+                'almacen_id'    => $almacenId,
+                'descuento'     => $request->descuento ?? 0,
+                'total'         => $request->total,
+                'forma_pago'    => $request->payment_method,
+                'tipo_pago'     => $request->sale_type, // 👈 contado o credito
                 'observaciones' => null,
+                'billete'       => $request->billete ?? 0,  // 🔹 billete entregado
+                'cambio'        => $request->cambio ?? 0,   // 🔹 cambio devuelto
+                'estado' => $request->sale_type === 'contado' ? 'Pagado' : 'Pendiente',
             ]);
 
             // Insertar detalles y descontar stock por lotes (FIFO)
@@ -336,7 +361,9 @@ class VentaController extends Controller
 
         // 📅 Filtro fechas
         if ($request->filled('from') && $request->filled('to')) {
-            $query->whereBetween('fecha', [$request->from, $request->to]);
+            $from = Carbon::parse($request->from)->startOfDay();
+            $to = Carbon::parse($request->to)->endOfDay();
+            $query->whereBetween('fecha', [$from, $to]);
         }
 
         // 🔍 Buscador general
@@ -346,9 +373,10 @@ class VentaController extends Controller
                 $q->where('codigo', 'like', "%{$search}%")
                     ->orWhere('forma_pago', 'like', "%{$search}%")
                     ->orWhere('estado', 'like', "%{$search}%")
+                    ->orWhere('total', 'like', "%{$search}%")
                     ->orWhereHas('cliente', fn($qc) =>
                     $qc->where('nombre', 'like', "%{$search}%")
-                        ->orWhere('apellido_paterno', 'like', "%{$search}%")
+                        ->orWhere('paterno', 'like', "%{$search}%")
                         ->orWhere('ci', 'like', "%{$search}%"))
                     ->orWhereHas('usuario', fn($qu) =>
                     $qu->where('name', 'like', "%{$search}%"))

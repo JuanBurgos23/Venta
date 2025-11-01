@@ -25,9 +25,12 @@ return new class extends Migration
             // Totales
             $table->decimal('descuento', 12, 2)->default(0);
             $table->decimal('total', 12, 2)->default(0);
+            $table->decimal('billete', 12, 2)->default(0);
+            $table->decimal('cambio', 12, 2)->default(0);
 
             // Pago y estado
             $table->enum('forma_pago', ['Efectivo', 'Tarjeta', 'Qr'])->nullable();
+            $table->enum('tipo_pago', ['contado', 'credito'])->default('contado');
             $table->enum('estado', ['Registrado', 'Pagado', 'Pendiente', 'Anulado'])->default('Registrado');
 
             // Observaciones y timestamps
