@@ -10,6 +10,7 @@ use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UsuarioController;
+use App\Http\Controllers\FinanzasController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\SucursalController;
 use App\Http\Controllers\CategoriaController;
@@ -240,7 +241,27 @@ Route::get('/ventas/fetch', [VentaController::class, 'fetchVentas'])->name('vent
 //impirmir venta
 Route::get('/ventas/print/{id}', [VentaController::class, 'imprimir'])->name('ventas.print');
 
+Route::get('/finanzas', function () {
+    return view('finanzas.diario'); // resources/views/finanzas/diario.blade.php
+    })->name('finanzas.view');
 
+Route::get('/finanzas/diario', [FinanzasController::class, 'diario'])
+    ->name('finanzas.diario');
 
+Route::get('/finanzas/mensual', function () {
+        return view('finanzas.mensual'); // resources/views/finanzas/mensual.blade.php
+    })->name('finanzas.mensual.view');
+    
+    // JSON mensual
+Route::get('/finanzas/mensual/data', [FinanzasController::class, 'mensual'])
+        ->name('finanzas.mensual');
+        
+Route::get('/finanzas/ventas-producto', function () {
+            return view('finanzas.ventas_producto'); // crea este blade abajo
+        })->name('finanzas.vp.view');
+        
+        // JSON
+Route::get('/finanzas/ventas-producto/data', [FinanzasController::class, 'ventasPorProducto'])
+        ->name('finanzas.vp.data');
 
 require __DIR__ . '/auth.php';
