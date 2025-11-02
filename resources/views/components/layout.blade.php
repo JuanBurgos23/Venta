@@ -15,6 +15,7 @@
 
     <!-- Canonical SEO -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
 
     <!-- ? PROD Only: Google Tag Manager (Default ThemeSelection: GTM-5DDHKGP, PixInvent: GTM-5J3LMKC) -->
     <script async="" src="https://www.googletagmanager.com/gtm.js?id=GTM-5DDHKGP"></script>
@@ -1269,118 +1270,26 @@
                             <div data-i18n="Compra">Compra</div>
                         </a>
                     </li>
-                    <li class="menu-item">
+                    <li class="menu-item {{ Request::routeIs('ingreso-*') ? 'active open' : '' }}">
                         <a href="javascript:void(0);" class="menu-link menu-toggle">
-                            <i class="menu-icon icon-base bx bx-lock-open-alt"></i>
-                            <div data-i18n="Authentications">Authentications</div>
+                            <i class="menu-icon bx bx-cart"></i>
+                            <div data-i18n="Ingreso/Egreso">Ingreso/Egreso</div>
                         </a>
                         <ul class="menu-sub">
-                            <li class="menu-item">
-                                <a href="javascript:void(0);" class="menu-link menu-toggle">
-                                    <div data-i18n="Login">Login</div>
+                            <li class="menu-item {{ Request::routeIs('ingreso-egreso-tipo.index') ? 'active' : '' }}">
+                                <a href="{{ route('ingreso-egreso-tipo.index') }}" class="menu-link">
+                                    <div data-i18n="Tipo Ingreso/Egreso">Tipo Ingreso/Egreso</div>
                                 </a>
-                                <ul class="menu-sub">
-                                    <li class="menu-item">
-                                        <a href="auth-login-basic.html" class="menu-link" target="_blank">
-                                            <div data-i18n="Basic">Basic</div>
-                                        </a>
-                                    </li>
-                                    <li class="menu-item">
-                                        <a href="auth-login-cover.html" class="menu-link" target="_blank">
-                                            <div data-i18n="Cover">Cover</div>
-                                        </a>
-                                    </li>
-                                </ul>
                             </li>
-                            <li class="menu-item">
-                                <a href="javascript:void(0);" class="menu-link menu-toggle">
-                                    <div data-i18n="Register">Register</div>
+                            <li class="menu-item {{ Request::routeIs('ventas.registradas') ? 'active' : '' }}">
+                                <a href="{{ route('ventas.registradas') }}" class="menu-link">
+                                    <div data-i18n="Lista de Ventas">Lista de Ventas</div>
                                 </a>
-                                <ul class="menu-sub">
-                                    <li class="menu-item">
-                                        <a href="auth-register-basic.html" class="menu-link" target="_blank">
-                                            <div data-i18n="Basic">Basic</div>
-                                        </a>
-                                    </li>
-                                    <li class="menu-item">
-                                        <a href="auth-register-cover.html" class="menu-link" target="_blank">
-                                            <div data-i18n="Cover">Cover</div>
-                                        </a>
-                                    </li>
-                                    <li class="menu-item">
-                                        <a href="auth-register-multisteps.html" class="menu-link" target="_blank">
-                                            <div data-i18n="Multi-steps">Multi-steps</div>
-                                        </a>
-                                    </li>
-                                </ul>
                             </li>
-                            <li class="menu-item">
-                                <a href="javascript:void(0);" class="menu-link menu-toggle">
-                                    <div data-i18n="Verify Email">Verify Email</div>
+                            <li class="menu-item ">
+                                <a href="" class="menu-link">
+                                    <div data-i18n="Reportes de Ventas">Reportes de Ventas</div>
                                 </a>
-                                <ul class="menu-sub">
-                                    <li class="menu-item">
-                                        <a href="auth-verify-email-basic.html" class="menu-link" target="_blank">
-                                            <div data-i18n="Basic">Basic</div>
-                                        </a>
-                                    </li>
-                                    <li class="menu-item">
-                                        <a href="auth-verify-email-cover.html" class="menu-link" target="_blank">
-                                            <div data-i18n="Cover">Cover</div>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="menu-item">
-                                <a href="javascript:void(0);" class="menu-link menu-toggle">
-                                    <div data-i18n="Reset Password">Reset Password</div>
-                                </a>
-                                <ul class="menu-sub">
-                                    <li class="menu-item">
-                                        <a href="auth-reset-password-basic.html" class="menu-link" target="_blank">
-                                            <div data-i18n="Basic">Basic</div>
-                                        </a>
-                                    </li>
-                                    <li class="menu-item">
-                                        <a href="auth-reset-password-cover.html" class="menu-link" target="_blank">
-                                            <div data-i18n="Cover">Cover</div>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="menu-item">
-                                <a href="javascript:void(0);" class="menu-link menu-toggle">
-                                    <div data-i18n="Forgot Password">Forgot Password</div>
-                                </a>
-                                <ul class="menu-sub">
-                                    <li class="menu-item">
-                                        <a href="auth-forgot-password-basic.html" class="menu-link" target="_blank">
-                                            <div data-i18n="Basic">Basic</div>
-                                        </a>
-                                    </li>
-                                    <li class="menu-item">
-                                        <a href="auth-forgot-password-cover.html" class="menu-link" target="_blank">
-                                            <div data-i18n="Cover">Cover</div>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="menu-item">
-                                <a href="javascript:void(0);" class="menu-link menu-toggle">
-                                    <div data-i18n="Two Steps">Two Steps</div>
-                                </a>
-                                <ul class="menu-sub">
-                                    <li class="menu-item">
-                                        <a href="auth-two-steps-basic.html" class="menu-link" target="_blank">
-                                            <div data-i18n="Basic">Basic</div>
-                                        </a>
-                                    </li>
-                                    <li class="menu-item">
-                                        <a href="auth-two-steps-cover.html" class="menu-link" target="_blank">
-                                            <div data-i18n="Cover">Cover</div>
-                                        </a>
-                                    </li>
-                                </ul>
                             </li>
                         </ul>
                     </li>

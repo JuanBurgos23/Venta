@@ -19,6 +19,7 @@ use App\Http\Controllers\ProveedorController;
 use App\Http\Controllers\SubcategoriaController;
 use App\Http\Controllers\UnidadMedidaController;
 use App\Http\Controllers\ImportProductosController;
+use App\Http\Controllers\IngresoEgresoController;
 use App\Http\Controllers\ProductoAlmacenController;
 use App\Http\Controllers\InventarioReporteController;
 
@@ -245,6 +246,13 @@ Route::get('/ventas/print/{id}', [VentaController::class, 'imprimir'])->name('ve
 Route::get('/caja/verificar', [CajaController::class, 'verificarCajaActiva']);
 Route::post('/caja/abrir', [CajaController::class, 'abrirCaja']);
 Route::post('/caja/cerrar', [CajaController::class, 'cerrarCaja']);
+
+//Ingresoos/ Egresos
+Route::get('/ingreso-egreso-tipo', [IngresoEgresoController::class, 'index'])->name('ingreso-egreso-tipo.index');
+Route::get('/tipo_ingreso_egreso/fetch', [IngresoEgresoController::class, 'fetch']);
+Route::get('/tipo_ingreso_egreso/{id}', [IngresoEgresoController::class, 'show']);
+Route::post('/tipo_ingreso_egreso', [IngresoEgresoController::class, 'store']);
+Route::put('/tipo_ingreso_egreso/{id}', [IngresoEgresoController::class, 'update']);
 
 
 
