@@ -1367,6 +1367,33 @@
                             </li>
                         </ul>
                     </li>
+
+                    <!-- FIANZAS -->
+                    <li class="menu-item">
+                        <a href="javascript:void(0);" class="menu-link menu-toggle">
+                            <i class="menu-icon icon-base bx bx-collection"></i>
+                            <div data-i18n="Finanzas">Finanzas</div>
+                            <div class="badge text-bg-primary rounded-pill ms-auto">6</div>
+                        </a>
+                        <ul class="menu-sub">
+                            <li class="menu-item {{ Request::routeIs('finanzas.*') ? 'active' : '' }}">
+                                <a href="{{ route('finanzas.view') }}" class="menu-link">
+                                    <div data-i18n="Rep. diario de ganancias">Rep. diario de ganancias</div>
+                                </a>
+                            </li>
+                            <li class="menu-item {{ Request::routeIs('finanzas.mensual.*') ? 'active' : '' }}">
+                                <a href="{{ route('finanzas.mensual.view') }}" class="menu-link">
+                                    <div data-i18n="Rep. mensual de ganancias">Rep. mensual de ganancias</div>
+                                </a>
+                            </li>
+                            <li class="menu-item {{ Request::routeIs('finanzas.vp.*') ? 'active' : '' }}">
+                                <a href="{{ route('finanzas.vp.view') }}" class="menu-link">
+                                    <div data-i18n="Rep. ventas por producto">Rep. ventas por producto</div>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                    </li>
                     <!-- User interface -->
                     <li class="menu-item">
                         <a href="javascript:void(0)" class="menu-link menu-toggle">

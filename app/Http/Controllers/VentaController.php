@@ -9,7 +9,8 @@ use App\Models\DetalleVenta;
 use App\Models\Empresa;
 use App\Models\Producto;
 use App\Models\Producto_almacen;
-use App\Models\Sucursal;
+use App\Models\Producto_compra;
+use App\Models\detalle_venta_lote;
 use App\Models\Venta;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -253,44 +254,72 @@ class VentaController extends Controller
 
             // Insertar detalles y descontar stock por lotes (FIFO)
             foreach ($request->items as $item) {
-                // Registrar el detalle de venta
                 $detalle = DetalleVenta::create([
-                    'venta_id'       => $venta->id,
-                    'producto_id'    => $item['id'],
-                    'cantidad'       => $item['quantity'],
+                    'venta_id'        => $venta->id,
+                    'producto_id'     => $item['id'],
+                    'cantidad'        => $item['quantity'],
                     'precio_unitario' => $item['price'],
-                    'subtotal'       => $item['price'] * $item['quantity'],
+                    'subtotal'        => $item['price'] * $item['quantity'],
                 ]);
-
+            
                 $cantidadPendiente = $item['quantity'];
-
-                // Buscar los lotes de ese producto en el almacén, ordenados por fecha de creación (FIFO)
+            
                 $lotes = Producto_almacen::where('producto_id', $item['id'])
                     ->where('empresa_id', Auth::user()->id_empresa)
                     ->where('almacen_id', $almacenId)
                     ->where('stock', '>', 0)
-                    ->orderBy('created_at', 'asc') // primer lote registrado primero
+                    ->orderBy('created_at', 'asc')
                     ->get();
-
+            
                 foreach ($lotes as $lote) {
-                    if ($cantidadPendiente <= 0) break; // ya se completó la venta
-
+                    if ($cantidadPendiente <= 0) break;
+            
+                    // costo del lote
+                    $costoUnit = 0;
+                    if ($lote->producto_compra_id) {
+                        $pc = Producto_compra::find($lote->producto_compra_id);
+                        $costoUnit = $pc?->costo_unitario ?? 0;
+                    }
+            
                     if ($lote->stock >= $cantidadPendiente) {
-                        // El lote puede cubrir toda la cantidad pendiente
-                        $lote->stock -= $cantidadPendiente;
-                        $lote->save();
+                        // Consumimos todo desde este lote
+                        $consumir = $cantidadPendiente;
+            
+                        // registrar pivot de costo
+                        detalle_venta_lote::create([
+                            'detalle_venta_id'   => $detalle->id,
+                            'producto_id'        => $item['id'],
+                            'producto_compra_id' => $lote->producto_compra_id,
+                            'producto_almacen_id'=> $lote->id,
+                            'cantidad'           => $consumir,
+                            'costo_unitario'     => $costoUnit,
+                            'costo_total'        => $costoUnit * $consumir,
+                        ]);
+            
+                        $lote->decrement('stock', $consumir);
                         $cantidadPendiente = 0;
                     } else {
-                        // El lote no cubre todo, se descuenta lo que tiene y se sigue al siguiente
-                        $cantidadPendiente -= $lote->stock;
-                        $lote->stock = 0;
-                        $lote->save();
+                        // Consumimos todo el lote y seguimos
+                        $consumir = $lote->stock;
+            
+                        detalle_venta_lote::create([
+                            'detalle_venta_id'   => $detalle->id,
+                            'producto_id'        => $item['id'],
+                            'producto_compra_id' => $lote->producto_compra_id,
+                            'producto_almacen_id'=> $lote->id,
+                            'cantidad'           => $consumir,
+                            'costo_unitario'     => $costoUnit,
+                            'costo_total'        => $costoUnit * $consumir,
+                        ]);
+            
+                        $cantidadPendiente -= $consumir;
+                        $lote->update(['stock' => 0]);
                     }
                 }
-
+            
                 if ($cantidadPendiente > 0) {
                     $productoNombre = Producto::find($item['id'])->nombre ?? 'Desconocido';
-                    throw new \Exception("No hay stock suficiente para el producto '{$productoNombre}' en el almacén seleccionado.");
+                    throw new \Exception("No hay stock suficiente para '{$productoNombre}' en el almacén seleccionado.");
                 }
             }
 
