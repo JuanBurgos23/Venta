@@ -1281,9 +1281,9 @@
                                     <div data-i18n="Tipo Ingreso/Egreso">Tipo Ingreso/Egreso</div>
                                 </a>
                             </li>
-                            <li class="menu-item {{ Request::routeIs('ventas.registradas') ? 'active' : '' }}">
-                                <a href="{{ route('ventas.registradas') }}" class="menu-link">
-                                    <div data-i18n="Lista de Ventas">Lista de Ventas</div>
+                            <li class="menu-item {{ Request::routeIs('ingreso-egreso.registrar') ? 'active' : '' }}">
+                                <a href="{{ route('ingreso-egreso.registrar') }}" class="menu-link">
+                                    <div data-i18n="Registro de ingreso/egreso">Registro de ingreso/egreso</div>
                                 </a>
                             </li>
                             <li class="menu-item ">
@@ -1377,7 +1377,7 @@
                         </a>
                         <ul class="menu-sub">
                             <li class="menu-item {{ Request::routeIs('finanzas.*') ? 'active' : '' }}">
-                                <a href="{{ route('finanzas.view') }}" class="menu-link">
+                                <a href="{{ route('finanzas.diario') }}" class="menu-link">
                                     <div data-i18n="Rep. diario de ganancias">Rep. diario de ganancias</div>
                                 </a>
                             </li>

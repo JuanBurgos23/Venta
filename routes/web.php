@@ -254,25 +254,37 @@ Route::get('/tipo_ingreso_egreso/fetch', [IngresoEgresoController::class, 'fetch
 Route::get('/tipo_ingreso_egreso/{id}', [IngresoEgresoController::class, 'show']);
 Route::post('/tipo_ingreso_egreso', [IngresoEgresoController::class, 'store']);
 Route::put('/tipo_ingreso_egreso/{id}', [IngresoEgresoController::class, 'update']);
+//registrar ingreso/egreso
+Route::get('/ingreso-egreso/registrar', [IngresoEgresoController::class, 'registrarIngresoEgresoIndex'])->name('ingreso-egreso.registrar');
+Route::get('/ingreso-egreso/fetch', [IngresoEgresoController::class, 'fetchIngresoEgreso'])->name('ingreso-egreso.fetch');
+Route::post('/ingreso_egreso_registrar', [IngresoEgresoController::class, 'storeIngresoEgreso'])->name('ingreso_egreso.store');
+Route::get('/ingreso-egreso/{id}', [IngresoEgresoController::class, 'showIngresoEgreso'])->name('ingreso-egreso.show');
+Route::post('/ingreso_egreso_actualizar/{id}', [IngresoEgresoController::class, 'updateIngresoEgreso'])->name('ingreso_egreso.update');
 
+
+
+
+
+
+//finanzas
 
 Route::get('/finanzas/diario', [FinanzasController::class, 'diario'])
     ->name('finanzas.diario');
 
 Route::get('/finanzas/mensual', function () {
-        return view('finanzas.mensual'); // resources/views/finanzas/mensual.blade.php
-    })->name('finanzas.mensual.view');
-    
-    // JSON mensual
+    return view('finanzas.mensual'); // resources/views/finanzas/mensual.blade.php
+})->name('finanzas.mensual.view');
+
+// JSON mensual
 Route::get('/finanzas/mensual/data', [FinanzasController::class, 'mensual'])
-        ->name('finanzas.mensual');
-        
+    ->name('finanzas.mensual');
+
 Route::get('/finanzas/ventas-producto', function () {
-            return view('finanzas.ventas_producto'); // crea este blade abajo
-        })->name('finanzas.vp.view');
-        
-        // JSON
+    return view('finanzas.ventas_producto'); // crea este blade abajo
+})->name('finanzas.vp.view');
+
+// JSON
 Route::get('/finanzas/ventas-producto/data', [FinanzasController::class, 'ventasPorProducto'])
-        ->name('finanzas.vp.data');
+    ->name('finanzas.vp.data');
 
 require __DIR__ . '/auth.php';

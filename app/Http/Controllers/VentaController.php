@@ -11,6 +11,7 @@ use App\Models\Producto;
 use App\Models\Producto_almacen;
 use App\Models\Producto_compra;
 use App\Models\detalle_venta_lote;
+use App\Models\Sucursal;
 use App\Models\Venta;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
