@@ -272,18 +272,16 @@ Route::get('/finanzas/diario', [FinanzasController::class, 'diario'])
     ->name('finanzas.diario');
 
 Route::get('/finanzas/mensual', function () {
-    return view('finanzas.mensual'); // resources/views/finanzas/mensual.blade.php
+    return view('finanzas.mensual');
 })->name('finanzas.mensual.view');
 
-// JSON mensual
 Route::get('/finanzas/mensual/data', [FinanzasController::class, 'mensual'])
     ->name('finanzas.mensual');
 
 Route::get('/finanzas/ventas-producto', function () {
-    return view('finanzas.ventas_producto'); // crea este blade abajo
+    return view('finanzas.ventas_producto');
 })->name('finanzas.vp.view');
 
-// JSON
 Route::get('/finanzas/ventas-producto/data', [FinanzasController::class, 'ventasPorProducto'])
     ->name('finanzas.vp.data');
 

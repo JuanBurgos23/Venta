@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\almacen;
 use App\Models\Compra;
 use App\Models\Producto;
@@ -15,29 +16,25 @@ use Illuminate\Support\Facades\DB;
 
 class CompraController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index()
     {
         return view('compra.compra');
     }
     public function crud()
     {
-        return view('compra.crud'); // la tabla CRUD
+        return view('compra.crud'); 
     }
 
 
-    /**
-     * Buscar proveedores (para TomSelect en compras)
-     */
+
     public function ProveedorSearch(Request $request)
     {
-        $empresaId = auth()->user()->id_empresa; // filtrar por empresa
+        $empresaId = auth()->user()->id_empresa; 
         $query = $request->input('query');
 
         $proveedores = Proveedor::where('id_empresa', $empresaId)
-            ->where('estado', 1) // solo activos, opcional
+            ->where('estado', 1) 
             ->where(function ($q) use ($query) {
                 $q->where('nombre', 'LIKE', "%{$query}%")
                     ->orWhere('paterno', 'LIKE', "%{$query}%")
@@ -62,9 +59,6 @@ class CompraController extends Controller
         return response()->json($data);
     }
 
-    /**
-     * Guardar un nuevo proveedor desde el modal
-     */
     public function ProveedorStore(Request $request)
     {
         $empresaId = auth()->user()->id_empresa;
@@ -118,9 +112,6 @@ class CompraController extends Controller
         return response()->json($data);
     }
 
-    /**
-     * Guarda un nuevo almacén.
-     */
     public function AlmacenStore(Request $request)
     {
         $request->validate([
@@ -132,7 +123,6 @@ class CompraController extends Controller
 
         $empresaId = auth()->user()->id_empresa;
 
-        // Por defecto asignar la primera sucursal de la empresa
         $sucursal = Sucursal::where('empresa_id', $empresaId)->first();
         if (!$sucursal) {
             return response()->json(['error' => 'No hay sucursal asociada a la empresa'], 422);
@@ -141,18 +131,18 @@ class CompraController extends Controller
         $almacen = almacen::create([
             'sucursal_id' => $sucursal->id,
             'nombre' => $request->nombre,
-            'estado' => 1, // activo por defecto
+            'estado' => 1,
         ]);
 
         return response()->json($almacen);
     }
     public function ProductoList(Request $request)
     {
-        $empresaId = auth()->user()->id_empresa; // filtrar por empresa si aplica
+        $empresaId = auth()->user()->id_empresa; 
 
         $productos = Producto::where('id_empresa', $empresaId)
-            ->with(['categoria', 'tipoPrecio']) // incluir relaciones si quieres
-            ->limit(100) // limitar cantidad por rendimiento
+            ->with(['categoria', 'tipoPrecio']) 
+            ->limit(100) 
             ->get();
 
         $data = $productos->map(function ($p) {
@@ -179,7 +169,6 @@ class CompraController extends Controller
             ->with(['proveedor:id,nombre,paterno,materno', 'almacen:id,nombre'])
             ->where('id_empresa', $empresaId);
 
-        // filtros
         if ($s = trim($request->get('search', ''))) {
             $q->where(function($qq) use ($s) {
                 $qq->where('observacion','like',"%{$s}%")
@@ -195,7 +184,6 @@ class CompraController extends Controller
         $perPage = max(10, (int) $request->get('per_page', 10));
         $rows = $q->orderByDesc('id')->paginate($perPage);
 
-        // adapta nombres al front
         $rows->getCollection()->transform(function($c){
             return [
                 'id'               => $c->id,
@@ -220,7 +208,6 @@ class CompraController extends Controller
         ]);
     }
 
-    /** Detalle para una compra (filas del desplegable) */
     public function apiDetalles($id)
     {
         $empresaId = auth()->user()->id_empresa;
@@ -248,7 +235,6 @@ class CompraController extends Controller
         return response()->json(['items' => $detalles]);
     }
 
-    //registrar la compra
     public function store(Request $request)
     {
         $request->validate([
@@ -261,7 +247,7 @@ class CompraController extends Controller
             'productos.*.producto_id' => 'required|exists:producto,id',
             'productos.*.cantidad' => 'required|numeric|min:0.01',
             'productos.*.costo_unitario' => 'required|numeric|min:0',
-            'productos.*.costo_total' => 'required|numeric|min:0', // ✅ corregido
+            'productos.*.costo_total' => 'required|numeric|min:0', 
             'productos.*.lote' => 'nullable|string',
             'productos.*.fecha_vencimiento' => 'nullable|date',
             'factura' => 'nullable|boolean',
@@ -271,7 +257,6 @@ class CompraController extends Controller
         DB::beginTransaction();
 
         try {
-            // 1️⃣ Crear la compra
             $compra = Compra::create([
                 'id_empresa'   => Auth::user()->id_empresa,
                 'sucursal_id'  => Auth::user()->sucursal_id ?? 1,
@@ -287,9 +272,6 @@ class CompraController extends Controller
                 'recepcion'    => $request->factura ?? 0,
                 'usuario_id'   => Auth::id(),
             ]);
-            
-
-            // 2️⃣ Recorrer los productos y crear detalle
             foreach ($request->productos as $p) {
                 $detalle = Producto_compra::create([
                     'producto_id'       => $p['producto_id'],
@@ -301,11 +283,8 @@ class CompraController extends Controller
                     'costo_unitario'    => $p['costo_unitario'],
                     'costo_total'       => $p['costo_total'],
                 ]);
-                
-                // 👇 MUY IMPORTANTE: volver a leer lo que guardó el trigger
+
                 $detalle->refresh();
-                
-                // 👇 Plan B (por si el trigger no se ejecutó o estás en otra BD)
                 if (empty($detalle->id_lote)) {
                     $next = DB::table('producto_compra')
                         ->where('empresa_id', Auth::user()->id_empresa)
@@ -319,8 +298,6 @@ class CompraController extends Controller
                     $detalle->id_lote = $next;
                 }
                 
-
-                // 3️⃣ Actualizar stock en producto_almacen
                 $productoAlmacen = Producto_almacen::firstOrCreate(
                     [
                         'producto_id'        => $p['producto_id'],
