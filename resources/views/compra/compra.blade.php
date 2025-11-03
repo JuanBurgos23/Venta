@@ -884,73 +884,117 @@
         }
 
 
-            function registerPurchase() {
-                const proveedorId = document.getElementById("supplier-select").value;
-                const almacenId = document.getElementById("warehouse-select").value;
-                const fecha = document.getElementById("entry-date").value;
-                const inventoryType = document.getElementById("inventory-type").value;
-                const reason = document.getElementById("reason").value;
-                const paymentForm = document.getElementById("payment-form").value;
-                const paymentType = document.getElementById("payment-type").value;
-                const observacion = document.getElementById("entry-observation")?.value || "";
-                const hasInvoice = document.querySelector('input[name="hasInvoice"]:checked').value === 'yes';
-                const numeroFactura = hasInvoice ? document.getElementById("invoice-number").value.trim() : null;
+        async function registerPurchase() {
+        const proveedorId = document.getElementById("supplier-select").value;
+        const almacenId = document.getElementById("warehouse-select").value;
+        const fecha = document.getElementById("entry-date").value;
+        const inventoryType = document.getElementById("inventory-type").value;
+        const reason = document.getElementById("reason").value;
+        const paymentForm = document.getElementById("payment-form").value;
+        const paymentType = document.getElementById("payment-type").value;
+        const observacion = document.getElementById("observation")?.value || ""; // corregido id
+        const hasInvoice = document.querySelector('input[name="hasInvoice"]:checked').value === 'yes';
+        const numeroFactura = hasInvoice ? document.getElementById("invoice-number").value.trim() : null;
 
-                if (!proveedorId || !almacenId) {
-                    showAlert("Debe seleccionar proveedor y almacén.", "warning");
-                    return;
-                }
-                if (productsList.length === 0) {
-                    showAlert("Debe agregar al menos un producto.", "warning");
-                    return;
-                }
+        if (!proveedorId || !almacenId) {
+            showAlert("Debe seleccionar proveedor y almacén.", "warning");
+            return;
+        }
+        if (productsList.length === 0) {
+            showAlert("Debe agregar al menos un producto.", "warning");
+            return;
+        }
 
-                const payload = {
-                    proveedor_id: proveedorId,
-                    almacen_id: almacenId,
-                    fecha_ingreso: fecha,
-                    tipo: "compra",
-                    inventario: inventoryType,
-                    motivo: reason,
-                    forma_pago: paymentForm,
-                    tipo_pago: paymentType,
-                    observacion: observacion,
-                    factura: hasInvoice ? 1 : 0,
-                    numero_factura: numeroFactura,
-                    productos: productsList.map(p => ({
-                        producto_id: p.id,
-                        cantidad: p.quantity,
-                        costo_unitario: p.unitCost,
-                        costo_total: p.totalCost,
-                        lote: p.lot,
-                        fecha_vencimiento: p.expiryDate
-                    }))
-                };
-                console.log("Payload de compra:", payload); // 🔍 Depuración
-                fetch("/compras/store", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
-                        },
-                        body: JSON.stringify(payload)
-                    })
-                    .then(res => res.json())
-                    .then(data => {
-                        if (data.success) {
-                            showAlert("Compra registrada correctamente. ID: " + data.compra_id, "success");
-                            productsList = [];
-                            renderProductsTable();
-                            updateSummary();
-                        } else {
-                            showAlert("Error: " + data.message, "danger");
-                        }
-                    })
-                    .catch(err => {
-                        console.error(err);
-                        showAlert("Error al registrar la compra.", "danger");
-                    });
+        const payload = {
+            proveedor_id: proveedorId,
+            almacen_id: almacenId,
+            fecha_ingreso: fecha,
+            tipo: "compra",
+            inventario: inventoryType,
+            motivo: reason,
+            forma_pago: paymentForm,
+            tipo_pago: paymentType,
+            observacion: observacion,
+            factura: hasInvoice ? 1 : 0,
+            numero_factura: numeroFactura,
+            productos: productsList.map(p => ({
+                producto_id: p.id,
+                cantidad: p.quantity,
+                costo_unitario: p.unitCost,
+                costo_total: p.totalCost,
+                lote: p.lot,
+                fecha_vencimiento: p.expiryDate
+            }))
+        };
+
+        console.log("Payload de compra:", payload);
+
+        // 🔹 Confirmación antes de registrar la compra
+        const confirm = await Swal.fire({
+            title: '¿Confirmar registro de compra?',
+            text: "Se guardará el ingreso al inventario con los productos seleccionados.",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, registrar compra',
+            cancelButtonText: 'Cancelar'
+        });
+
+        if (!confirm.isConfirmed) return;
+
+        try {
+            const response = await fetch("/compras/store", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
+                },
+                body: JSON.stringify(payload)
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                // 🔹 Confirmación de compra exitosa
+                const nextAction = await Swal.fire({
+                    title: 'Compra registrada',
+                    text: `La compra se registró correctamente. ID: ${result.compra_id}`,
+                    icon: 'success',
+                    showCancelButton: true,
+                    confirmButtonText: 'Seguir registrando',
+                    cancelButtonText: 'Ir al listado de compras'
+                });
+
+                // 🔹 Reset del formulario
+                productsList = [];
+                renderProductsTable();
+                updateSummary();
+
+                // Limpieza de selects y campos principales
+                document.getElementById("supplier-select").tomselect?.clear();
+                document.getElementById("warehouse-select").value = "";
+                document.getElementById("observation").value = "";
+                document.getElementById("invoice-number").value = "";
+
+                if (!nextAction.isConfirmed) {
+                    window.location.href = '/compras'; // 👈 redirige al listado
+                }
+            } else {
+                Swal.fire({
+                    title: 'Error al registrar',
+                    text: result.message || 'Ocurrió un error en el registro de la compra.',
+                    icon: 'error'
+                });
             }
+        } catch (error) {
+            console.error("Error al registrar la compra:", error);
+            Swal.fire({
+                title: 'Error del servidor',
+                text: 'No se pudo registrar la compra. Intenta nuevamente.',
+                icon: 'error'
+            });
+        }
+    }
+
 
             // 👉 Listeners para botones
             if (completeEntryBtn) {
@@ -984,7 +1028,9 @@
             });
 
 
+
         });
+        
     </script>
 
 

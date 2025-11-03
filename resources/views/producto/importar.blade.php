@@ -21,10 +21,47 @@
                         <!-- Toolbar -->
                         <div class="d-flex flex-wrap gap-2 align-items-center mb-3">
                         <h5 class="mb-0 me-auto fw-bold">Importación masiva de productos</h5>
+                        <div class="alert alert-primary" role="alert">
+                            <h4 class="alert-heading"><i class="fas fa-exclamation" aria-hidden="true"></i> Bienvenido al registro masivo de productos</h4>
+                            <p>Aquí puedes registrar todos tus productos de una sola vez subiendo un archivo Excel en el formato establecido, primera descarga la plantilla de ejemplo
+                            <hr>
+                            <p class="mb-0">Una vez cargado tu archivo con tus productos estos se visualizarán en la tabla inferior, puedes cargar un nuevo archivo y la tabla se cargará nuevamente. Una vez valides tus productos puedes guardarlos para
+                                poder realizar ventas.</p>
+                            <hr>
+                            <p class="mb-0">
+                                <strong>Nota:</strong><br>
+                                - Tome en cuenta que debe marcar si los productos que se esta improtando son inventariables y tambien especificar el tipo de producto<br>
+
+                            </p>
+                        </div>
+                        <!-- Controles globales -->
+                        <div class="d-flex flex-wrap align-items-center gap-3 me-3">
+
+                            <!-- Tipo de productos -->
+                            <div class="d-flex align-items-center">
+                            <label for="tipo-producto-select" class="me-2 mb-0 small text-muted">Tipo de productos</label>
+                            <select id="tipo-producto-select" class="form-select form-select-sm" style="min-width:220px">
+                                <option value="1" selected>Producto terminado</option>
+                                <option value="2">Materia prima</option>
+                            </select>
+                            </div>
+                        
+                            <!-- Inventariables -->
+                            <div class="form-check form-switch d-flex align-items-center">
+                            <input class="form-check-input" type="checkbox" id="inventariable-switch" checked>
+                            <label class="form-check-label ms-2 small" for="inventariable-switch">
+                                Inventariables
+                                <span id="inventariable-badge" class="badge bg-success ms-1">Sí</span>
+                            </label>
+                            </div>
+                        
+                        </div>
+  
                     
                         <button id="btn-descargar-plantilla" class="btn btn-sm btn-outline-primary">
                             <i class="fa fa-download me-1"></i> Descargar plantilla
                         </button>
+                        
                     
                         <label class="btn btn-sm btn-outline-secondary mb-0">
                             <input id="file-input" type="file" accept=".xlsx,.xls,.csv" hidden />
@@ -117,8 +154,7 @@
                         { key: 'origen',         header: 'ORIGEN' },
 
                         // Catálogos por nombre (el back los resuelve a IDs)
-                        { key: 'unidad',         header: 'UNIDAD' },               // → unidad_medida_id
-                        { key: 'tipo_producto',  header: 'TIPO PRODUCTO' },        // → tipo_producto_id
+                        { key: 'unidad',         header: 'UNIDAD' },               // → unidad_medida_id      // → tipo_producto_id
                         { key: 'categoria',      header: 'CATEGORÍA' },            // → categoria_id
                         { key: 'subcategoria',   header: 'SUBCATEGORÍA' },         // → subcategoria_id
                         { key: 'tipo_precio',    header: 'TIPO PRECIO' },          // → tipo_precio_id
@@ -369,7 +405,6 @@
                                 case 'codigo':        return '';
                                 case 'nombre':        return '';
                                 case 'unidad':        return '';
-                                case 'tipo_producto': return '';
                                 case 'categoria':     return '';
                                 case 'subcategoria':  return '';
                                 case 'tipo_precio':   return '';
@@ -393,59 +428,131 @@
 
 
                         btnGuardar.addEventListener('click', async () => {
+                            if (!Array.isArray(datos) || datos.length === 0) {
+                                await Swal.fire({
+                                    icon: 'warning',
+                                    title: 'Nada que guardar',
+                                    text: 'Primero importa o agrega al menos un producto.',
+                                    confirmButtonText: 'Entendido'
+                                });
+                                return;
+                            }
+
+                            // Leer select y switch antes de enviar
+                            const tipoProductoGlobal  = String(tipoProductoSelect.value || '1'); // "1" o "2"
+                            const inventariableGlobal = inventariableSwitch.checked ? 1 : 0;
+
+                            // Confirmación con resumen
+                            const confirm = await Swal.fire({
+                                title: '¿Deseas guardar la importación?',
+                                html: `
+                                    <div class="text-start">
+                                        <p>Se enviarán <b>${datos.length}</b> registros al servidor.</p>
+                                        <p><b>Tipo de productos:</b> ${tipoProductoGlobal === '1' ? 'Producto terminado' : 'Materia prima'}</p>
+                                        <p><b>Inventariables:</b> ${inventariableGlobal ? 'Sí' : 'No'}</p>
+                                    </div>
+                                `,
+                                icon: 'question',
+                                showCancelButton: true,
+                                confirmButtonText: 'Sí, guardar',
+                                cancelButtonText: 'Cancelar'
+                            });
+
+                            if (!confirm.isConfirmed) return;
+
                             // Prepara payload limpio
                             const payload = datos.map(r => {
                                 const clean = {};
                                 columnas.forEach(col => {
-                                let v = r[col.key];
-                                if (col.type === 'number') {
-                                    const n = toNumber(v);
-                                    v = (v === '' || v == null) ? null : (Number.isFinite(n) ? n : null);
-                                }
-                                clean[col.key] = v;
+                                    let v = r[col.key];
+                                    if (col.type === 'number') {
+                                        const n = toNumber(v);
+                                        v = (v === '' || v == null) ? null : (Number.isFinite(n) ? n : null);
+                                    }
+                                    clean[col.key] = v;
                                 });
                                 return clean;
                             });
 
-                            // Deshabilita botón y muestra spinner
+                            // Deshabilita botón y spinner
                             btnGuardar.disabled = true;
                             btnGuardar.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Guardando...';
 
+                            // Loader modal
+                            const loader = Swal.fire({
+                                title: 'Guardando...',
+                                html: 'Estamos registrando tus productos. Por favor espera.',
+                                allowEscapeKey: false,
+                                allowOutsideClick: false,
+                                didOpen: () => Swal.showLoading()
+                            });
+
                             try {
-                                // 👇 ÚNICO fetch, con id_empresa
                                 const res = await fetch(urlGuardar, {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    ...(csrfToken ? {'X-CSRF-TOKEN': csrfToken} : {})
-                                },
-                                body: JSON.stringify({
-                                    id_empresa: window.EMPRESA_ID,  // <-- importante
-                                    items: payload
-                                })
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        ...(csrfToken ? { 'X-CSRF-TOKEN': csrfToken } : {})
+                                    },
+                                    body: JSON.stringify({
+                                        id_empresa: window.EMPRESA_ID,
+                                        tipo_producto_global: tipoProductoGlobal,
+                                        inventariable_global: inventariableGlobal,
+                                        items: payload
+                                    })
                                 });
 
-                                // Manejo de errores HTTP
                                 if (!res.ok) {
-                                const t = await res.text();
-                                throw new Error(t || `Error HTTP ${res.status}`);
+                                    const t = await res.text();
+                                    throw new Error(t || `Error HTTP ${res.status}`);
                                 }
 
-                                const data = await res.json().catch(() => ({}));
+                                let data = {};
+                                try { data = await res.json(); } catch { /* deja data vacío */ }
 
-                                if (data && data.ok === false && data.msg) {
-                                // Respuesta válida pero con error lógico del back (p.ej. 422)
-                                alert(`❌ ${data.msg}`);
-                                console.error('Respuesta de back:', data);
-                                return;
+                                Swal.close(); // cierra loader
+
+                                if (data && data.ok === false) {
+                                    await Swal.fire({
+                                        icon: 'error',
+                                        title: 'No se pudo guardar',
+                                        text: data.msg || 'El servidor reportó un error al registrar.',
+                                    });
+                                    return;
                                 }
 
-                                alert('Importación completada ✅\n' + JSON.stringify(data, null, 2));
+                                const htmlResumen = `
+                                    <div class="text-start">
+                                        <p><b>Registros enviados:</b> ${payload.length}</p>
+                                        <p><b>Tipo de productos:</b> ${tipoProductoGlobal === '1' ? 'Producto terminado' : 'Materia prima'}</p>
+                                        <p><b>Inventariables:</b> ${inventariableGlobal ? 'Sí' : 'No'}</p>
+                                        ${typeof data.insertados !== 'undefined' ? `<p><b>Insertados:</b> ${data.insertados}</p>` : ''}
+                                        ${typeof data.actualizados !== 'undefined' ? `<p><b>Actualizados:</b> ${data.actualizados}</p>` : ''}
+                                        ${Array.isArray(data.errores) && data.errores.length
+                                            ? `<p class="text-danger"><b>Errores:</b> ${data.errores.length}</p>`
+                                            : ''}
+                                    </div>
+                                `.trim();
+
+                                await Swal.fire({
+                                    icon: 'success',
+                                    title: 'Importación completada',
+                                    html: htmlResumen || 'Se registraron los productos correctamente.',
+                                    confirmButtonText: 'Listo'
+                                });
+
+                                // Limpia y refresca
                                 datos = [];
-                                render(); // refresca tabla y badges
+                                render();
+
                             } catch (err) {
                                 console.error(err);
-                                alert('No se pudo guardar. Revisa consola para más detalles.');
+                                Swal.close();
+                                await Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error al guardar',
+                                    html: `<pre style="white-space:pre-wrap;text-align:left">${(err && err.message) || err}</pre>`
+                                });
                             } finally {
                                 btnGuardar.disabled = false;
                                 btnGuardar.innerHTML = '<i class="fa fa-save me-1"></i> Guardar / Registrar';
@@ -453,9 +560,27 @@
                         });
 
 
-                        // Render inicial
-                        render();
+
+
+                            // Render inicial
+                            render();
                         })();
+                        const tipoProductoSelect   = document.getElementById('tipo-producto-select');
+                        const inventariableSwitch  = document.getElementById('inventariable-switch');
+                        const inventariableBadge   = document.getElementById('inventariable-badge');
+
+                        inventariableSwitch.addEventListener('change', () => {
+                        if (inventariableSwitch.checked) {
+                            inventariableBadge.textContent = 'Sí';
+                            inventariableBadge.classList.remove('bg-danger');
+                            inventariableBadge.classList.add('bg-success');
+                        } else {
+                            inventariableBadge.textContent = 'No';
+                            inventariableBadge.classList.remove('bg-success');
+                            inventariableBadge.classList.add('bg-danger');
+                        }
+                        });
+
                     </script>
 
   
@@ -463,6 +588,15 @@
             </div>
         </div>
     </main>
+    <style>
+        #tipo-producto-select {
+            border-radius: .5rem;
+            }
+            .form-check-input:checked {
+            background-color: #198754; /* verde suave para el switch ON */
+            border-color: #198754;
+            }
+    </style>
 
     <!-- Template Customizer va fuera de main y slot -->
 

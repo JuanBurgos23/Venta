@@ -34,6 +34,15 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::middleware('auth')->group(function () {
+        Route::get('/producto/importar', function () {
+            return view('producto.importar');
+        })->name('producto.importar');
+    
+        Route::post('/productos/importar', [ImportProductosController::class, 'store'])
+            ->name('productos.importar.store');
+    });
+    
 });
 
 
@@ -267,8 +276,10 @@ Route::post('/ingreso_egreso_actualizar/{id}', [IngresoEgresoController::class, 
 
 
 //finanzas
-
-Route::get('/finanzas/diario', [FinanzasController::class, 'diario'])
+Route::get('/finanzas/diario', function () {
+    return view('finanzas.diario');
+})->name('finanzas.diario.view');
+Route::get('/finanzas/diario/data', [FinanzasController::class, 'diario'])
     ->name('finanzas.diario');
 
 Route::get('/finanzas/mensual', function () {

@@ -126,28 +126,32 @@ class ImportProductosController extends Controller
 
     public function store(ImportProductosRequest $request)
     {
-        // 1) Determina la empresa (ajusta a tu auth/tenant)
+        // 1️⃣ Determinar empresa
         $empresaId = auth()->user()->empresa_id ?? $request->get('id_empresa');
         if (!$empresaId) {
             return response()->json(['ok'=>false,'msg'=>'No se pudo determinar la empresa'], 422);
         }
 
+        // 2️⃣ Leer los valores globales enviados desde el front
+        $tipoProductoGlobal  = (int) $request->input('tipo_producto_global', 1);   // 1=Terminado, 2=Materia prima
+        $inventariableGlobal = (int) $request->input('inventariable_global', 1);   // 1=Sí, 0=No
+
         $items = $request->input('items', []);
+
         $resumen = [
             'ok' => true,
-            'insertados' => 0,
+            'insertados'   => 0,
             'actualizados' => 0,
-            'errores' => [],
+            'errores'      => [],
         ];
 
-        // 2) Cachés para resolver IDs por nombre (evita consultas repetidas)
+        // 3️⃣ Caché local
         $cache = [
             'unidad_medida' => [],
-            'tipo_producto' => [],
-            'categoria' => [],
-            'subcategoria' => [],
-            'tipo_precio' => [],
-            'proveedor' => [],
+            'categoria'     => [],
+            'subcategoria'  => [],
+            'tipo_precio'   => [],
+            'proveedor'     => [],
         ];
 
         DB::beginTransaction();
@@ -160,20 +164,15 @@ class ImportProductosController extends Controller
                         throw new \Exception('Código y nombre son obligatorios');
                     }
 
-                    // 2) Resolver/crear UNIDAD, CATEGORÍA y SUBCATEGORÍA
+                    // 4️⃣ Resolver catálogos
                     $unidadMedidaId = $this->resolveUnidadMedidaId($row['unidad'] ?? null, $empresaId, $cache);
                     $categoriaId    = $this->resolveCategoriaId($row['categoria'] ?? null, $empresaId, $cache);
                     $subcategoriaId = $this->resolveSubcategoriaId($row['subcategoria'] ?? null, $categoriaId, $cache);
 
-                    // (Opcional) Si luego necesitas estos, puedes dejarlos en null.
-                    $tipoProductoId = null;
-                    $tipoPrecioId   = null;
-                    $proveedorId    = null;
-
-                    // 3) Precio
+                    // 5️⃣ Campos económicos
                     $precio = isset($row['precio']) && $row['precio'] !== '' ? (float)$row['precio'] : 0;
 
-                    // 4) Upsert por (id_empresa, codigo)
+                    // 6️⃣ Datos comunes
                     $match = ['id_empresa' => $empresaId, 'codigo' => $codigo];
                     $data  = [
                         'nombre'           => $nombre,
@@ -181,19 +180,23 @@ class ImportProductosController extends Controller
                         'marca'            => $row['marca'] ?? null,
                         'modelo'           => $row['modelo'] ?? null,
                         'origen'           => $row['origen'] ?? null,
+
+                        // 🟢 Nuevo: asignar valores globales
+                        'tipo_producto_id' => $tipoProductoGlobal,     // 1 o 2
+                        'inventariable'    => $inventariableGlobal,     // 1 o 0
+
                         'estado'           => 1,
-                        'inventariable'    => 1,
                         'precio'           => $precio,
 
                         'unidad_medida_id' => $unidadMedidaId,
-                        'tipo_producto_id' => $tipoProductoId,
                         'categoria_id'     => $categoriaId,
                         'subcategoria_id'  => $subcategoriaId,
-                        'tipo_precio_id'   => $tipoPrecioId,
-                        'proveedor_id'     => $proveedorId,
+                        'tipo_precio_id'   => null,
+                        'proveedor_id'     => null,
                         'updated_at'       => now(),
                     ];
 
+                    // 7️⃣ Insertar o actualizar
                     $producto = Producto::where($match)->first();
                     if ($producto) {
                         $producto->fill($data)->save();
@@ -204,21 +207,19 @@ class ImportProductosController extends Controller
                         Producto::create($data);
                         $resumen['insertados']++;
                     }
+
                 } catch (\Throwable $e) {
                     $resumen['errores'][] = [
-                        'index' => $i,
+                        'index'  => $i,
                         'codigo' => $row['codigo'] ?? null,
-                        'error' => $e->getMessage(),
+                        'error'  => $e->getMessage(),
                     ];
-                    // Continúa con el siguiente
                 }
             }
 
-            // Si hubo muchos errores, puedes decidir revertir:
-            // if (count($resumen['errores']) > 0) { throw new \Exception('Errores en filas'); }
-
             DB::commit();
             return response()->json($resumen);
+
         } catch (\Throwable $e) {
             DB::rollBack();
             return response()->json([
@@ -228,6 +229,7 @@ class ImportProductosController extends Controller
             ], 500);
         }
     }
+
 
     /**
      * Resuelve el ID de una tabla catáloga por nombre (o crea si no existe).
