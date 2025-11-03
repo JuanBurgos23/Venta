@@ -11,8 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tipo_ingreso_egresos', function (Blueprint $table) {
+        Schema::create('tipo_ingreso_egreso', function (Blueprint $table) {
             $table->id();
+            $table->string('nombre');
+            $table->string('descripcion')->nullable();
+            $table->enum('tipo', ['ingreso', 'egreso']);
+            $table->integer('estado')->default(1); // 1: activo, 0: inactivo
+            $table->foreignId('empresa_id')->constrained('empresa');
             $table->timestamps();
         });
     }
@@ -22,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tipo_ingreso_egresos');
+        Schema::dropIfExists('tipo_ingreso_egreso');
     }
 };
