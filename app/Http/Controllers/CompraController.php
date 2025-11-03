@@ -287,6 +287,7 @@ class CompraController extends Controller
                 'recepcion'    => $request->factura ?? 0,
                 'usuario_id'   => Auth::id(),
             ]);
+            
 
             // 2️⃣ Recorrer los productos y crear detalle
             foreach ($request->productos as $p) {
@@ -298,25 +299,44 @@ class CompraController extends Controller
                     'fecha_vencimiento' => $p['fecha_vencimiento'] ?? null,
                     'cantidad'          => $p['cantidad'],
                     'costo_unitario'    => $p['costo_unitario'],
-                    'costo_total'       => $p['costo_total'], // ✅ corregido
+                    'costo_total'       => $p['costo_total'],
                 ]);
+                
+                // 👇 MUY IMPORTANTE: volver a leer lo que guardó el trigger
+                $detalle->refresh();
+                
+                // 👇 Plan B (por si el trigger no se ejecutó o estás en otra BD)
+                if (empty($detalle->id_lote)) {
+                    $next = DB::table('producto_compra')
+                        ->where('empresa_id', Auth::user()->id_empresa)
+                        ->max('id_lote');
+                    $next = ($next ?? 0) + 1;
+                
+                    DB::table('producto_compra')
+                        ->where('id', $detalle->id)
+                        ->update(['id_lote' => $next]);
+                
+                    $detalle->id_lote = $next;
+                }
+                
 
                 // 3️⃣ Actualizar stock en producto_almacen
                 $productoAlmacen = Producto_almacen::firstOrCreate(
                     [
-                        'producto_id' => $p['producto_id'],
-                        'almacen_id'  => $request->almacen_id,
-                        'producto_compra_id' => $detalle->id,
-                        'empresa_id'  => Auth::user()->id_empresa,
-                        'lote'        => $p['lote'] ?? null,
+                        'producto_id'        => $p['producto_id'],
+                        'almacen_id'         => $request->almacen_id,
+                        'empresa_id'         => Auth::user()->id_empresa,
+                        'id_lote'            => $detalle->id_lote,   // <-- ¡aquí!
                     ],
                     [
-                        'stock'  => 0,
-                        'estado' => 1
+                        'producto_compra_id' => $detalle->id,
+                        'lote'               => $p['lote'] ?? null,
+                        'stock'              => 0,
+                        'estado'             => 1,
                     ]
                 );
-
                 $productoAlmacen->increment('stock', $p['cantidad']);
+                
             }
 
             DB::commit();

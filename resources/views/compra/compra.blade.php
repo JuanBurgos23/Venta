@@ -23,41 +23,13 @@
                         </p>
                     </div>
                     <div class="card-body p-3 pt-4">
-                        <!-- Botón para abrir detalles en móvil -->
-                        <div class="d-lg-none d-block mb-4">
-                            <button class="btn btn-primary w-100 d-flex align-items-center justify-content-center" id="mobile-details-toggle">
-                                <i class="fa fa-list me-2" aria-hidden="true"></i>
-                                Ver Detalles
-                                <span class="badge bg-white text-primary ms-2" id="mobile-products-count">0</span>
-                            </button>
-                        </div>
-
                         <div class="row">
-                            <!-- Panel de información - Columna izquierda -->
-                            <div class="col-lg-8 col-md-7 mb-4 mb-md-0">
+                            <!-- Todo el contenido ahora en una sola columna -->
+                            <div class="col-12">
+                                <!-- Sección 1: Información básica de la compra -->
                                 <div class="card card-body border-radius-lg shadow-none border-dashed mb-4">
-                                    <h6 class="mb-3 font-weight-bolder">Información del Ingreso</h6>
-
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label text-sm">Tipo Inventario</label>
-                                            <select class="form-select px-3" id="inventory-type" style="min-height: 44px;">
-                                                <option value="finished">Producto terminado</option>
-                                                <option value="raw">Materia prima</option>
-                                                <option value="supplies">Insumos</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label text-sm">Motivo</label>
-                                            <select class="form-select px-3" id="reason" style="min-height: 44px;">
-                                                <option value="purchase">Compra</option>
-                                                <option value="transfer">Traslado</option>
-                                                <option value="production">Producción</option>
-                                                <option value="adjustment">Ajuste</option>
-                                            </select>
-                                        </div>
-                                    </div>
-
+                                    <h6 class="mb-3 font-weight-bolder">Información de la Compra</h6>
+                                    
                                     <div class="row">
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label text-sm">Proveedor</label>
@@ -82,7 +54,32 @@
                                             </div>
                                         </div>
                                     </div>
-
+                                    
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label text-sm">Tipo Inventario</label>
+                                            <select class="form-select px-3" id="inventory-type" style="min-height: 44px;">
+                                                <option value="finished">Producto terminado</option>
+                                                <option value="raw">Materia prima</option>
+                                                <option value="supplies">Insumos</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label text-sm">Motivo</label>
+                                            <select class="form-select px-3" id="reason" style="min-height: 44px;">
+                                                <option value="purchase">Compra</option>
+                                                <option value="transfer">Traslado</option>
+                                                <option value="production">Producción</option>
+                                                <option value="adjustment">Ajuste</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Sección 2: Información de pago y facturación -->
+                                <div class="card card-body border-radius-lg shadow-none border-dashed mb-4">
+                                    <h6 class="mb-3 font-weight-bolder">Información de Pago</h6>
+                                    
                                     <div class="row">
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label text-sm">Forma de pago</label>
@@ -100,7 +97,7 @@
                                             </select>
                                         </div>
                                     </div>
-
+                                    
                                     <div class="row">
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label text-sm">¿Esta compra tiene factura?</label>
@@ -120,50 +117,26 @@
                                             <input type="text" class="form-control" id="invoice-number" placeholder="Número de factura">
                                         </div>
                                     </div>
-                                    <script>
-                                        document.addEventListener("DOMContentLoaded", function() {
-                                            const hasInvoiceYes = document.getElementById("hasInvoiceYes");
-                                            const hasInvoiceNo = document.getElementById("hasInvoiceNo");
-                                            const invoiceContainer = document.querySelector(".invoice-number-container");
-
-                                            function toggleInvoiceInput() {
-                                                if (hasInvoiceYes.checked) {
-                                                    // Mostrar con animación
-                                                    invoiceContainer.style.maxWidth = "100%";
-                                                    invoiceContainer.style.opacity = "1";
-                                                } else {
-                                                    // Ocultar con animación
-                                                    invoiceContainer.style.maxWidth = "0";
-                                                    invoiceContainer.style.opacity = "0";
-                                                }
-                                            }
-
-                                            // Inicializar según selección por defecto
-                                            toggleInvoiceInput();
-
-                                            // Escuchar cambios en los radios
-                                            hasInvoiceYes.addEventListener("change", toggleInvoiceInput);
-                                            hasInvoiceNo.addEventListener("change", toggleInvoiceInput);
-                                        });
-                                    </script>
+                                    
                                     <div class="mb-3">
                                         <label class="form-label text-sm">Observación</label>
                                         <textarea class="form-control" id="observation" rows="2" placeholder="Observaciones adicionales..."></textarea>
                                     </div>
                                 </div>
 
-                                <!-- Panel de productos -->
+                                <!-- Sección 3: Gestión de productos -->
                                 <div class="card card-body border-radius-lg shadow-none border-dashed">
                                     <div class="d-flex justify-content-between align-items-center mb-3">
-                                        <h6 class="mb-0 font-weight-bolder">Lista de Productos</h6>
+                                        <h6 class="mb-0 font-weight-bolder">Productos a Ingresar</h6>
                                         <a href="{{route('productos.index')}}" class="btn btn-sm btn-outline-primary mb-0" id="add-product-btn">
                                             <i class="fa fa-plus me-1" aria-hidden="true"></i>
                                             Agregar Producto
                                         </a>
                                     </div>
 
-                                    <!-- Select de productos -->
+                                    <!-- Selección de producto -->
                                     <div class="mb-3">
+                                        <label class="form-label text-sm">Seleccionar Producto</label>
                                         <select class="form-select" id="product-select">
                                             <option value="">Seleccionar producto...</option>
                                             <!-- Los productos se cargarán aquí mediante JavaScript -->
@@ -210,10 +183,6 @@
                                                 <input type="text" class="form-control form-control-sm" id="product-lot" placeholder="Número de lote">
                                             </div>
                                             <div class="col-md-3 mb-3">
-                                                <label class="form-label text-sm">Código</label>
-                                                <input type="text" class="form-control form-control-sm" id="product-code" placeholder="Código del producto">
-                                            </div>
-                                            <div class="col-md-3 mb-3">
                                                 <label class="form-label text-sm">Cantidad</label>
                                                 <input type="number" class="form-control form-control-sm" id="product-quantity" min="1" value="1">
                                             </div>
@@ -221,93 +190,54 @@
                                                 <label class="form-label text-sm">Costo unit.</label>
                                                 <input type="number" class="form-control form-control-sm" id="product-unit-cost" min="0" step="0.01" value="0">
                                             </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-6 mb-3">
+                                            <div class="col-md-3 mb-3">
                                                 <label class="form-label text-sm">Fecha vencimiento</label>
                                                 <input type="date" class="form-control form-control-sm" id="product-expiry-date">
                                             </div>
-                                            <div class="col-md-6 mb-3 d-flex align-items-end">
-                                                <button class="btn btn-sm btn-primary w-100" id="add-to-list-btn">
-                                                    <i class="fa fa-cart-plus me-1" aria-hidden="true"></i>
-                                                    Agregar a la lista
-                                                </button>
-                                            </div>
+                                        </div>
+                                        <div class="d-flex justify-content-end">
+                                            <button class="btn btn-sm btn-primary" id="add-to-list-btn">
+                                                <i class="fa fa-cart-plus me-1" aria-hidden="true"></i>
+                                                Agregar a la lista
+                                            </button>
                                         </div>
                                     </div>
 
                                     <!-- Tabla de productos agregados -->
-                                    <div class="table-responsive">
-                                        <table class="table table-sm table-hover" id="products-table">
-                                            <thead>
-                                                <tr>
-                                                    <th>Lote</th>
-                                                    <th>Código</th>
-                                                    <th>Producto</th>
-                                                    <th>Categoria</th>
-                                                    <th>Cantidad</th>
-                                                    <th>Costo unit.</th>
-                                                    <th>Costo total</th>
-                                                    <th>Fecha venc.</th>
-                                                    <th>Acción</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <!-- Los productos se agregarán aquí mediante JavaScript -->
-                                            </tbody>
-                                            <tfoot>
-                                                <tr>
-                                                    <td colspan="5" class="text-end fw-bold">Total:</td>
-                                                    <td colspan="4" class="fw-bold" id="products-total">Bs/ 0.00</td>
-                                                </tr>
-                                            </tfoot>
-                                        </table>
+                                    <div class="mt-4">
+                                        <h6 class="mb-2 font-weight-bolder">Productos Agregados</h6>
+                                        <div class="table-responsive">
+                                            <table class="table table-sm table-hover" id="products-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Lote</th>
+                                                        <th>Producto</th>
+                                                        <th>Categoria</th>
+                                                        <th>Cantidad</th>
+                                                        <th>Costo unit.</th>
+                                                        <th>Costo total</th>
+                                                        <th>Fecha venc.</th>
+                                                        <th>Acción</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <!-- Los productos se agregarán aquí mediante JavaScript -->
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <td colspan="5" class="text-end fw-bold">Total:</td>
+                                                        <td colspan="4" class="fw-bold" id="products-total">Bs/ 0.00</td>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <!-- Panel de resumen - Columna derecha (Solo escritorio) -->
-                            <div class="col-lg-4 col-md-5 d-md-block d-none">
-                                <div class="card card-body border-radius-lg shadow-none border-dashed h-100">
-                                    <h6 class="mb-3 font-weight-bolder">Resumen del Ingreso</h6>
-
-                                    <!-- Información del proveedor -->
-                                    <div class="mb-3">
-                                        <label class="form-label text-sm">Proveedor seleccionado</label>
-                                        <div class="card border-radius-lg p-3" id="selected-supplier-info">
-                                            <div class="text-center text-muted">
-                                                <i class="fa fa-building fa-2x mb-2" aria-hidden="true"></i>
-                                                <p class="mb-0">No hay proveedor seleccionado</p>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Información del almacén -->
-                                    <div class="mb-3">
-                                        <label class="form-label text-sm">Almacén seleccionado</label>
-                                        <div class="card border-radius-lg p-3" id="selected-warehouse-info">
-                                            <div class="text-center text-muted">
-                                                <i class="fa fa-warehouse fa-2x mb-2" aria-hidden="true"></i>
-                                                <p class="mb-0">No hay almacén seleccionado</p>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Resumen de costos -->
-                                    <div class="sale-summary mb-3">
-                                        <div id="summary-products" class="mb-3">
-                                            <!-- Aquí se insertan dinámicamente los productos -->
-                                        </div>
-                                        <hr class="my-2">
-                                        <div class="d-flex justify-content-between fw-bold">
-                                            <span class="text-dark">Total:</span>
-                                            <span class="text-dark" id="summary-total">Bs/ 0.00</span>
-                                        </div>
-                                    </div>
-
-                                    <!-- Botón para finalizar ingreso -->
-                                    <button class="btn bg-gradient-primary w-100 mt-2 mb-0" id="complete-entry">
-                                        <i class="fa fa-check-circle me-1" aria-hidden="true"></i>
+                                <!-- Botón para finalizar ingreso - Ahora en la parte inferior -->
+                                <div class="text-center mt-4">
+                                    <button class="btn bg-gradient-primary btn-lg" id="completeEntryBtn">
+                                        <i class="fa fa-check-circle me-2" aria-hidden="true"></i>
                                         Registrar Ingreso
                                     </button>
                                 </div>
@@ -318,67 +248,6 @@
             </div>
         </div>
     </main>
-    <!-- Botón flotante de carrito (móvil) -->
-    <button id="floating-cart-btn"
-        class="btn btn-primary rounded-circle position-fixed d-lg-none shadow-lg"
-        style="bottom: 70px; right: 20px; display: none; width: 52px; height: 52px; z-index:1050;">
-        <i class="menu-icon icon-base bx bx-cart fs-5"></i>
-        <span id="floating-cart-count"
-            class="badge bg-danger position-absolute top-0 start-100 translate-middle px-2 py-1">0</span>
-    </button>
-    <!-- Panel lateral para móviles -->
-    <div class="mobile-details-sidebar d-lg-none">
-        <div class="mobile-details-overlay" id="mobile-details-overlay"></div>
-        <div class="mobile-details-content">
-            <div class="mobile-details-header">
-                <h6 class="mb-0 font-weight-bolder">Resumen del Ingreso</h6>
-                <button class="btn btn-link text-dark p-0" id="close-mobile-details">
-                    <i class="fa fa-times"></i>
-                </button>
-            </div>
-            <div class="mobile-details-body">
-                <!-- Información del proveedor -->
-                <div class="mb-3">
-                    <label class="form-label text-sm">Proveedor seleccionado</label>
-                    <div class="card bg-gray-100 border-radius-lg p-3" id="mobile-selected-supplier-info">
-                        <div class="text-center text-muted">
-                            <i class="fa fa-building fa-2x mb-2" aria-hidden="true"></i>
-                            <p class="mb-0">No hay proveedor seleccionado</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Información del almacén -->
-                <div class="mb-3">
-                    <label class="form-label text-sm">Almacén seleccionado</label>
-                    <div class="card bg-gray-100 border-radius-lg p-3" id="mobile-selected-warehouse-info">
-                        <div class="text-center text-muted">
-                            <i class="fa fa-warehouse fa-2x mb-2" aria-hidden="true"></i>
-                            <p class="mb-0">No hay almacén seleccionado</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Resumen de costos -->
-                <div class="sale-summary mb-3">
-                    <div id="mobile-summary-products" class="mb-3">
-                        <!-- Aquí se insertan dinámicamente los productos -->
-                    </div>
-                    <hr class="my-2">
-                    <div class="d-flex justify-content-between fw-bold">
-                        <span class="text-dark">Total:</span>
-                        <span class="text-dark" id="mobile-summary-total">Bs/ 0.00</span>
-                    </div>
-                </div>
-
-                <!-- Botón para finalizar ingreso -->
-                <button class="btn bg-gradient-primary w-100 mt-2 mb-0" id="mobile-complete-entry">
-                    <i class="fa fa-check-circle me-1" aria-hidden="true"></i>
-                    Registrar Ingreso
-                </button>
-            </div>
-        </div>
-    </div>
 
     <!-- Modal para nuevo proveedor -->
     <div class="modal fade" id="supplierModal" tabindex="-1" aria-hidden="true">
@@ -465,6 +334,7 @@
     <link href="https://cdn.jsdelivr.net/npm/tom-select@2.0.0-rc.4/dist/css/tom-select.css" rel="stylesheet">
 
     <script src="https://cdn.jsdelivr.net/npm/tom-select@2.0.0-rc.4/dist/js/tom-select.complete.min.js"></script>
+    
     <style>
         :root {
             --primary-gradient: linear-gradient(195deg, #42424a, #191919);
@@ -473,84 +343,6 @@
 
         .border-dashed {
             border: 1px dashed #cb0c9f !important;
-        }
-
-        /* ====== Estilos para móviles ====== */
-        .mobile-details-sidebar {
-            position: fixed;
-            top: 0;
-            right: -100%;
-            width: 100%;
-            height: 100%;
-            z-index: 9999;
-            transition: right 0.3s ease;
-        }
-
-        .mobile-details-sidebar.active {
-            right: 0;
-        }
-
-        .mobile-details-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .mobile-details-sidebar.active .mobile-details-overlay {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .mobile-details-content {
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 85%;
-            max-width: 400px;
-            height: 100%;
-            padding: 20px;
-            overflow-y: auto;
-            transform: translateX(100%);
-            transition: transform 0.3s ease;
-            border-left: 1px solid rgba(0, 0, 0, 0.1);
-        }
-
-        .mobile-details-sidebar.active .mobile-details-content {
-            transform: translateX(0);
-        }
-
-        .mobile-details-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #e9ecef;
-        }
-
-        /* ====== Tema claro ====== */
-        [data-bs-theme="light"] .mobile-details-content {
-            background: #fff;
-            color: #000;
-        }
-
-        /* ====== Tema oscuro ====== */
-        [data-bs-theme="dark"] .mobile-details-content {
-            background: #1e1e2d;
-            color: #f1f1f1;
-            border-left: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-
-        /* Estilos generales */
-        .bg-gray-100 {
-            background-color: #f8f9fa !important;
         }
 
         .border-radius-lg {
@@ -570,7 +362,7 @@
             background-image: var(--secondary-gradient);
             border: none;
             border-radius: 8px;
-            padding: 10px 20px;
+            padding: 12px 30px;
             font-weight: 600;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             transition: all 0.3s ease;
@@ -596,64 +388,10 @@
                 font-size: 0.8rem;
             }
         }
-
-        #floating-cart-btn {
-            transition: transform 0.3s ease, opacity 0.3s ease;
-            opacity: 0;
-            transform: scale(0);
-            z-index: 1050;
-        }
-
-        /* Animación de entrada (burbuja) */
-        #floating-cart-btn.show {
-            opacity: 1;
-            animation: bubbleIn 0.4s ease forwards;
-        }
-
-        /* Animación de salida (pop / reventar) */
-        #floating-cart-btn.hide {
-            opacity: 0;
-            animation: bubbleOut 0.35s ease forwards;
-        }
-
-        @keyframes bubbleIn {
-            0% {
-                transform: scale(0.5);
-                opacity: 0;
-            }
-
-            60% {
-                transform: scale(1.2);
-                opacity: 1;
-            }
-
-            80% {
-                transform: scale(0.9);
-            }
-
-            100% {
-                transform: scale(1);
-                opacity: 1;
-            }
-        }
-
-        @keyframes bubbleOut {
-            0% {
-                transform: scale(1);
-                opacity: 1;
-            }
-
-            30% {
-                transform: scale(1.3);
-                opacity: 0.8;
-            }
-
-            100% {
-                transform: scale(0);
-                opacity: 0;
-            }
-        }
     </style>
+    
+
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const toggleBtn = document.getElementById('mobile-details-toggle');
@@ -957,173 +695,157 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            const productDetailsCard = document.getElementById("product-details-card");
-            const productEntryDetails = document.getElementById("product-entry-details");
-            const addToListBtn = document.getElementById("add-to-list-btn");
-            const productsTableBody = document.querySelector("#products-table tbody");
-            const productsTotalEl = document.getElementById("products-total");
+        const productDetailsCard = document.getElementById("product-details-card");
+        const productEntryDetails = document.getElementById("product-entry-details");
+        const addToListBtn = document.getElementById("add-to-list-btn");
+        const productsTableBody = document.querySelector("#products-table tbody");
 
-            // Resumen escritorio
-            const summaryTotalEl = document.getElementById("summary-total");
-            const summaryContainerEl = document.createElement("div");
-            summaryContainerEl.id = "summary-products-list";
+        // --- Resumen escritorio (opcional) ---
+        const summaryTotalEl = document.getElementById("summary-total");
+        const summaryContainerEl = document.createElement("div");
+        summaryContainerEl.id = "summary-products-list";
 
-            // Resumen móvil
-            const mobileSummaryTotalEl = document.getElementById("mobile-summary-total");
-            const mobileSummaryContainerEl = document.createElement("div");
-            mobileSummaryContainerEl.id = "mobile-summary-products-list";
-            const mobileProductsCount = document.getElementById("mobile-products-count");
- // Referencias botones registrar
-            const completeEntryBtn = document.getElementById("complete-entry");
-            const mobileCompleteEntryBtn = document.getElementById("mobile-complete-entry");
-            // Insertamos contenedores
-            const desktopSaleSummary = document.querySelector(".sale-summary");
+        const desktopSaleSummary = document.querySelector(".sale-summary");
+        if (desktopSaleSummary && summaryTotalEl && summaryTotalEl.parentElement) {
             desktopSaleSummary.insertBefore(summaryContainerEl, summaryTotalEl.parentElement);
+        }
 
-            const mobileSaleSummary = document.querySelector(".mobile-details-body .sale-summary");
+        // --- Resumen móvil (opcional) ---
+        const mobileSummaryTotalEl = document.getElementById("mobile-summary-total");
+        const mobileSummaryContainerEl = document.createElement("div");
+        mobileSummaryContainerEl.id = "mobile-summary-products-list";
+        const mobileProductsCount = document.getElementById("mobile-products-count");
+
+        const mobileSaleSummary = document.querySelector(".mobile-details-body .sale-summary");
+        if (mobileSaleSummary && mobileSummaryTotalEl && mobileSummaryTotalEl.parentElement) {
             mobileSaleSummary.insertBefore(mobileSummaryContainerEl, mobileSummaryTotalEl.parentElement);
+        }
 
-            // Botón flotante carrito
-            const floatingCartBtn = document.createElement("button");
-            floatingCartBtn.id = "floating-cart-btn";
-            floatingCartBtn.className = "btn btn-primary rounded-circle shadow-lg position-fixed";
-            floatingCartBtn.style.bottom = "20px";
-            floatingCartBtn.style.right = "20px";
-            floatingCartBtn.style.width = "50px"; // 🔽 más pequeño
-            floatingCartBtn.style.height = "50px"; // 🔽 más pequeño
-            floatingCartBtn.innerHTML = `
-    <i class="menu-icon icon-base bx bx-cart fs-5"></i>
-    <span id="floating-cart-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
-`;
-            document.body.appendChild(floatingCartBtn);
+        // Botón flotante carrito (opcional)
+        const floatingCartBtn = document.createElement("button");
+        floatingCartBtn.id = "floating-cart-btn";
+        floatingCartBtn.className = "btn btn-primary rounded-circle shadow-lg position-fixed";
+        floatingCartBtn.style.bottom = "20px";
+        floatingCartBtn.style.right = "20px";
+        floatingCartBtn.style.width = "50px";
+        floatingCartBtn.style.height = "50px";
+        floatingCartBtn.innerHTML = `
+            <i class="menu-icon icon-base bx bx-cart fs-5"></i>
+            <span id="floating-cart-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>`;
+        document.body.appendChild(floatingCartBtn);
+        const floatingCartCount = floatingCartBtn.querySelector("#floating-cart-count");
 
-            // ⚡️ Guardamos referencia del contador aquí
-            const floatingCartCount = floatingCartBtn.querySelector("#floating-cart-count");
+        let productsData = [];
+        let selectedProduct = null;
+        let productsList = [];
 
-            let productsData = [];
-            let selectedProduct = null;
-            let productsList = [];
+        function formatCurrency(value) {
+            return `S/ ${parseFloat(value || 0).toFixed(2)}`;
+        }
 
-            function formatCurrency(value) {
-                return `S/ ${parseFloat(value).toFixed(2)}`;
-            }
+        // TomSelect
+        const productSelectEl = document.getElementById("product-select");
+        let productSelect;
+        if (!productSelectEl.tomselect) {
+            productSelect = new TomSelect(productSelectEl, {
+            valueField: "id",
+            labelField: "nombre",
+            searchField: ["nombre", "codigo"],
+            placeholder: "Seleccionar producto...",
+            maxOptions: 100,
+            render: {
+                option: (item, escape) =>
+                `<div><strong>${escape(item.nombre)}</strong><br><small>Código: ${escape(item.codigo || "-")}</small></div>`,
+                item: (item, escape) => `<div>${escape(item.nombre)}</div>`
+            },
+            onChange: (value) => {
+                const selectedId = parseInt(value);
+                selectedProduct = productsData.find(p => p.id === selectedId);
 
-            // TomSelect
-            const productSelectEl = document.getElementById("product-select");
-            let productSelect;
-
-            if (!productSelectEl.tomselect) {
-                productSelect = new TomSelect(productSelectEl, {
-                    valueField: "id",
-                    labelField: "nombre",
-                    searchField: ["nombre", "codigo"],
-                    placeholder: "Seleccionar producto...",
-                    maxOptions: 100,
-                    render: {
-                        option: function(item, escape) {
-                            return `<div><strong>${escape(item.nombre)}</strong><br><small>Código: ${escape(item.codigo || "-")}</small></div>`;
-                        },
-                        item: function(item, escape) {
-                            return `<div>${escape(item.nombre)}</div>`;
-                        }
-                    },
-                    onChange: function(value) {
-                        const selectedId = parseInt(value);
-                        selectedProduct = productsData.find(p => p.id === selectedId);
-
-                        if (!selectedProduct) {
-                            productDetailsCard.classList.add("d-none");
-                            productEntryDetails.classList.add("d-none");
-                            return;
-                        }
-
-                        productDetailsCard.classList.remove("d-none");
-                        productEntryDetails.classList.remove("d-none");
-
-                        document.getElementById("product-price-type").textContent = selectedProduct.category || "-";
-                        document.getElementById("product-price").textContent = formatCurrency(selectedProduct.price);
-                        document.getElementById("product-category").textContent = selectedProduct.category || "-";
-                        document.getElementById("product-brand").textContent = selectedProduct.brand || "-";
-                        document.getElementById("product-model").textContent = selectedProduct.model || "-";
-                        document.getElementById("product-origin").textContent = selectedProduct.origin || "-";
-
-                        document.getElementById("product-lot").value = "";
-                        document.getElementById("product-code").value = selectedProduct.codigo || "";
-                        document.getElementById("product-quantity").value = 1;
-                        document.getElementById("product-unit-cost").value = selectedProduct.price || 0;
-                        document.getElementById("product-expiry-date").value = "";
-                    }
-                });
-            } else {
-                productSelect = productSelectEl.tomselect;
-            }
-
-            // Cargar productos
-            function loadProducts() {
-                fetch("/productos/list")
-                    .then(res => res.json())
-                    .then(data => {
-                        productsData = data.map(p => ({
-                            id: p.id,
-                            nombre: p.name,
-                            codigo: p.codigo || "-",
-                            category: p.category || "-",
-                            brand: p.brand || "-",
-                            model: p.model || "-",
-                            price: p.price || 0,
-                            origin: p.origin || "-"
-                        }));
-
-                        productSelect.clearOptions();
-                        productSelect.addOptions(productsData);
-                    })
-                    .catch(err => console.error("Error cargando productos:", err));
-            }
-            loadProducts();
-
-            // Agregar producto
-            addToListBtn.addEventListener("click", function(e) {
-                e.preventDefault();
-                if (!selectedProduct) return;
-
-                const lote = document.getElementById("product-lot").value.trim();
-                const codigo = document.getElementById("product-code").value.trim();
-                const cantidad = parseFloat(document.getElementById("product-quantity").value) || 0;
-                const unitCost = parseFloat(document.getElementById("product-unit-cost").value) || 0;
-                const expiryDate = document.getElementById("product-expiry-date").value;
-
-                if (cantidad <= 0 || unitCost < 0) {
-                    alert("Cantidad y costo deben ser mayores a cero.");
-                    return;
+                if (!selectedProduct) {
+                productDetailsCard.classList.add("d-none");
+                productEntryDetails.classList.add("d-none");
+                return;
                 }
 
-                const totalCost = cantidad * unitCost;
+                productDetailsCard.classList.remove("d-none");
+                productEntryDetails.classList.remove("d-none");
 
-                const productItem = {
-                    id: selectedProduct.id,
-                    name: selectedProduct.nombre,
-                    lot: lote,
-                    code: codigo,
-                    quantity: cantidad,
-                    unitCost: unitCost,
-                    totalCost: totalCost,
-                    expiryDate: expiryDate,
-                    type: selectedProduct.category || "-"
-                };
+                document.getElementById("product-price-type").textContent = selectedProduct.category || "-";
+                document.getElementById("product-price").textContent = formatCurrency(selectedProduct.price);
+                document.getElementById("product-category").textContent = selectedProduct.category || "-";
+                document.getElementById("product-brand").textContent = selectedProduct.brand || "-";
+                document.getElementById("product-model").textContent = selectedProduct.model || "-";
+                document.getElementById("product-origin").textContent = selectedProduct.origin || "-";
 
-                productsList.push(productItem);
-                renderProductsTable();
-                updateSummary();
+                // --- ¡Quitado! Era la línea que rompía si no existe el input:
+                // document.getElementById("product-code").value = selectedProduct.codigo || "";
+
+                document.getElementById("product-lot").value = "";
+                document.getElementById("product-quantity").value = 1;
+                document.getElementById("product-unit-cost").value = selectedProduct.price || 0;
+                document.getElementById("product-expiry-date").value = "";
+            }
             });
+        } else {
+            productSelect = productSelectEl.tomselect;
+        }
 
-            // Tabla de productos
-            function renderProductsTable() {
-                productsTableBody.innerHTML = "";
-                productsList.forEach((p, index) => {
-                    const tr = document.createElement("tr");
-                    tr.innerHTML = `
+        // Cargar productos
+        function loadProducts() {
+            fetch("/productos/list")
+            .then(res => res.json())
+            .then(data => {
+                console.log("Productos recibidos:", data.length, data);
+                productsData = data.map(p => ({
+                id: p.id,
+                nombre: p.name,           // backend envía "name"
+                category: p.category || "-",
+                brand: p.brand || "-",
+                model: p.model || "-",
+                price: p.price || 0,
+                origin: p.origin || "-",
+                codigo: p.codigo || ""    // si el backend lo envía
+                }));
+                productSelect.clearOptions();
+                productSelect.addOptions(productsData);
+            })
+            .catch(err => console.error("Error cargando productos:", err));
+        }
+        loadProducts();
+
+        // Agregar producto
+        addToListBtn.addEventListener("click", function(e) {
+            e.preventDefault();
+            if (!selectedProduct) return;
+
+            const lote = document.getElementById("product-lot").value.trim();
+            const cantidad = parseFloat(document.getElementById("product-quantity").value) || 0;
+            const unitCost = parseFloat(document.getElementById("product-unit-cost").value) || 0;
+            const expiryDate = document.getElementById("product-expiry-date").value;
+            if (cantidad <= 0 || unitCost < 0) return alert("Cantidad y costo deben ser mayores a cero.");
+
+            const totalCost = cantidad * unitCost;
+            productsList.push({
+            id: selectedProduct.id,
+            name: selectedProduct.nombre,
+            lot: lote,
+            quantity: cantidad,
+            unitCost,
+            totalCost,
+            expiryDate,
+            type: selectedProduct.category || "-"
+            });
+            renderProductsTable();
+            updateSummary();
+        });
+
+        function renderProductsTable() {
+            productsTableBody.innerHTML = "";
+            productsList.forEach((p, index) => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
                 <td>${p.lot}</td>
-                <td>${p.code}</td>
                 <td>${p.name}</td>
                 <td>${p.type}</td>
                 <td>${p.quantity}</td>
@@ -1131,63 +853,37 @@
                 <td>${formatCurrency(p.totalCost)}</td>
                 <td>${p.expiryDate || "-"}</td>
                 <td>
-                    <button class="btn btn-sm btn-danger remove-product" data-index="${index}">
-                        <i class="bx bx-trash"></i>
-                    </button>
-                </td>
-            `;
-                    productsTableBody.appendChild(tr);
-                });
+                <button class="btn btn-sm btn-danger remove-product" data-index="${index}">
+                    <i class="bx bx-trash"></i>
+                </button>
+                </td>`;
+            productsTableBody.appendChild(tr);
+            });
 
-                document.querySelectorAll(".remove-product").forEach(btn => {
-                    btn.addEventListener("click", function() {
-                        const idx = parseInt(this.dataset.index);
-                        productsList.splice(idx, 1);
-                        renderProductsTable();
-                        updateSummary();
-                    });
-                });
-            }
+            document.querySelectorAll(".remove-product").forEach(btn => {
+            btn.addEventListener("click", function() {
+                const idx = parseInt(this.dataset.index);
+                productsList.splice(idx, 1);
+                renderProductsTable();
+                updateSummary();
+            });
+            });
+        }
 
-            // Resumen
-            function updateSummary() {
-                summaryContainerEl.innerHTML = "";
-                mobileSummaryContainerEl.innerHTML = "";
-                let total = 0;
+        function updateSummary() {
+            if (summaryContainerEl) summaryContainerEl.innerHTML = "";
+            let total = productsList.reduce((s,p)=> s + p.totalCost, 0);
 
-                productsList.forEach(p => {
-                    total += p.totalCost;
+            const productsTotalEl = document.getElementById("products-total");
+            if (productsTotalEl) productsTotalEl.textContent = formatCurrency(total);
+            if (summaryTotalEl) summaryTotalEl.textContent = formatCurrency(total);
+            if (mobileSummaryTotalEl) mobileSummaryTotalEl.textContent = formatCurrency(total);
 
-                    const card = document.createElement("div");
-                    card.classList.add("card", "mb-2", "p-2", "shadow-sm");
-                    card.innerHTML = `
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <strong>${p.name}</strong><br>
-                        <small>Cant: ${p.quantity} x ${formatCurrency(p.unitCost)}</small>
-                    </div>
-                    <div><strong>${formatCurrency(p.totalCost)}</strong></div>
-                </div>
-            `;
-                    summaryContainerEl.appendChild(card);
+            if (mobileProductsCount) mobileProductsCount.textContent = productsList.length;
+            if (floatingCartCount) floatingCartCount.textContent = productsList.length;
+        }
 
-                    const mobileCard = card.cloneNode(true);
-                    mobileSummaryContainerEl.appendChild(mobileCard);
-                });
 
-                summaryTotalEl.textContent = formatCurrency(total);
-                mobileSummaryTotalEl.textContent = formatCurrency(total);
-
-                // 🔄 Actualizar contadores
-                mobileProductsCount.textContent = productsList.length;
-                floatingCartCount.textContent = productsList.length; // ✅ usar la referencia correcta
-                // ✅ Actualizar total del tfoot de la tabla
-                const productsTotalEl = document.getElementById("products-total");
-                if (productsTotalEl) {
-                    productsTotalEl.textContent = formatCurrency(total);
-                }
-            }
-// 👉 Registrar compra
             function registerPurchase() {
                 const proveedorId = document.getElementById("supplier-select").value;
                 const almacenId = document.getElementById("warehouse-select").value;
@@ -1230,7 +926,7 @@
                         fecha_vencimiento: p.expiryDate
                     }))
                 };
-console.log("Payload de compra:", payload); // 🔍 Depuración
+                console.log("Payload de compra:", payload); // 🔍 Depuración
                 fetch("/compras/store", {
                         method: "POST",
                         headers: {

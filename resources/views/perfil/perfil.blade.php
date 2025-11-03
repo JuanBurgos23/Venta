@@ -24,12 +24,7 @@
                                 <!-- Account -->
                                 <div class="card-body">
                                     <div class="d-flex align-items-start align-items-sm-center gap-4">
-                                        <img src="{{ $user->foto ? asset('storage/'.$user->foto) : asset('assets/img/avatars/cat4.gif') }}"
-                                            alt="user-avatar"
-                                            class="d-block rounded"
-                                            height="100"
-                                            width="100"
-                                            id="uploadedAvatar">
+                                       
                                         <form action="{{ route('profile.update') }}" id="formAccountSettings" method="POST" enctype="multipart/form-data">
                                             @csrf
                                             @method('patch')

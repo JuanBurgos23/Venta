@@ -2,20 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
+use App\Models\Venta;
 use App\Models\Almacen;
-use App\Models\Categoria;
 use App\Models\Cliente;
-use App\Models\DetalleVenta;
 use App\Models\Empresa;
 use App\Models\Producto;
-use App\Models\Producto_almacen;
-use App\Models\Producto_compra;
-use App\Models\detalle_venta_lote;
-use App\Models\Venta;
-use Carbon\Carbon;
+use App\Models\Sucursal;
+use App\Models\Categoria;
+use App\Models\DetalleVenta;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Models\Producto_compra;
+use App\Models\Producto_almacen;
+use App\Models\detalle_venta_lote;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class VentaController extends Controller
 {
