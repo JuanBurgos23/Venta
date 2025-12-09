@@ -10,25 +10,25 @@
         <!-- End Navbar -->
         <div class="container-fluid py-4">
             <div class="col-12">
-                <div class="container py-4">
-                    <h3>Clientes Registrados</h3>
-
-                    <div class="mb-3 row g-2">
-                        <div class="col-md-6">
-                            <input type="text" id="search" class="form-control" placeholder="Buscar cliente por cualquier campo..." autocomplete="off">
-                        </div>
-                        <div class="col-md-6 text-end">
-
-                            <div class="d-flex justify-content-end mb-3">
-                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalRegistrarCliente">
-                                    <i class="bx bx-plus"></i> Registrar Cliente
-                                </button>
-                            </div>
+                <div class="card my-4">
+                    <div class="card-header d-flex flex-wrap justify-content-between align-items-center">
+                        <h5 class="mb-0">Clientes Registrados</h5>
+                        <div class="d-flex gap-2 flex-wrap">
+                            <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalRegistrarCliente">
+                                <i class="bx bx-plus-circle"></i> Registrar Cliente
+                            </button>
                         </div>
                     </div>
 
-                    <div class="table-responsive">
-                        <table class="table table-striped table-hover" id="clientes-table">
+                    <div class="card-body">
+                        <div class="row g-2 mb-3">
+                            <div class="col-md-6">
+                                <input type="text" id="search" class="form-control" placeholder="Buscar cliente por cualquier campo..." autocomplete="off">
+                            </div>
+                        </div>
+
+                    <div class="table-responsive d-none d-md-block">
+                        <table class="table table-striped align-middle" id="clientes-table">
                             <thead>
                                 <tr>
                                     <th>#</th> <!-- No sortable -->
@@ -47,9 +47,11 @@
                             </tbody>
                         </table>
                     </div>
+                    <div id="clientes-cards" class="d-md-none"></div>
                     <nav>
-                        <ul class="pagination justify-content-center" id="clientes-pagination"></ul>
+                        <ul class="pagination justify-content-center mt-3" id="clientes-pagination"></ul>
                     </nav>
+                </div>
                 </div>
                 <!-- Modal registrar-->
                 <div class="modal fade" id="modalRegistrarCliente" tabindex="-1" aria-labelledby="modalRegistrarClienteLabel" aria-hidden="true">

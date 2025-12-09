@@ -38,15 +38,20 @@ class EmpresaController extends Controller
         $page    = (int) $request->input('page', 1);
 
         $user = Auth::user();
+        $empresaId = $user->id_empresa ?? null;
 
         $query = Empresa::query();
 
-        // Si el usuario NO es Administrador, limitamos a su empresa.
-        // OJO con el nombre exacto del rol en tu BD (Administrador vs Adminstrador).
-        if (!$user->hasRole('Administrador')) {
-            // Si el usuario no tiene empresa asociada, forzamos a que no devuelva nada:
-            $empresaId = $user->id_empresa ?? 0;
+        // Siempre limitar a la empresa del usuario; si no tiene, devolver vacío
+        if ($empresaId) {
             $query->where('id', $empresaId);
+        } else {
+            return response()->json([
+                'data' => [],
+                'current_page' => 1,
+                'last_page' => 1,
+                'total' => 0,
+            ]);
         }
 
         if ($search !== '') {

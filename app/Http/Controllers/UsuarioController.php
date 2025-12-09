@@ -22,15 +22,12 @@ class UsuarioController extends Controller
     {
         $user = Auth::user();
 
-        $query = User::with('roles')->where('estado', '!=', 'Eliminado');
+        // Restringimos siempre a la empresa del usuario autenticado
+        $query = User::with('roles')
+            ->where('estado', '!=', 'Eliminado')
+            ->where('id_empresa', $user->id_empresa ?? 0);
 
-        // --- Restricción por empresa: si NO es Administrador, solo ver su empresa
-        if (!$user->hasRole('Administrador')) {
-            // si id_empresa es null, usamos 0 para que no devuelva usuarios globales
-            $query->where('id_empresa', $user->id_empresa ?? 0);
-        }
-
-        // Búsqueda general (sin tocar tu lógica)
+        // Busqueda general (sin tocar tu logica)
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
@@ -40,7 +37,7 @@ class UsuarioController extends Controller
             });
         }
 
-        // Filtro por rol (sin tocar tu lógica)
+        // Filtro por rol (sin tocar tu logica)
         if ($request->has('role') && $request->role != '') {
             $query->whereHas('roles', function ($q) use ($request) {
                 $q->where('name', $request->role);
@@ -51,6 +48,7 @@ class UsuarioController extends Controller
 
         return response()->json($users);
     }
+
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -88,9 +86,10 @@ class UsuarioController extends Controller
         $user->assignRole($request->role);
 
         return redirect()
-            ->route('Crear Usuario') // 👈 tu ruta principal de usuarios
+            ->route('Crear Usuario') // ruta principal de usuarios
             ->with('success', 'Usuario creado correctamente');
     }
+
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
@@ -136,6 +135,7 @@ class UsuarioController extends Controller
             'user' => $user->load('roles')
         ], 200);
     }
+
     public function destroy($id)
     {
         $authUser = Auth::user();

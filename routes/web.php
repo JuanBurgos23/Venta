@@ -2,11 +2,11 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RolController;
+use App\Http\Controllers\CajaController;
 use App\Http\Controllers\VentaController;
 use App\Http\Controllers\CompraController;
 use App\Http\Controllers\PerfilController;
 use App\Http\Controllers\AlmacenController;
-use App\Http\Controllers\CajaController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\ProfileController;
@@ -16,11 +16,14 @@ use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\SucursalController;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\DashboardControoler;
+use App\Http\Controllers\SuscripcionController;
+use App\Http\Controllers\EmpresaSuscripcionController;
 use App\Http\Controllers\ProveedorController;
 use App\Http\Controllers\SubcategoriaController;
 use App\Http\Controllers\UnidadMedidaController;
-use App\Http\Controllers\ImportProductosController;
+use App\Http\Controllers\EmpresaConfigController;
 use App\Http\Controllers\IngresoEgresoController;
+use App\Http\Controllers\ImportProductosController;
 use App\Http\Controllers\ProductoAlmacenController;
 use App\Http\Controllers\InventarioReporteController;
 
@@ -89,6 +92,26 @@ Route::middleware('auth')->get('/routes-list', function () {
 
 //dashboard
 Route::get('/inicio', [DashboardControoler::class, 'index'])->name('Inicio')->middleware(['auth', 'verified']);
+
+// admin dashboard (auth + verified)
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::view('/admin', 'admin.dashboard')->name('admin.dashboard');
+
+    // Empresas para admin (fetch)
+    Route::get('/admin/empresas/fetch', [EmpresaController::class, 'fetch'])->name('admin.empresas.fetch');
+
+    // Suscripciones CRUD
+    Route::get('/suscripciones/fetch', [SuscripcionController::class, 'fetch'])->name('suscripciones.fetch');
+    Route::post('/suscripciones', [SuscripcionController::class, 'store'])->name('suscripciones.store');
+    Route::put('/suscripciones/{id}', [SuscripcionController::class, 'update'])->name('suscripciones.update');
+    Route::delete('/suscripciones/{id}', [SuscripcionController::class, 'destroy'])->name('suscripciones.destroy');
+
+    // Asignación Empresa-Suscripción
+    Route::get('/empresa-suscripciones/fetch', [EmpresaSuscripcionController::class, 'fetch'])->name('empresa_suscripcion.fetch');
+    Route::post('/empresa-suscripciones', [EmpresaSuscripcionController::class, 'store'])->name('empresa_suscripcion.store');
+    Route::put('/empresa-suscripciones/{id}', [EmpresaSuscripcionController::class, 'update'])->name('empresa_suscripcion.update');
+    Route::delete('/empresa-suscripciones/{id}', [EmpresaSuscripcionController::class, 'destroy'])->name('empresa_suscripcion.destroy');
+});
 
 //cliente
 Route::get('/cliente', [ClienteController::class, 'index'])->name('Cliente');
@@ -272,6 +295,10 @@ Route::post('/ingreso_egreso_actualizar/{id}', [IngresoEgresoController::class, 
 
 
 
+//configuraciones
+// web.php
+Route::get('/empresas/{empresa}/config', [EmpresaConfigController::class, 'show'])->name('empresa.config.show');   // devuelve JSON
+Route::patch('/empresas/{empresa}/config', [EmpresaConfigController::class, 'update'])->name('empresa.config.update');
 
 
 

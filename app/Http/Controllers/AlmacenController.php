@@ -17,10 +17,11 @@ class AlmacenController extends Controller
     public function index()
     {
         $user = Auth::user();
+        $empresaId = $user->id_empresa ?? null;
 
         $sucursal = Sucursal::select('id', 'nombre')
-            ->when(!$user->hasRole('Administrador'), function ($q) use ($user) {
-                $q->where('empresa_id', $user->id_empresa ?? 0);
+            ->when($empresaId, function ($q) use ($empresaId) {
+                $q->where('empresa_id', $empresaId);
             })
             ->where('estado', '!=', 0)
             ->orderBy('nombre')
@@ -36,17 +37,23 @@ class AlmacenController extends Controller
         $page    = $request->input('page', 1);
 
         $user = Auth::user();
+        $empresaId = $user->id_empresa ?? null;
+        if (!$empresaId) {
+            return response()->json([
+                'data' => [],
+                'current_page' => 1,
+                'last_page' => 1,
+                'total' => 0,
+            ]);
+        }
 
         $q = Almacen::with('sucursal') // traemos la sucursal
             ->where('estado', '!=', 0);
 
-        // Scope por empresa si NO es admin
-        if (!$user->hasRole('Administrador')) {
-            $empresaId = $user->id_empresa ?? 0;
-            $q->whereHas('sucursal', function ($w) use ($empresaId) {
-                $w->where('empresa_id', $empresaId);
-            });
-        }
+        // Scope por empresa del usuario (siempre)
+        $q->whereHas('sucursal', function ($w) use ($empresaId) {
+            $w->where('empresa_id', $empresaId);
+        });
 
         if ($search !== '') {
             $q->where(function ($w) use ($search) {
@@ -69,15 +76,14 @@ class AlmacenController extends Controller
     public function edit($id)
     {
         $user = Auth::user();
+        $empresaId = $user->id_empresa ?? null;
 
-        $q = Almacen::with(['sucursal:id,empresa_id,nombre', 'sucursal.empresa:id,nombre']);
-
-        if (!$user->hasRole('Administrador')) {
-            $empresaId = $user->id_empresa ?? 0;
-            $q->whereHas('sucursal', function ($w) use ($empresaId) {
-                $w->where('empresa_id', $empresaId);
+        $q = Almacen::with(['sucursal:id,empresa_id,nombre', 'sucursal.empresa:id,nombre'])
+            ->whereHas('sucursal', function ($w) use ($empresaId) {
+                if ($empresaId) {
+                    $w->where('empresa_id', $empresaId);
+                }
             });
-        }
 
         $almacen = $q->findOrFail($id);
 
@@ -139,13 +145,13 @@ class AlmacenController extends Controller
         $user = Auth::user();
 
         // Buscar con scope por empresa si no es Admin
-        $q = Almacen::query();
-        if (!$user->hasRole('Administrador')) {
-            $empresaId = $user->id_empresa ?? 0;
-            $q->whereHas('sucursal', function ($w) use ($empresaId) {
+        $empresaId = $user->id_empresa ?? null;
+
+        $q = Almacen::query()->whereHas('sucursal', function ($w) use ($empresaId) {
+            if ($empresaId) {
                 $w->where('empresa_id', $empresaId);
-            });
-        }
+            }
+        });
         $almacen = $q->find($id);
 
         if (!$almacen || (int)$almacen->estado === 0) {
@@ -201,13 +207,13 @@ class AlmacenController extends Controller
     {
         $user = Auth::user();
 
-        $q = Almacen::query();
-        if (!$user->hasRole('Administrador')) {
-            $empresaId = $user->id_empresa ?? 0;
-            $q->whereHas('sucursal', function ($w) use ($empresaId) {
+        $empresaId = $user->id_empresa ?? null;
+
+        $q = Almacen::query()->whereHas('sucursal', function ($w) use ($empresaId) {
+            if ($empresaId) {
                 $w->where('empresa_id', $empresaId);
-            });
-        }
+            }
+        });
 
         $almacen = $q->find($id);
         if (!$almacen) {

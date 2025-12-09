@@ -10,24 +10,25 @@
         <!-- End Navbar -->
         <div class="container-fluid py-4">
             <div class="col-12">
-                <div class="container py-4">
-                    <h3>Empresas Registradas</h3>
-
-                    <div class="mb-3 row g-2">
-                        <div class="col-md-6">
-                            <input type="text" id="search" class="form-control" placeholder="Buscar empresa por cualquier campo..." autocomplete="off">
-                        </div>
-                        <div class="col-md-6 text-end">
-                            <div class="d-flex justify-content-end mb-3">
-                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalRegistrarEmpresa">
-                                    <i class="bx bx-plus"></i> Registrar Empresa
-                                </button>
-                            </div>
+                <div class="card my-4">
+                    <div class="card-header d-flex flex-wrap justify-content-between align-items-center">
+                        <h5 class="mb-0">Empresas Registradas</h5>
+                        <div class="d-flex gap-2 flex-wrap">
+                            <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalRegistrarEmpresa">
+                                <i class="bx bx-plus-circle"></i> Registrar Empresa
+                            </button>
                         </div>
                     </div>
 
-                    <div class="table-responsive">
-                        <table class="table table-striped table-hover" id="empresas-table">
+                    <div class="card-body">
+                        <div class="row g-2 mb-3">
+                            <div class="col-md-6">
+                                <input type="text" id="search" class="form-control" placeholder="Buscar empresa por cualquier campo..." autocomplete="off">
+                            </div>
+                        </div>
+
+                    <div class="table-responsive d-none d-md-block">
+                        <table class="table table-striped align-middle" id="empresas-table">
                             <thead>
                                 <tr>
                                     <th>#</th>
@@ -50,9 +51,12 @@
                         </table>
                     </div>
 
+                    <div id="empresas-cards" class="d-md-none"></div>
+
                     <nav>
-                        <ul class="pagination justify-content-center" id="empresas-pagination"></ul>
+                        <ul class="pagination justify-content-center mt-3" id="empresas-pagination"></ul>
                     </nav>
+                    </div>
                 </div>
 
                 <!-- Modal registrar empresa -->

@@ -13,11 +13,11 @@ class ClienteController extends Controller
     public function index()
     {
         if (!Auth::user()->can('Cliente')) {
-            return response()
-                ->view('errors.forbidden', [], 403);
+            return response()->view('errors.forbidden', [], 403);
         }
         return view('cliente.cliente');
     }
+
     // Endpoint JSON para fetch
     public function fetch(Request $request)
     {
@@ -25,8 +25,20 @@ class ClienteController extends Controller
         $perPage = 10; // registros por página
         $page = $request->input('page', 1);
 
+        $user = Auth::user();
+        $empresaId = $user->id_empresa ?? null;
+        if (!$empresaId) {
+            return response()->json([
+                'data' => [],
+                'current_page' => 1,
+                'last_page' => 1,
+                'total' => 0,
+            ]);
+        }
+
         $query = Cliente::with('empresa')
-            ->where('estado', '!=', 'Borrado'); // <-- filtrar clientes borrados
+            ->where('estado', '!=', 'Borrado') // <-- filtrar clientes borrados
+            ->where('id_empresa', $empresaId);
 
         if ($search) {
             $query->where(function ($q) use ($search) {
@@ -43,6 +55,7 @@ class ClienteController extends Controller
 
         return response()->json($clientes);
     }
+
     public function store(Request $request)
     {
         // Validar datos
@@ -96,7 +109,8 @@ class ClienteController extends Controller
 
     public function update(Request $request, $id)
     {
-        $cliente = Cliente::find($id);
+        $user = Auth::user();
+        $cliente = Cliente::where('id_empresa', $user->id_empresa ?? 0)->find($id);
         if (!$cliente) {
             return response()->json(['status' => 'error', 'message' => 'Cliente no encontrado'], 200);
         }
@@ -118,9 +132,11 @@ class ClienteController extends Controller
 
         return response()->json(['status' => 'success', 'message' => 'Cliente actualizado correctamente', 'cliente' => $cliente], 200);
     }
+
     public function marcarBorrado(Request $request, $id)
     {
-        $cliente = Cliente::find($id);
+        $user = Auth::user();
+        $cliente = Cliente::where('id_empresa', $user->id_empresa ?? 0)->find($id);
         if (!$cliente) {
             return response()->json(['status' => 'error', 'message' => 'Cliente no encontrado'], 200);
         }

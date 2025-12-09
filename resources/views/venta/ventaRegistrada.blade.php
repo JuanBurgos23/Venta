@@ -9,26 +9,30 @@
             <div class="row mb-3">
                 <div class="col-12">
                     <div class="card shadow-sm">
-                        <div class="card-header d-flex flex-column flex-md-row gap-2 align-items-md-center justify-content-between">
-                            <div class="d-flex gap-2 align-items-center flex-wrap">
+                        <div class="card-header d-flex flex-wrap justify-content-between align-items-center">
+                            <div>
                                 <h5 class="mb-0">Listado de Ventas</h5>
-                                <small class="text-muted"> — Panel administrativo</small>
+                                <small class="text-muted">Panel administrativo</small>
                             </div>
+                            <a href="/venta" class="btn btn-primary btn-sm">Registrar venta</a>
+                        </div>
 
-                            <div class="d-flex gap-2 align-items-center flex-wrap">
-                                <div class="input-group input-group-sm">
-                                    <span class="input-group-text">Busqueda</span>
-                                    <input id="global-search" class="form-control" placeholder="Buscar por cliente, código, usuario..." />
+                        <div class="card-body">
+                            <div class="row g-2 mb-3">
+                                <div class="col-md-4">
+                                    <label class="form-label mb-1 small">Buscar</label>
+                                    <input id="global-search" class="form-control form-control-sm" placeholder="Cliente, codigo, usuario..." />
                                 </div>
-
-                                <div class="input-group input-group-sm">
-                                    <span class="input-group-text">Desde</span>
-                                    <input type="date" id="filter-from" class="form-control" />
-                                    <span class="input-group-text">Hasta</span>
-                                    <input type="date" id="filter-to" class="form-control" />
+                                <div class="col-md-2">
+                                    <label class="form-label mb-1 small">Desde</label>
+                                    <input type="date" id="filter-from" class="form-control form-control-sm" />
                                 </div>
-
-                                <div>
+                                <div class="col-md-2">
+                                    <label class="form-label mb-1 small">Hasta</label>
+                                    <input type="date" id="filter-to" class="form-control form-control-sm" />
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label mb-1 small">Estado</label>
                                     <select id="filter-status" class="form-select form-select-sm">
                                         <option value="">Todos</option>
                                         <option value="Registrado">Registrado</option>
@@ -36,13 +40,15 @@
                                         <option value="Pendiente">Pendiente</option>
                                     </select>
                                 </div>
-
+                                <div class="col-md-2 d-flex align-items-end">
+                                    <button class="btn btn-dark w-100" id="btnReload">
+                                        <i class="bx bx-search"></i> Filtrar
+                                    </button>
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="card-body p-0">
-                            <div class="table-responsive">
-                                <table class="table table-hover mb-0" id="ventas-table">
+                            <div class="table-responsive d-none d-md-block">
+                                <table class="table table-striped align-middle mb-0" id="ventas-table">
                                     <thead class="bg-primary text-white">
                                         <tr>
                                             <th style="width:48px"></th>
@@ -68,15 +74,16 @@
                                             <td class="text-end fw-bold" id="visible-total">Bs/ 0.00</td>
                                             <td colspan="3"></td>
                                         </tr>
-                                    </tfoot>
-                                </table>
-                            </div>
+                                </tfoot>
+                            </table>
                         </div>
+                        <div id="ventas-cards" class="d-md-none"></div>
+                    </div>
 
                         <div class="card-footer d-flex justify-content-between align-items-center">
                             <div id="result-count" class="text-muted">—</div>
                             <nav>
-                                <ul class="pagination pagination-sm mb-0" id="ventas-pagination"></ul>
+                                <ul class="pagination pagination-sm justify-content-center mb-0" id="ventas-pagination"></ul>
                             </nav>
                         </div>
                     </div>
@@ -191,6 +198,7 @@
             const visibleTotalEl = document.getElementById('visible-total');
             const resultCount = document.getElementById('result-count');
             const btnReload = document.getElementById('btnReload');
+            const cardsContainer = document.getElementById('ventas-cards');
 
             // Inicializar fechas (hoy)
             const today = new Date().toISOString().slice(0, 10);
@@ -330,6 +338,46 @@
                 visibleTotalEl.textContent = `Bs/ ${numberFormat(totalVisible)}`;
                 resultCount.textContent = `${salesCache.length} venta(s)`;
                 attachRowEvents();
+                renderCards();
+            }
+
+            // Cards para mÇüvil
+            function renderCards() {
+                if (!cardsContainer) return;
+                cardsContainer.innerHTML = '';
+
+                if (!salesCache.length) {
+                    cardsContainer.innerHTML = `<div class="text-center text-muted py-4">No hay ventas para el periodo seleccionado</div>`;
+                    return;
+                }
+
+                salesCache.forEach((v) => {
+                    const card = document.createElement('div');
+                    card.className = 'card mb-2';
+                    card.innerHTML = `
+                        <div class="card-body p-3">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div>
+                                    <div class="fw-bold">${escapeHtml(v.codigo)}</div>
+                                    <div class="text-muted small">${formatDateTime(v.fecha)}</div>
+                                    <div class="small">${escapeHtml(v.cliente?.nombre ?? '-')}</div>
+                                </div>
+                                <div class="text-end">
+                                    <div class="fw-bold">Bs/ ${numberFormat(v.total)}</div>
+                                    <span class="badge bg-${v.estado === 'Anulado' ? 'danger' : (v.estado === 'Pagado' ? 'success' : 'secondary')}">${escapeHtml(v.estado)}</span>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="small text-muted">${escapeHtml(v.forma_pago ?? '-')} · ${escapeHtml(v.almacen?.nombre ?? '-')}</div>
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-sm btn-outline-secondary btn-print" data-id="${v.id}"><i class="bx bx-printer"></i></button>
+                                    ${v.estado !== 'Anulado' ? `<button class="btn btn-sm btn-outline-danger btn-anular" data-id="${v.id}"><i class="bx bx-x"></i></button>` : ''}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    cardsContainer.appendChild(card);
+                });
             }
 
             // Attach event listeners to buttons in table
@@ -419,6 +467,46 @@
                         const id = btn.dataset.id;
                         window.open(PRINT_URL(id), '_blank');
                     };
+                });
+            }
+
+            // Eventos para cards (mÇüvil)
+            if (cardsContainer) {
+                cardsContainer.addEventListener('click', async (e) => {
+                    const printBtn = e.target.closest('.btn-print');
+                    const anularBtn = e.target.closest('.btn-anular');
+                    if (printBtn) {
+                        window.open(PRINT_URL(printBtn.dataset.id), '_blank');
+                        return;
+                    }
+                    if (anularBtn) {
+                        const id = anularBtn.dataset.id;
+                        if (!confirm(`¶¨Seguro que deseas anular la venta ${id}?`)) return;
+                        try {
+                            const res = await fetch(ANULAR_URL(id), {
+                                method: 'POST',
+                                headers: {
+                                    'Accept': 'application/json',
+                                    'X-CSRF-TOKEN': CSRF,
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    _method: 'PUT'
+                                })
+                            });
+                            const json = await res.json();
+                            if (res.ok && json.success) {
+                                salesCache = salesCache.filter(s => s.id != id);
+                                renderTable();
+                                showToast(json.message || 'Venta anulada', 'success');
+                            } else {
+                                showToast(json.message || 'Error al anular', 'danger');
+                            }
+                        } catch (err) {
+                            console.error(err);
+                            showToast('Error al anular la venta', 'danger');
+                        }
+                    }
                 });
             }
 

@@ -26,4 +26,16 @@ class Empresa extends Model
     {
         return $this->hasMany(Sucursal::class);
     }
+
+    public function suscripciones()
+    {
+        return $this->belongsToMany(Suscripcion::class, 'empresa_suscripcion')
+            ->withPivot(['fecha_inicio', 'fecha_fin'])
+            ->withTimestamps();
+    }
+
+    public function empresaSuscripciones()
+    {
+        return $this->hasMany(EmpresaSuscripcion::class);
+    }
 }

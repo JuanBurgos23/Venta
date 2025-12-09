@@ -7,42 +7,45 @@
 
         <div class="container-fluid py-4">
             <div class="col-12">
-                <div class="card shadow-lg border-0">
-                    <div class="card-header bg-gradient-primary text-white d-flex align-items-center justify-content-between">
-                        <h5 class="mb-0">Listado de Compras</h5>
-                        <div class="d-flex gap-2">
-                            <a href="/compras/create" class="btn btn-light">Registrar Compra</a>
+                <div class="card shadow-sm">
+                    <div class="card-header d-flex flex-wrap justify-content-between align-items-center">
+                        <div>
+                            <h5 class="mb-0">Listado de Compras</h5>
+                            <small class="text-muted">Panel administrativo</small>
                         </div>
+                        <a href="/compras/create" class="btn btn-primary btn-sm">Registrar Compra</a>
                     </div>
 
                     <div class="card-body">
 
                         {{-- Filtros --}}
-                        <div class="section-form mb-4">
-                            <h6 class="section-title">🔎 Filtros</h6>
-                            <div class="row g-3">
+                        <div class="mb-3">
+                            <div class="row g-2 align-items-end">
                                 <div class="col-md-4">
-                                    <label class="form-label">Buscar (Proveedor / Nro. Factura / Nota)</label>
-                                    <input type="text" id="search" class="form-control" placeholder="Ej: Proveedor SRL o 100-25">
+                                    <label class="form-label mb-1 small">Buscar (Proveedor / Nro. Factura / Nota)</label>
+                                    <input type="text" id="search" class="form-control form-control-sm" placeholder="Ej: Proveedor SRL o 100-25">
                                 </div>
                                 <div class="col-md-3">
-                                    <label class="form-label">Desde</label>
-                                    <input type="date" id="from" class="form-control">
+                                    <label class="form-label mb-1 small">Desde</label>
+                                    <input type="date" id="from" class="form-control form-control-sm">
                                 </div>
                                 <div class="col-md-3">
-                                    <label class="form-label">Hasta</label>
-                                    <input type="date" id="to" class="form-control">
+                                    <label class="form-label mb-1 small">Hasta</label>
+                                    <input type="date" id="to" class="form-control form-control-sm">
                                 </div>
-                                <div class="col-md-2 d-flex align-items-end gap-2">
-                                    <button id="btnBuscar" class="btn btn-primary w-100">Buscar</button>
+                                <div class="col-md-2">
+                                    <button id="btnBuscar" class="btn btn-dark w-100">
+                                        <i class="bx bx-search"></i> Filtrar
+                                    </button>
                                 </div>
                             </div>
                         </div>
 
                         {{-- Tabla --}}
-                        <div class="table-responsive">
-                            <table class="table table-hover align-middle">
-                                <thead class="table-light">
+
+                        <div class="table-responsive d-none d-md-block">
+                            <table class="table table-striped align-middle">
+                                <thead class="bg-primary text-white">
                                     <tr>
                                         <th style="width: 80px;">#</th>
                                         <th>Proveedor</th>
@@ -61,12 +64,13 @@
                                 </tbody>
                             </table>
                         </div>
+                        <div id="compras-cards" class="d-md-none"></div>
 
                         {{-- Paginación --}}
                         <div class="d-flex justify-content-between align-items-center mt-3">
                             <div class="small text-muted" id="pagerInfo">Mostrando 0 de 0</div>
                             <nav>
-                                <ul class="pagination mb-0" id="pager">
+                                <ul class="pagination justify-content-center mt-3 mb-0" id="pager">
                                     <!-- botones generados por JS -->
                                 </ul>
                             </nav>
@@ -117,6 +121,10 @@
         const from = document.getElementById("from");
         const to = document.getElementById("to");
         const btnBuscar = document.getElementById("btnBuscar");
+        const cards = document.getElementById("compras-cards");
+        const detalleCompra = document.getElementById("detalleCompra");
+        const modalVerCompra = document.getElementById("modalVerCompra");
+        const modalDetalle = modalVerCompra ? new bootstrap.Modal(modalVerCompra) : null;
     
         let currentPage = 1;
         let lastPage = 1;
@@ -139,8 +147,9 @@
                 const rows = Array.isArray(json.data) ? json.data : [];
                 const meta = json.meta || {};
                 lastPage = meta.last_page || 1;
-    
+
                 renderRows(rows, meta);
+                renderCards(rows, meta);
                 renderPager(meta);
             } catch (e) {
                 console.error(e);
@@ -152,6 +161,9 @@
             if (!rows.length) {
                 tbody.innerHTML = `<tr><td colspan="8" class="text-center text-muted py-4">Sin resultados.</td></tr>`;
                 pagerInfo.textContent = `Mostrando 0 de 0`;
+                if (cards) {
+                    cards.innerHTML = `<div class="text-center text-muted py-4">Sin compras registradas.</div>`;
+                }
                 return;
             }
     
@@ -196,6 +208,40 @@
             const toReg = meta.to || (fromReg + rows.length - 1);
             pagerInfo.textContent = `Mostrando ${fromReg} - ${toReg} de ${totalReg}`;
         }
+
+        function renderCards(rows, meta) {
+            if (!cards) return;
+            cards.innerHTML = '';
+            rows.forEach((r, i) => {
+                const estadoBadge = (r.estado == 1) ? `<span class="badge bg-success">Activo</span>` : `<span class="badge bg-secondary">Anulado</span>`;
+                const card = document.createElement('div');
+                card.className = 'card mb-2';
+                card.innerHTML = `
+                    <div class="card-body p-3">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <div class="fw-bold">${r.proveedor || 'ƒ?"'}</div>
+                                <div class="small text-muted">Factura: ${r.numero_factura || 'ƒ?"'}</div>
+                                <div class="small text-muted">${r.fecha || ''}</div>
+                            </div>
+                            <div class="text-end">
+                                <div class="fw-bold">Bs/ ${(Number(r.total) || 0).toFixed(2)}</div>
+                                ${estadoBadge}
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mt-2">
+                            <div class="small text-muted">${r.almacen_nombre || 'ƒ?"'}</div>
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-sm btn-outline-primary" data-id="${r.id}" data-action="detalle">Detalles</button>
+                                <a class="btn btn-sm btn-outline-secondary" href="/compras/${r.id}/edit">Editar</a>
+                                <button class="btn btn-sm btn-outline-danger" data-id="${r.id}" data-action="eliminar">Eliminar</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                cards.appendChild(card);
+            });
+        }
     
         function renderPager(meta) {
             const cp = meta.current_page || 1;
@@ -229,6 +275,22 @@
                 if (!isNaN(p) && p >= 1 && p <= lastPage) fetchCompras(p);
             }
         });
+
+        if (cards) {
+            cards.addEventListener('click', (e) => {
+                const btn = e.target.closest('button');
+                if (!btn) return;
+                const id = btn.getAttribute('data-id');
+                const action = btn.getAttribute('data-action');
+
+                if (action === 'detalle') {
+                    verDetalleEnModal(id);
+                }
+                if (action === 'eliminar') {
+                    eliminarCompra(id);
+                }
+            });
+        }
     
         // Toggle detalle + eliminar
         tbody.addEventListener('click', async (e) => {
@@ -265,14 +327,9 @@
             }
     
             if (action === 'eliminar') {
-                if (!confirm('¿Eliminar esta compra? Esta acción es irreversible.')) return;
-                try {
-                    const resp = await fetch(`/compras/${id}`, {
-                        method: 'DELETE',
-                        headers: {
-                            'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
-                        }
-                    });
+                eliminarCompra(id);
+            }
+);
                     const data = await resp.json().catch(() => ({}));
                     if (resp.ok) {
                         showToast(data.message || 'Compra eliminada', 'success');
@@ -331,6 +388,40 @@
             `;
             }
     
+        async function eliminarCompra(id) {
+            if (!confirm('Eliminar esta compra? Esta accion es irreversible.')) return;
+            try {
+                const resp = await fetch(`/compras/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('input[name=\"_token\"]').value
+                    }
+                });
+                const data = await resp.json().catch(() => ({}));
+                if (resp.ok) {
+                    showToast(data.message || 'Compra eliminada', 'success');
+                    fetchCompras(currentPage);
+                } else {
+                    showToast(data.message || 'No se pudo eliminar', 'danger');
+                }
+            } catch (err) {
+                showToast('Error al eliminar la compra', 'danger');
+            }
+        }
+
+        async function verDetalleEnModal(id) {
+            if (!modalDetalle || !detalleCompra) return;
+            detalleCompra.innerHTML = `<div class="text-center text-muted">Cargando detalle...</div>`;
+            try {
+                const resp = await fetch(`/api/compras/${id}/detalles`);
+                const data = await resp.json();
+                detalleCompra.innerHTML = renderDetalleTable(data.items || []);
+                modalDetalle.show();
+            } catch (err) {
+                detalleCompra.innerHTML = `<div class="text-danger">Error al cargar el detalle.</div>`;
+            }
+        }
+
         // Toast helper (reutiliza tu estilo)
         window.showToast = function(message, type = "primary") {
             const toastEl = document.querySelector(".bs-toast");

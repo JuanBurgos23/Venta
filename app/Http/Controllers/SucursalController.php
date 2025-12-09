@@ -21,18 +21,26 @@ class SucursalController extends Controller
      }
     public function fetch(Request $request)
     {
+        $user = Auth::user();
         $search  = (string) $request->input('search', '');
         $perPage = (int) $request->input('per_page', 10);
         $page    = (int) $request->input('page', 1);
-
-        $user = Auth::user();
 
         $q = Sucursal::query()
             ->with('empresa')
             ->where('estado', '!=', 0);
 
-        if (!$user->hasRole('Administrador')) {
-            $q->where('empresa_id', $user->id_empresa ?? 0);
+        // Restringir por empresa del usuario
+        if ($user && $user->id_empresa) {
+            $q->where('empresa_id', $user->id_empresa);
+        } else {
+            // sin empresa asociada no devolvemos registros
+            return response()->json([
+                'data' => [],
+                'current_page' => 1,
+                'last_page' => 1,
+                'total' => 0,
+            ]);
         }
 
         if ($search !== '') {

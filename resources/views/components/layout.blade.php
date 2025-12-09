@@ -1144,9 +1144,8 @@
                         <i class="icon-base bx bx-chevron-left"></i>
                     </a>
                 </div>
-                <div class="menu-inner-shadow"></div>
-                <ul class="menu-inner py-1 ps ps--active-y">
-                    <!-- Dashboards -->
+                
+                <ul class="menu-inner py-1">
                     <li class="menu-item {{ Request::routeIs('Inicio') ? 'active open' : '' }}">
                         <a href="{{ route('Inicio') }}" class="menu-link">
                             <i class="menu-icon icon-base bx bx-home-smile"></i>
@@ -1154,91 +1153,12 @@
                         </a>
                     </li>
 
-                    <!-- Apps & Pages -->
-                    <li class="menu-header small">
-                        <span class="menu-header-text" data-i18n="Modulo">Modulo</span>
-                    </li>
-                    <li class="menu-item {{ Request::routeIs('Empresa') ? 'active' : '' }}">
-                        <a href="{{ route('Empresa') }}" class="menu-link">
-                            <i class="menu-icon icon-base bx bx-buildings"></i>
-                            <div data-i18n="Empresa">Empresa</div>
-                        </a>
-                    </li>
-
+                    <li class="menu-header small"><span class="menu-header-text">Comercial</span></li>
                     <li class="menu-item {{ Request::routeIs('Cliente') ? 'active' : '' }}">
                         <a href="{{ route('Cliente') }}" class="menu-link">
                             <i class="menu-icon icon-base bx bx-user-circle"></i>
-                            <div data-i18n="Cliente">Cliente</div>
+                            <div data-i18n="Cliente">Clientes</div>
                         </a>
-                    </li>
-
-                    <li class="menu-item {{ Request::routeIs('sucursal.index') ? 'active' : '' }}">
-                        <a href="{{ route('sucursal.index') }}" class="menu-link">
-                            <i class="menu-icon icon-base bx bx-git-branch"></i>
-                            <div data-i18n="Sucursal">Sucursal</div>
-                        </a>
-                    </li>
-
-                    <li class="menu-item {{ Request::routeIs('almacen.index') ? 'active' : '' }}">
-                        <a href="{{ route('almacen.index') }}" class="menu-link">
-                            <i class="menu-icon icon-base bx bx-store-alt"></i>
-                            <div data-i18n="Almacen">Almacén</div>
-                        </a>
-                    </li>
-
-                    <li class="menu-item {{ Request::routeIs('productos.index') || Request::routeIs('categorias.index') || Request::routeIs('unidad_medida.index') || Request::routeIs('producto.importar') ? 'active open' : '' }}">
-                        <a href="javascript:void(0);" class="menu-link menu-toggle">
-                            <i class="menu-icon icon-base bx bx-package"></i>
-                            <div data-i18n="Productos">Productos</div>
-                        </a>
-                        <ul class="menu-sub">
-                            <li class="menu-item {{ Request::routeIs('categorias.index') ? 'active' : '' }}">
-                                <a href="{{ route('categorias.index') }}" class="menu-link">
-                                    <div data-i18n="Categoría">Categoría</div>
-                                </a>
-                            </li>
-                            <li class="menu-item {{ Request::routeIs('unidad_medida.index') ? 'active' : '' }}">
-                                <a href="{{ route('unidad_medida.index') }}" class="menu-link">
-                                    <div data-i18n="Unidad de medida">Unidad de medida</div>
-                                </a>
-                            </li>
-                            <li class="menu-item {{ Request::routeIs('productos.index') ? 'active' : '' }}">
-                                <a href="{{ route('productos.index') }}" class="menu-link">
-                                    <div data-i18n="Registrar Producto">Registrar Producto</div>
-                                </a>
-                            </li>
-                            <li class="menu-item {{ Request::routeIs('producto.importar') ? 'active' : '' }}">
-                                <a href="{{ route('producto.importar') }}" class="menu-link">
-                                    <div data-i18n="Importar productos">Importar productos</div>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-
-                    <li class="menu-item {{ Request::routeIs('Crear Usuario') ? 'active' : '' }}">
-                        <a href="{{ route('Crear Usuario') }}" class="menu-link">
-                            <i class="menu-icon icon-base bx bx-user-plus"></i>
-                            <div data-i18n="Crear Usuario">Crear Usuario</div>
-                        </a>
-                    </li>
-
-                    <li class="menu-item {{ Request::routeIs('rol.*') ? 'active open' : '' }}">
-                        <a href="javascript:void(0);" class="menu-link menu-toggle">
-                            <i class="menu-icon icon-base bx bx-check-shield"></i>
-                            <div data-i18n="Roles &amp; Permissions">Roles &amp; Permissions</div>
-                        </a>
-                        <ul class="menu-sub">
-                            <li class="menu-item {{ Request::routeIs('rol.index') ? 'active' : '' }}">
-                                <a href="{{ route('rol.index') }}" class="menu-link">
-                                    <div data-i18n="Roles">Roles</div>
-                                </a>
-                            </li>
-                            <li class="menu-item {{ Request::routeIs('permiso.*') ? 'active' : '' }}">
-                                <a href="" class="menu-link">
-                                    <div data-i18n="Permisos">Permisos</div>
-                                </a>
-                            </li>
-                        </ul>
                     </li>
                     <li class="menu-item {{ Request::routeIs('ventas.*') ? 'active open' : '' }}">
                         <a href="javascript:void(0);" class="menu-link menu-toggle">
@@ -1246,578 +1166,81 @@
                             <div data-i18n="Ventas">Ventas</div>
                         </a>
                         <ul class="menu-sub">
-                            <li class="menu-item {{ Request::routeIs('ventas.index') ? 'active' : '' }}">
-                                <a href="{{ route('ventas.index') }}" class="menu-link">
-                                    <div data-i18n="Registrar Venta">Registrar Venta</div>
-                                </a>
-                            </li>
-                            <li class="menu-item {{ Request::routeIs('ventas.registradas') ? 'active' : '' }}">
-                                <a href="{{ route('ventas.registradas') }}" class="menu-link">
-                                    <div data-i18n="Lista de Ventas">Lista de Ventas</div>
-                                </a>
-                            </li>
-                            <li class="menu-item ">
-                                <a href="" class="menu-link">
-                                    <div data-i18n="Reportes de Ventas">Reportes de Ventas</div>
-                                </a>
-                            </li>
+                            <li class="menu-item {{ Request::routeIs('ventas.index') ? 'active' : '' }}"><a href="{{ route('ventas.index') }}" class="menu-link"><div data-i18n="Registrar Venta">Registrar venta</div></a></li>
+                            <li class="menu-item {{ Request::routeIs('ventas.registradas') ? 'active' : '' }}"><a href="{{ route('ventas.registradas') }}" class="menu-link"><div data-i18n="Lista de Ventas">Listado de ventas</div></a></li>
                         </ul>
                     </li>
-
                     <li class="menu-item {{ Request::routeIs('compras.index') ? 'active' : '' }}">
                         <a href="{{ route('compras.index') }}" class="menu-link">
                             <i class="menu-icon bx bx-shopping-bag"></i>
-                            <div data-i18n="Compra">Compra</div>
+                            <div data-i18n="Compra">Compras</div>
                         </a>
                     </li>
+
+                    <li class="menu-header small"><span class="menu-header-text">Inventario</span></li>
+                    <li class="menu-item {{ Request::routeIs('productos.index') || Request::routeIs('categorias.index') || Request::routeIs('unidad_medida.index') || Request::routeIs('producto.importar') ? 'active open' : '' }}">
+                        <a href="javascript:void(0);" class="menu-link menu-toggle">
+                            <i class="menu-icon icon-base bx bx-package"></i>
+                            <div data-i18n="Productos">Productos</div>
+                        </a>
+                        <ul class="menu-sub">
+                            <li class="menu-item {{ Request::routeIs('categorias.index') ? 'active' : '' }}"><a href="{{ route('categorias.index') }}" class="menu-link"><div>Categoria</div></a></li>
+                            <li class="menu-item {{ Request::routeIs('unidad_medida.index') ? 'active' : '' }}"><a href="{{ route('unidad_medida.index') }}" class="menu-link"><div>Unidades</div></a></li>
+                            <li class="menu-item {{ Request::routeIs('productos.index') ? 'active' : '' }}"><a href="{{ route('productos.index') }}" class="menu-link"><div>Listado / registro</div></a></li>
+                            <li class="menu-item {{ Request::routeIs('producto.importar') ? 'active' : '' }}"><a href="{{ route('producto.importar') }}" class="menu-link"><div>Importar productos</div></a></li>
+                        </ul>
+                    </li>
+                    <li class="menu-item {{ Request::routeIs('sucursal.index') ? 'active' : '' }}"><a href="{{ route('sucursal.index') }}" class="menu-link"><i class="menu-icon icon-base bx bx-git-branch"></i><div data-i18n="Sucursal">Sucursales</div></a></li>
+                    <li class="menu-item {{ Request::routeIs('almacen.index') ? 'active' : '' }}"><a href="{{ route('almacen.index') }}" class="menu-link"><i class="menu-icon icon-base bx bx-store-alt"></i><div data-i18n="Almacen">Almacenes</div></a></li>
+                    <li class="menu-item {{ Request::routeIs('inventario.view') ? 'active' : '' }}"><a href="{{ route('inventario.view') }}" class="menu-link"><i class="menu-icon icon-base bx bx-collection"></i><div data-i18n="Rep. de inventario">Reporte de inventario</div></a></li>
+
+                    <li class="menu-header small"><span class="menu-header-text">Finanzas</span></li>
                     <li class="menu-item {{ Request::routeIs('ingreso-*') ? 'active open' : '' }}">
                         <a href="javascript:void(0);" class="menu-link menu-toggle">
-                            <i class="menu-icon bx bx-cart"></i>
-                            <div data-i18n="Ingreso/Egreso">Ingreso/Egreso</div>
+                            <i class="menu-icon bx bx-wallet"></i>
+                            <div data-i18n="Ingreso/Egreso">Ingreso / Egreso</div>
                         </a>
                         <ul class="menu-sub">
-                            <li class="menu-item {{ Request::routeIs('ingreso-egreso-tipo.index') ? 'active' : '' }}">
-                                <a href="{{ route('ingreso-egreso-tipo.index') }}" class="menu-link">
-                                    <div data-i18n="Tipo Ingreso/Egreso">Tipo Ingreso/Egreso</div>
-                                </a>
-                            </li>
-                            <li class="menu-item {{ Request::routeIs('ingreso-egreso.registrar') ? 'active' : '' }}">
-                                <a href="{{ route('ingreso-egreso.registrar') }}" class="menu-link">
-                                    <div data-i18n="Registro de ingreso/egreso">Registro de ingreso/egreso</div>
-                                </a>
-                            </li>
-                            <li class="menu-item ">
-                                <a href="" class="menu-link">
-                                    <div data-i18n="Reportes de Ventas">Reportes de Ventas</div>
-                                </a>
-                            </li>
+                            <li class="menu-item {{ Request::routeIs('ingreso-egreso-tipo.index') ? 'active' : '' }}"><a href="{{ route('ingreso-egreso-tipo.index') }}" class="menu-link"><div>Tipos</div></a></li>
+                            <li class="menu-item {{ Request::routeIs('ingreso-egreso.registrar') ? 'active' : '' }}"><a href="{{ route('ingreso-egreso.registrar') }}" class="menu-link"><div>Registro</div></a></li>
                         </ul>
                     </li>
-                    <li class="menu-item">
+                    <li class="menu-item {{ Request::routeIs('finanzas.*') || Request::routeIs('finanzas.mensual.*') || Request::routeIs('finanzas.vp.*') ? 'active open' : '' }}">
                         <a href="javascript:void(0);" class="menu-link menu-toggle">
-                            <i class="menu-icon icon-base bx bx-spreadsheet"></i>
-                            <div data-i18n="Wizard Examples">Wizard Examples</div>
+                            <i class="menu-icon bx bx-line-chart"></i>
+                            <div data-i18n="Finanzas">Reportes financieros</div>
                         </a>
                         <ul class="menu-sub">
-                            <li class="menu-item">
-                                <a href="wizard-ex-checkout.html" class="menu-link">
-                                    <div data-i18n="Checkout">Checkout</div>
-                                </a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="wizard-ex-property-listing.html" class="menu-link">
-                                    <div data-i18n="Property Listing">Property Listing</div>
-                                </a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="wizard-ex-create-deal.html" class="menu-link">
-                                    <div data-i18n="Create Deal">Create Deal</div>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="menu-item">
-                        <a href="modal-examples.html" class="menu-link">
-                            <i class="menu-icon icon-base bx bx-window-open"></i>
-                            <div data-i18n="Modal Examples">Modal Examples</div>
-                        </a>
-                    </li>
-
-                    <!-- Components -->
-                    <li class="menu-header small">
-                        <span class="menu-header-text" data-i18n="Components">Components</span>
-                    </li>
-                    <!-- Cards -->
-                    <li class="menu-item">
-                        <a href="javascript:void(0);" class="menu-link menu-toggle">
-                            <i class="menu-icon icon-base bx bx-collection"></i>
-                            <div data-i18n="Inventario">Inventario</div>
-                            <div class="badge text-bg-primary rounded-pill ms-auto">6</div>
-                        </a>
-                        <ul class="menu-sub">
-                            <li class="menu-item {{ Request::routeIs('inventario.view') ? 'active' : '' }}">
-                                <a href="{{ route('inventario.view') }}" class="menu-link">
-                                    <div data-i18n="Rep. de inventario">Rep. de inventario</div>
-                                </a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="cards-advance.html" class="menu-link">
-                                    <div data-i18n="Advance">Advance</div>
-                                </a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="cards-statistics.html" class="menu-link">
-                                    <div data-i18n="Statistics">Statistics</div>
-                                </a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="cards-analytics.html" class="menu-link">
-                                    <div data-i18n="Analytics">Analytics</div>
-                                </a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="cards-gamifications.html" class="menu-link">
-                                    <div data-i18n="Gamifications">Gamifications</div>
-                                </a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="cards-actions.html" class="menu-link">
-                                    <div data-i18n="Actions">Actions</div>
-                                </a>
-                            </li>
+                            <li class="menu-item {{ Request::routeIs('finanzas.diario') ? 'active' : '' }}"><a href="{{ route('finanzas.diario') }}" class="menu-link"><div>Diario de ganancias</div></a></li>
+                            <li class="menu-item {{ Request::routeIs('finanzas.mensual.*') ? 'active' : '' }}"><a href="{{ route('finanzas.mensual.view') }}" class="menu-link"><div>Mensual</div></a></li>
+                            <li class="menu-item {{ Request::routeIs('finanzas.vp.*') ? 'active' : '' }}"><a href="{{ route('finanzas.vp.view') }}" class="menu-link"><div>Ventas por producto</div></a></li>
                         </ul>
                     </li>
 
-                    <!-- FIANZAS -->
-                    <li class="menu-item">
+                    <li class="menu-header small"><span class="menu-header-text">Configuracion</span></li>
+                    <li class="menu-item {{ Request::routeIs('Empresa') ? 'active' : '' }}">
+                        <a href="{{ route('Empresa') }}" class="menu-link">
+                            <i class="menu-icon icon-base bx bx-buildings"></i>
+                            <div data-i18n="Empresa">Empresa</div>
+                        </a>
+                    </li>
+                    <li class="menu-item {{ Request::routeIs('Crear Usuario') ? 'active' : '' }}">
+                        <a href="{{ route('Crear Usuario') }}" class="menu-link">
+                            <i class="menu-icon icon-base bx bx-user-plus"></i>
+                            <div data-i18n="Crear Usuario">Usuarios</div>
+                        </a>
+                    </li>
+                    <li class="menu-item {{ Request::routeIs('rol.*') ? 'active open' : '' }}">
                         <a href="javascript:void(0);" class="menu-link menu-toggle">
-                            <i class="menu-icon icon-base bx bx-collection"></i>
-                            <div data-i18n="Finanzas">Finanzas</div>
-                            <div class="badge text-bg-primary rounded-pill ms-auto">6</div>
+                            <i class="menu-icon icon-base bx bx-check-shield"></i>
+                            <div data-i18n="Roles &amp; Permissions">Seguridad</div>
                         </a>
                         <ul class="menu-sub">
-                            <li class="menu-item {{ Request::routeIs('finanzas.*') ? 'active' : '' }}">
-                                <a href="{{ route('finanzas.diario') }}" class="menu-link">
-                                    <div data-i18n="Rep. diario de ganancias">Rep. diario de ganancias</div>
-                                </a>
-                            </li>
-                            <li class="menu-item {{ Request::routeIs('finanzas.mensual.*') ? 'active' : '' }}">
-                                <a href="{{ route('finanzas.mensual.view') }}" class="menu-link">
-                                    <div data-i18n="Rep. mensual de ganancias">Rep. mensual de ganancias</div>
-                                </a>
-                            </li>
-                            <li class="menu-item {{ Request::routeIs('finanzas.vp.*') ? 'active' : '' }}">
-                                <a href="{{ route('finanzas.vp.view') }}" class="menu-link">
-                                    <div data-i18n="Rep. ventas por producto">Rep. ventas por producto</div>
-                                </a>
-                            </li>
-                            
+                            <li class="menu-item {{ Request::routeIs('rol.index') ? 'active' : '' }}"><a href="{{ route('rol.index') }}" class="menu-link"><div data-i18n="Roles">Roles</div></a></li>
+                            <li class="menu-item"><a href="javascript:void(0);" class="menu-link"><div data-i18n="Permisos">Permisos</div></a></li>
                         </ul>
                     </li>
-                    <!-- User interface -->
-                    <li class="menu-item">
-                        <a href="javascript:void(0)" class="menu-link menu-toggle">
-                            <i class="menu-icon icon-base bx bx-box"></i>
-                            <div data-i18n="User interface">User interface</div>
-                        </a>
-                        <ul class="menu-sub">
-                            <li class="menu-item">
-                                <a href="ui-accordion.html" class="menu-link">
-                                    <div data-i18n="Accordion">Accordion</div>
-                                </a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="ui-alerts.html" class="menu-link">
-                                    <div data-i18n="Alerts">Alerts</div>
-                                </a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="ui-badges.html" class="menu-link">
-                                    <div data-i18n="Badges">Badges</div>
-                                </a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="ui-buttons.html" class="menu-link">
-                                    <div data-i18n="Buttons">Buttons</div>
-                                </a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="ui-carousel.html" class="menu-link">
-                                    <div data-i18n="Carousel">Carousel</div>
-                                </a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="ui-collapse.html" class="menu-link">
-                                    <div data-i18n="Collapse">Collapse</div>
-                                </a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="ui-dropdowns.html" class="menu-link">
-                                    <div data-i18n="Dropdowns">Dropdowns</div>
-                                </a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="ui-footer.html" class="menu-link">
-                                    <div data-i18n="Footer">Footer</div>
-                                </a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="ui-list-groups.html" class="menu-link">
-                                    <div data-i18n="List Groups">List Groups</div>
-                                </a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="ui-modals.html" class="menu-link">
-                                    <div data-i18n="Modals">Modals</div>
-                                </a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="ui-navbar.html" class="menu-link">
-                                    <div data-i18n="Navbar">Navbar</div>
-                                </a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="ui-offcanvas.html" class="menu-link">
-                                    <div data-i18n="Offcanvas">Offcanvas</div>
-                                </a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="ui-pagination-breadcrumbs.html" class="menu-link">
-                                    <div data-i18n="Pagination &amp; Breadcrumbs">Pagination &amp; Breadcrumbs</div>
-                                </a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="ui-progress.html" class="menu-link">
-                                    <div data-i18n="Progress">Progress</div>
-                                </a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="ui-spinners.html" class="menu-link">
-                                    <div data-i18n="Spinners">Spinners</div>
-                                </a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="ui-tabs-pills.html" class="menu-link">
-                                    <div data-i18n="Tabs &amp; Pills">Tabs &amp; Pills</div>
-                                </a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="ui-toasts.html" class="menu-link">
-                                    <div data-i18n="Toasts">Toasts</div>
-                                </a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="ui-tooltips-popovers.html" class="menu-link">
-                                    <div data-i18n="Tooltips &amp; Popovers">Tooltips &amp; Popovers</div>
-                                </a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="ui-typography.html" class="menu-link">
-                                    <div data-i18n="Typography">Typography</div>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-
-                    <!-- Extended components -->
-                    <li class="menu-item">
-                        <a href="javascript:void(0)" class="menu-link menu-toggle">
-                            <i class="menu-icon icon-base bx bx-copy"></i>
-                            <div data-i18n="Extended UI">Extended UI</div>
-                        </a>
-                        <ul class="menu-sub">
-                            <li class="menu-item">
-                                <a href="extended-ui-avatar.html" class="menu-link">
-                                    <div data-i18n="Avatar">Avatar</div>
-                                </a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="extended-ui-blockui.html" class="menu-link">
-                                    <div data-i18n="BlockUI">BlockUI</div>
-                                </a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="extended-ui-drag-and-drop.html" class="menu-link">
-                                    <div data-i18n="Drag &amp; Drop">Drag &amp; Drop</div>
-                                </a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="extended-ui-media-player.html" class="menu-link">
-                                    <div data-i18n="Media Player">Media Player</div>
-                                </a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="extended-ui-perfect-scrollbar.html" class="menu-link">
-                                    <div data-i18n="Perfect Scrollbar">Perfect Scrollbar</div>
-                                </a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="extended-ui-star-ratings.html" class="menu-link">
-                                    <div data-i18n="Star Ratings">Star Ratings</div>
-                                </a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="extended-ui-sweetalert2.html" class="menu-link">
-                                    <div data-i18n="SweetAlert2">SweetAlert2</div>
-                                </a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="extended-ui-text-divider.html" class="menu-link">
-                                    <div data-i18n="Text Divider">Text Divider</div>
-                                </a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="javascript:void(0);" class="menu-link menu-toggle">
-                                    <div data-i18n="Timeline">Timeline</div>
-                                </a>
-                                <ul class="menu-sub">
-                                    <li class="menu-item">
-                                        <a href="extended-ui-timeline-basic.html" class="menu-link">
-                                            <div data-i18n="Basic">Basic</div>
-                                        </a>
-                                    </li>
-                                    <li class="menu-item">
-                                        <a href="extended-ui-timeline-fullscreen.html" class="menu-link">
-                                            <div data-i18n="Fullscreen">Fullscreen</div>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="menu-item">
-                                <a href="extended-ui-tour.html" class="menu-link">
-                                    <div data-i18n="Tour">Tour</div>
-                                </a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="extended-ui-treeview.html" class="menu-link">
-                                    <div data-i18n="Treeview">Treeview</div>
-                                </a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="extended-ui-misc.html" class="menu-link">
-                                    <div data-i18n="Miscellaneous">Miscellaneous</div>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-
-                    <!-- Icons -->
-                    <li class="menu-item">
-                        <a href="javascript:void(0)" class="menu-link menu-toggle">
-                            <i class="menu-icon icon-base bx bx-crown"></i>
-                            <div data-i18n="Icons">Icons</div>
-                        </a>
-                        <ul class="menu-sub">
-                            <li class="menu-item">
-                                <a href="icons-boxicons.html" class="menu-link">
-                                    <div data-i18n="Boxicons">Boxicons</div>
-                                </a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="icons-font-awesome.html" class="menu-link">
-                                    <div data-i18n="Font Awesome">Font Awesome</div>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-
-                    <!-- Forms & Tables -->
-                    <li class="menu-header small">
-                        <span class="menu-header-text" data-i18n="Forms &amp; Tables">Forms &amp; Tables</span>
-                    </li>
-                    <!-- Forms -->
-                    <li class="menu-item">
-                        <a href="javascript:void(0);" class="menu-link menu-toggle">
-                            <i class="menu-icon icon-base bx bx-detail"></i>
-                            <div data-i18n="Form Elements">Form Elements</div>
-                        </a>
-                        <ul class="menu-sub">
-                            <li class="menu-item">
-                                <a href="forms-basic-inputs.html" class="menu-link">
-                                    <div data-i18n="Basic Inputs">Basic Inputs</div>
-                                </a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="forms-input-groups.html" class="menu-link">
-                                    <div data-i18n="Input groups">Input groups</div>
-                                </a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="forms-custom-options.html" class="menu-link">
-                                    <div data-i18n="Custom Options">Custom Options</div>
-                                </a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="forms-editors.html" class="menu-link">
-                                    <div data-i18n="Editors">Editors</div>
-                                </a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="forms-file-upload.html" class="menu-link">
-                                    <div data-i18n="File Upload">File Upload</div>
-                                </a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="forms-pickers.html" class="menu-link">
-                                    <div data-i18n="Pickers">Pickers</div>
-                                </a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="forms-selects.html" class="menu-link">
-                                    <div data-i18n="Select &amp; Tags">Select &amp; Tags</div>
-                                </a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="forms-sliders.html" class="menu-link">
-                                    <div data-i18n="Sliders">Sliders</div>
-                                </a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="forms-switches.html" class="menu-link">
-                                    <div data-i18n="Switches">Switches</div>
-                                </a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="forms-extras.html" class="menu-link">
-                                    <div data-i18n="Extras">Extras</div>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="menu-item">
-                        <a href="javascript:void(0);" class="menu-link menu-toggle">
-                            <i class="menu-icon icon-base bx bx-detail"></i>
-                            <div data-i18n="Form Layouts">Form Layouts</div>
-                        </a>
-                        <ul class="menu-sub">
-                            <li class="menu-item">
-                                <a href="form-layouts-vertical.html" class="menu-link">
-                                    <div data-i18n="Vertical Form">Vertical Form</div>
-                                </a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="form-layouts-horizontal.html" class="menu-link">
-                                    <div data-i18n="Horizontal Form">Horizontal Form</div>
-                                </a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="form-layouts-sticky.html" class="menu-link">
-                                    <div data-i18n="Sticky Actions">Sticky Actions</div>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="menu-item">
-                        <a href="javascript:void(0);" class="menu-link menu-toggle">
-                            <i class="menu-icon icon-base bx bx-carousel"></i>
-                            <div data-i18n="Form Wizard">Form Wizard</div>
-                        </a>
-                        <ul class="menu-sub">
-                            <li class="menu-item">
-                                <a href="form-wizard-numbered.html" class="menu-link">
-                                    <div data-i18n="Numbered">Numbered</div>
-                                </a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="form-wizard-icons.html" class="menu-link">
-                                    <div data-i18n="Icons">Icons</div>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="menu-item">
-                        <a href="form-validation.html" class="menu-link">
-                            <i class="menu-icon icon-base bx bx-list-check"></i>
-                            <div data-i18n="Form Validation">Form Validation</div>
-                        </a>
-                    </li>
-                    <!-- Tables -->
-                    <li class="menu-item">
-                        <a href="tables-basic.html" class="menu-link">
-                            <i class="menu-icon icon-base bx bx-table"></i>
-                            <div data-i18n="Tables">Tables</div>
-                        </a>
-                    </li>
-                    <li class="menu-item">
-                        <a href="javascript:void(0);" class="menu-link menu-toggle">
-                            <i class="menu-icon icon-base bx bx-grid"></i>
-                            <div data-i18n="Datatables">Datatables</div>
-                        </a>
-                        <ul class="menu-sub">
-                            <li class="menu-item">
-                                <a href="tables-datatables-basic.html" class="menu-link">
-                                    <div data-i18n="Basic">Basic</div>
-                                </a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="tables-datatables-advanced.html" class="menu-link">
-                                    <div data-i18n="Advanced">Advanced</div>
-                                </a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="tables-datatables-extensions.html" class="menu-link">
-                                    <div data-i18n="Extensions">Extensions</div>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-
-                    <!-- Charts & Maps -->
-                    <li class="menu-header small">
-                        <span class="menu-header-text" data-i18n="Charts &amp; Maps">Charts &amp; Maps</span>
-                    </li>
-                    <li class="menu-item">
-                        <a href="javascript:void(0);" class="menu-link menu-toggle">
-                            <i class="menu-icon icon-base bx bx-chart"></i>
-                            <div data-i18n="Charts">Charts</div>
-                        </a>
-                        <ul class="menu-sub">
-                            <li class="menu-item">
-                                <a href="charts-apex.html" class="menu-link">
-                                    <div data-i18n="Apex Charts">Apex Charts</div>
-                                </a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="charts-chartjs.html" class="menu-link">
-                                    <div data-i18n="ChartJS">ChartJS</div>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="menu-item">
-                        <a href="maps-leaflet.html" class="menu-link">
-                            <i class="menu-icon icon-base bx bx-map-alt"></i>
-                            <div data-i18n="Leaflet Maps">Leaflet Maps</div>
-                        </a>
-                    </li>
-
-                    <!-- Misc -->
-                    <li class="menu-header small">
-                        <span class="menu-header-text" data-i18n="Misc">Misc</span>
-                    </li>
-
-                    <!-- Multi Level Menu -->
-                    <li class="menu-item">
-                        <a href="javascript:void(0)" class="menu-link menu-toggle">
-                            <i class="menu-icon icon-base bx bx-grid"></i>
-                            <div data-i18n="Multi Level">Multi Level</div>
-                        </a>
-                        <ul class="menu-sub">
-                            <li class="menu-item">
-                                <a href="javascript:void(0)" class="menu-link menu-toggle">
-                                    <div data-i18n="Level 2">Level 2</div>
-                                </a>
-                                <ul class="menu-sub">
-                                    <li class="menu-item">
-                                        <a href="javascript:void(0)" class="menu-link">
-                                            <div data-i18n="Level 3">Level 3</div>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="menu-item">
-                        <a href="https://themeselection.com/support/" target="_blank" class="menu-link">
-                            <i class="menu-icon icon-base bx bx-support"></i>
-                            <div data-i18n="Support">Support</div>
-                        </a>
-                    </li>
-                    <li class="menu-item">
-                        <a href="https://demos.themeselection.com/sneat-bootstrap-html-admin-template/documentation/" target="_blank" class="menu-link">
-                            <i class="menu-icon icon-base bx bx-file"></i>
-                            <div data-i18n="Documentation">Documentation</div>
-                        </a>
-                    </li>
-                    <div class="ps__rail-x" style="left: 0px; bottom: 0px;">
-                        <div class="ps__thumb-x" tabindex="0" style="left: 0px; width: 0px;"></div>
-                    </div>
-                    <div class="ps__rail-y" style="top: 0px; height: 881px; right: 4px;">
-                        <div class="ps__thumb-y" tabindex="0" style="top: 0px; height: 433px;"></div>
-                    </div>
                 </ul>
-
-
             </aside>
 
             <div class="menu-mobile-toggler d-xl-none rounded-1">

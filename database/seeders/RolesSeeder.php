@@ -14,36 +14,39 @@ class RolesSeeder extends Seeder
      */
     public function run(): void
     {
-        Role::create(['name' => 'Recepcionista']);
+        // Rol base para asignar en el alta de usuario
+        Role::firstOrCreate(['name' => 'Recepcionista']);
 
-        // Permisos de Ventas
-        Permission::create(['name' => 'ventas.ver', 'descripcion'=>'Permite ver las ventas']);
-        Permission::create(['name' => 'ventas.crear', 'descripcion'=>'Permite crear una venta']);
-        Permission::create(['name' => 'ventas.editar', 'descripcion'=>'Permite editar una venta']);
-        Permission::create(['name' => 'ventas.eliminar', 'descripcion'=>'Permite eliminar una venta']);
+        $permissions = [
+            // Ventas
+            ['name' => 'ventas.ver', 'descripcion' => 'Permite ver las ventas'],
+            ['name' => 'ventas.crear', 'descripcion' => 'Permite crear una venta'],
+            ['name' => 'ventas.editar', 'descripcion' => 'Permite editar una venta'],
+            ['name' => 'ventas.eliminar', 'descripcion' => 'Permite eliminar una venta'],
+            // Compras
+            ['name' => 'compras.ver', 'descripcion' => 'Permite ver las compras'],
+            ['name' => 'compras.crear', 'descripcion' => 'Permite crear una compra'],
+            ['name' => 'compras.editar', 'descripcion' => 'Permite editar una compra'],
+            ['name' => 'compras.eliminar', 'descripcion' => 'Permite eliminar una compra'],
+            // Inventario
+            ['name' => 'inventario.ver', 'descripcion' => 'Permite ver el inventario'],
+            ['name' => 'inventario.crear', 'descripcion' => 'Permite crear un producto en el inventario'],
+            ['name' => 'inventario.editar', 'descripcion' => 'Permite editar un producto en el inventario'],
+            ['name' => 'inventario.eliminar', 'descripcion' => 'Permite eliminar un producto en el inventario'],
+            // Usuarios
+            ['name' => 'usuarios.ver', 'descripcion' => 'Permite ver los usuarios'],
+            ['name' => 'usuarios.crear', 'descripcion' => 'Permite crear un usuario'],
+            ['name' => 'usuarios.editar', 'descripcion' => 'Permite editar un usuario'],
+            ['name' => 'usuarios.eliminar', 'descripcion' => 'Permite eliminar un usuario'],
+            // Clientes
+            ['name' => 'Cliente', 'descripcion' => 'Permite gestionar clientes'],
+            ['name' => 'clientes.store', 'descripcion' => 'Permite registrar clientes'],
+            ['name' => 'clientes.update', 'descripcion' => 'Permite actualizar clientes'],
+            ['name' => 'clientes.borrar', 'descripcion' => 'Permite eliminar clientes'],
+        ];
 
-        // Permisos de Compras
-        Permission::create(['name' => 'compras.ver', 'descripcion'=>'Permite ver las compras']);
-        Permission::create(['name' => 'compras.crear', 'descripcion'=>'Permite crear una compra']);
-        Permission::create(['name' => 'compras.editar', 'descripcion'=>'Permite editar una compra']);
-        Permission::create(['name' => 'compras.eliminar', 'descripcion'=>'Permite eliminar una compra']);
-
-        // Permisos de Inventario
-        Permission::create(['name' => 'inventario.ver', 'descripcion'=>'Permite ver el inventario']);
-        Permission::create(['name' => 'inventario.crear', 'descripcion'=>'Permite crear un producto en el inventario']);
-        Permission::create(['name' => 'inventario.editar', 'descripcion'=>'Permite editar un producto en el inventario']);
-        Permission::create(['name' => 'inventario.eliminar', 'descripcion'=>'Permite eliminar un producto en el inventario']);
-
-        // Permisos de Usuarios
-        Permission::create(['name' => 'usuarios.ver', 'descripcion'=>'Permite ver los usuarios']);
-        Permission::create(['name' => 'usuarios.crear', 'descripcion'=>'Permite crear un usuario']);
-        Permission::create(['name' => 'usuarios.editar', 'descripcion'=>'Permite editar un usuario']);
-        Permission::create(['name' => 'usuarios.eliminar', 'descripcion'=>'Permite eliminar un usuario']);
-
-        // Permisos de Clientes
-        Permission::create(['name'=>'Cliente','descripcion'=>'Permite gestionar clientes']);
-        Permission::create(['name'=>'clientes.store','descripcion'=>'Permite registrar clientes']);
-        Permission::create(['name'=>'clientes.update','descripcion'=>'Permite actualizar clientes']);
-        Permission::create(['name'=>'clientes.borrar','descripcion'=>'Permite eliminar clientes']);
+        foreach ($permissions as $permission) {
+            Permission::firstOrCreate(['name' => $permission['name']], ['descripcion' => $permission['descripcion']]);
+        }
     }
 }

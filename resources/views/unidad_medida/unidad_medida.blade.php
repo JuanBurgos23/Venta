@@ -6,41 +6,47 @@
 
     <div class="container-fluid py-4">
       <div class="col-12">
-        <div class="container py-4">
-          <h3>Unidades de Medida</h3>
-
-          <div class="mb-3 row g-2">
-            <div class="col-md-6">
-              <input type="text" id="search" class="form-control" placeholder="Buscar por nombre..." autocomplete="off">
-            </div>
-            <div class="col-md-6 text-end">
-              <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalUM" id="btnNuevaUM">
-                <i class="bx bx-plus"></i> Nueva Unidad
+        <div class="card my-4">
+          <div class="card-header d-flex flex-wrap justify-content-between align-items-center">
+            <h5 class="mb-0">Unidades de Medida</h5>
+            <div class="d-flex gap-2 flex-wrap">
+              <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalUM" id="btnNuevaUM">
+                <i class="bx bx-plus-circle"></i> Nueva Unidad
               </button>
             </div>
           </div>
 
-          <div class="table-responsive">
-            <table class="table table-striped table-hover" id="um-table">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th data-column="nombre">Nombre</th>
-                  <th data-column="estado">Estado</th>
-                  <th class="text-center">Acciones</th>
-                </tr>
-              </thead>
-              <tbody id="um-body">
-                <tr>
-                  <td colspan="4" class="text-center">Cargando...</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+          <div class="card-body">
+            <div class="row g-2 mb-3">
+              <div class="col-md-6">
+                <input type="text" id="search" class="form-control" placeholder="Buscar por nombre..." autocomplete="off">
+              </div>
+            </div>
 
-          <nav>
-            <ul class="pagination justify-content-center" id="um-pagination"></ul>
-          </nav>
+            <div class="table-responsive d-none d-md-block">
+              <table class="table table-striped align-middle" id="um-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th data-column="nombre">Nombre</th>
+                    <th data-column="estado">Estado</th>
+                    <th class="text-center">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="um-body">
+                  <tr>
+                    <td colspan="4" class="text-center">Cargando...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div id="um-cards" class="d-md-none"></div>
+
+            <nav>
+              <ul class="pagination justify-content-center mt-3" id="um-pagination"></ul>
+            </nav>
+          </div>
         </div>
 
         {{-- Modal Crear/Editar UM --}}

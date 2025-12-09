@@ -18,42 +18,47 @@
         <nav class="navbar ..."></nav>
         @vite(['resources/js/app.js'])
 
-        <div class="container-fluid">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h5 class="fw-bold">Gestión de Productos</h5>
-                <button class="btn btn-primary" id="btn-new-product">
-                    <i class="bx bx-plus"></i> Nuevo Producto
-                </button>
-            </div>
+        <div class="container-fluid py-4">
+            <div class="card my-4">
+                <div class="card-header d-flex flex-wrap justify-content-between align-items-center">
+                    <h5 class="mb-0">Gestión de Productos</h5>
+                    <button class="btn btn-primary btn-sm" id="btn-new-product">
+                        <i class="bx bx-plus-circle"></i> Nuevo Producto
+                    </button>
+                </div>
 
-            <!-- Buscador -->
-            <div class="mb-3">
-                <input type="text" id="search-input" class="form-control" placeholder="Buscar producto...">
-            </div>
+                <div class="card-body">
+                    <div class="row g-2 mb-3">
+                        <div class="col-md-6">
+                            <input type="text" id="search-input" class="form-control" placeholder="Buscar producto...">
+                        </div>
+                    </div>
 
-            <!-- Tabla -->
-            <div class="table-responsive">
-                <table class="table table-hover align-middle" id="products-table">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Código</th>
-                            <th>Nombre</th>
-                            <th>Categoría</th>
-                            <th>Subcategoría</th>
-                            <th>Precio</th>
-                            <th>Stock</th>
-                            <th>Imagen</th>
-                            <th>Acción</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
+                    <div class="table-responsive d-none d-md-block">
+                        <table class="table table-striped align-middle" id="products-table">
+                            <thead>
+                                <tr>
+                                    <th>Código</th>
+                                    <th>Nombre</th>
+                                    <th>Categoría</th>
+                                    <th>Subcategoría</th>
+                                    <th>Precio</th>
+                                    <th>Stock</th>
+                                    <th>Imagen</th>
+                                    <th>Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
 
-            <!-- Paginación -->
-            <nav>
-                <ul class="pagination justify-content-center" id="pagination"></ul>
-            </nav>
+                    <div id="products-cards" class="d-md-none"></div>
+
+                    <nav>
+                        <ul class="pagination justify-content-center mt-3" id="pagination"></ul>
+                    </nav>
+                </div>
+            </div>
         </div>
 
         <!-- Modal Producto -->
