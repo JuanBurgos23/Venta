@@ -167,14 +167,14 @@
                                     <span class="summary-value" id="subtotal">Bs/ 0.00</span>
                                 </div>
                                 
-                                <div class="input-group-pro">
-                                    <label>Descuento</label>
-                                    <input type="number" class="form-control" id="discount-input" value="0" min="0">
+                                <div class="summary-row summary-inline">
+                                    <span class="summary-label">Descuento:</span>
+                                    <input type="number" class="summary-inline-input" id="discount-input" value="0" min="0">
                                 </div>
                                 
-                                <div class="input-group-pro">
-                                    <label>Billete</label>
-                                    <input type="number" class="form-control" id="billete" placeholder="Ej: 100">
+                                <div class="summary-row summary-inline">
+                                    <span class="summary-label">Billete:</span>
+                                    <input type="number" class="summary-inline-input" id="billete" placeholder="Ej: 100">
                                 </div>
                                 
                                 <div class="summary-row">

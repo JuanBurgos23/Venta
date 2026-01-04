@@ -52,7 +52,10 @@ class VentaController extends Controller
 
         // ✅ 3️⃣ Cargar productos normalmente
         $productos = \App\Models\Producto::deEmpresa($empresaId)
-            ->with('categoria')
+            ->with([
+                'categoria:id,nombre',
+                'subcategoria:id,nombre',
+            ])
             ->get();
 
         $data = $productos->map(function ($p) use ($empresaId, $almacenId) {
@@ -64,12 +67,19 @@ class VentaController extends Controller
             if ($stock <= 0) return null;
 
             return [
-                'id'       => $p->id,
-                'name'     => $p->nombre,
-                'price'    => $p->precio ?? 0,
-                'category' => $p->categoria_id,
-                'stock'    => $stock,
-                'image'    => $p->foto ? asset('storage/' . $p->foto) : null,
+                'id'               => $p->id,
+                'codigo'           => $p->codigo,
+                'name'             => $p->nombre,
+                'description'      => $p->descripcion,
+                'price'            => $p->precio ?? 0,
+                'category'         => $p->categoria_id,
+                'category_name'    => $p->categoria?->nombre,
+                'subcategory'      => $p->subcategoria_id,
+                'subcategory_name' => $p->subcategoria?->nombre,
+                'brand'            => $p->marca,
+                'model'            => $p->modelo,
+                'stock'            => $stock,
+                'image'            => $p->foto ? asset('storage/' . $p->foto) : null,
             ];
         })->filter()->values();
 
@@ -94,7 +104,11 @@ class VentaController extends Controller
         $query = $request->input('query');
 
         $productos = Producto::deEmpresa($empresaId)
-            ->with(['categoria', 'tipoPrecio']) // si quieres incluir relaciones
+            ->with([
+                'categoria:id,nombre',
+                'subcategoria:id,nombre',
+                'tipoPrecio'
+            ]) // si quieres incluir relaciones
             ->where(function ($q) use ($query) {
                 $q->where('nombre', 'LIKE', "%{$query}%")
                     ->orWhere('descripcion', 'LIKE', "%{$query}%");
@@ -107,12 +121,19 @@ class VentaController extends Controller
                 ->where('empresa_id', $empresaId)
                 ->sum('stock');
             return [
-                'id'       => $p->id,
-                'name'     => $p->nombre,
-                'price'    => $p->precio ? ($p->precio ?? 0) : 0, // misma lógica que fetchProducto
-                'category' => $p->categoria_id,
-                'stock'    => $stock ?? 0,
-                'image'    => $p->foto ? asset('storage/' . $p->foto) : null,
+                'id'               => $p->id,
+                'codigo'           => $p->codigo,
+                'name'             => $p->nombre,
+                'description'      => $p->descripcion,
+                'price'            => $p->precio ? ($p->precio ?? 0) : 0,
+                'category'         => $p->categoria_id,
+                'category_name'    => $p->categoria?->nombre,
+                'subcategory'      => $p->subcategoria_id,
+                'subcategory_name' => $p->subcategoria?->nombre,
+                'brand'            => $p->marca,
+                'model'            => $p->modelo,
+                'stock'            => $stock ?? 0,
+                'image'            => $p->foto ? asset('storage/' . $p->foto) : null,
             ];
         });
 
@@ -152,7 +173,11 @@ class VentaController extends Controller
         $empresaId = auth()->user()->id_empresa; // filtrar por empresa
 
         $producto = Producto::deEmpresa($empresaId)
-            ->with(['categoria', 'tipoPrecio'])
+            ->with([
+                'categoria:id,nombre',
+                'subcategoria:id,nombre',
+                'tipoPrecio'
+            ])
             ->where('codigo', $codigo)
             ->first();
 
@@ -166,12 +191,19 @@ class VentaController extends Controller
             ->sum('stock');
 
         $data = [
-            'id'       => $producto->id,
-            'name'     => $producto->nombre,
-            'price'    => $producto->precio ?? 0,
-            'category' => $producto->categoria_id,
-            'stock'    => $stock ?? 0,
-            'image'    => $producto->foto ? asset('storage/' . $producto->foto) : null,
+            'id'               => $producto->id,
+            'codigo'           => $producto->codigo,
+            'name'             => $producto->nombre,
+            'description'      => $producto->descripcion,
+            'price'            => $producto->precio ?? 0,
+            'category'         => $producto->categoria_id,
+            'category_name'    => $producto->categoria?->nombre,
+            'subcategory'      => $producto->subcategoria_id,
+            'subcategory_name' => $producto->subcategoria?->nombre,
+            'brand'            => $producto->marca,
+            'model'            => $producto->modelo,
+            'stock'            => $stock ?? 0,
+            'image'            => $producto->foto ? asset('storage/' . $producto->foto) : null,
         ];
 
         return response()->json($data);

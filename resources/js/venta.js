@@ -28,9 +28,7 @@
                 return `${saleDateInput.value} ${getCurrentTimeString()}`;
             };
 
-            const defaultImage = `data:image/svg+xml;utf8,${encodeURIComponent(
-                '<svg xmlns="http://www.w3.org/2000/svg" width="320" height="200" viewBox="0 0 320 200"><rect width="320" height="200" fill="#f5f7fa"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#7f8c8d" font-family="Arial" font-size="16">Producto</text></svg>'
-            )}`;
+            const defaultImage = '/assets/img/illustrations/man-with-laptop-light.png';
             const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
             let cart = [];
             let products = [];
@@ -56,6 +54,10 @@
                 let stockStatus = '';
                 let stockClass = '';
                 
+                const categoryLabel = product.categoryName || product.category || '';
+                const subcategoryLabel = product.subcategoryName || product.subcategory || '';
+                const brandLabel = product.brand || '';
+                const hasSpecs = categoryLabel || subcategoryLabel || brandLabel;
                 
                 div.innerHTML = `
                     <div class="product-header-pro">
@@ -63,27 +65,33 @@
                         <span class="product-status-pro ${stockClass}">${stockStatus}</span>
                     </div>
                     <div class="product-image-pro">
-                        <img src="${product.image || defaultImage}" 
-                             alt="${product.name}"
-                             onerror="this.src='${defaultImage}'"
-                             style="max-height: 140px;">
+                        <img class="product-img-fit"
+                             src="${product.image || defaultImage}" 
+                             alt="${product.name || 'Producto'}"
+                             onerror="this.src='${defaultImage}'">
                     </div>
                     <div class="product-info-pro">
                         <h6 class="product-title-pro">${product.name}</h6>
                         
                         ${
-                            product.category || product.brand ? `
+                            hasSpecs ? `
                                 <div class="product-specs-pro">
-                                    ${product.category ? `
+                                    ${categoryLabel ? `
                                         <div class="spec-item-pro">
-                                            <span class="spec-label-pro">Categoría:</span>
-                                            <span class="spec-value-pro">${product.category}</span>
+                                            <span class="spec-label-pro">Categoria:</span>
+                                            <span class="spec-value-pro">${categoryLabel}</span>
                                         </div>
                                     ` : ''}
-                                    ${product.brand ? `
+                                    ${subcategoryLabel ? `
+                                        <div class="spec-item-pro">
+                                            <span class="spec-label-pro">Subcategoria:</span>
+                                            <span class="spec-value-pro">${subcategoryLabel}</span>
+                                        </div>
+                                    ` : ''}
+                                    ${brandLabel ? `
                                         <div class="spec-item-pro">
                                             <span class="spec-label-pro">Marca:</span>
-                                            <span class="spec-value-pro">${product.brand}</span>
+                                            <span class="spec-value-pro">${brandLabel}</span>
                                         </div>
                                     ` : ''}
                                 </div>
@@ -295,6 +303,9 @@
                                 <div class="cart-item-price">Bs/ ${item.price.toFixed(2)} c/u</div>
                             </div>
                             <div class="cart-item-actions">
+                                <button class="qty-btn remove-item" data-id="${item.id}" title="Quitar">
+                                    ×
+                                </button>
                                 <div class="quantity-control">
                                     <button class="qty-btn decrease-quantity" data-id="${item.id}">-</button>
                                     <span class="qty-value">${item.quantity}</span>
@@ -326,6 +337,9 @@
                 });
                 container.querySelectorAll('.decrease-quantity').forEach(btn => {
                     btn.addEventListener('click', () => decreaseQuantity(parseInt(btn.dataset.id)));
+                });
+                container.querySelectorAll('.remove-item').forEach(btn => {
+                    btn.addEventListener('click', () => removeFromCart(parseInt(btn.dataset.id)));
                 });
             };
 
@@ -406,7 +420,10 @@
                 filteredProducts = products.filter(p =>
                     (p.name && p.name.toLowerCase().includes(value)) ||
                     (p.codigo && String(p.codigo).toLowerCase().includes(value)) ||
-                    (p.category && String(p.category).toLowerCase().includes(value))
+                    (p.category && String(p.category).toLowerCase().includes(value)) ||
+                    (p.subcategory && String(p.subcategory).toLowerCase().includes(value)) ||
+                    (p.brand && String(p.brand).toLowerCase().includes(value)) ||
+                    (p.model && String(p.model).toLowerCase().includes(value))
                 );
                 itemsToShowNew = 8;
                 itemsToShowBest = 8;
@@ -459,12 +476,29 @@
                     }
                     if (!res.ok) throw new Error('No se pudieron cargar los productos');
                     const data = await res.json();
-                    products = data.map(p => ({
-                        ...p,
-                        price: parseFloat(p.price ?? 0),
-                        stock: Number(p.stock ?? 0),
-                        category: categoriesMap[p.category] || p.category || '',
-                    }));
+                    products = data.map(p => {
+                        const categoryName = p.category_name || categoriesMap[p.category] || categoriesMap[p.category_id] || p.category;
+                        const subcategoryName = p.subcategory_name || p.subcategoria || '';
+
+                        return {
+                            ...p,
+                            id: p.id,
+                            name: p.name || p.nombre,
+                            codigo: p.codigo || p.code,
+                            description: p.description || p.descripcion || '',
+                            price: parseFloat(p.price ?? 0),
+                            stock: Number(p.stock ?? 0),
+                            categoryId: p.category ?? p.category_id ?? null,
+                            category: categoryName || '',
+                            categoryName,
+                            subcategoryId: p.subcategory ?? p.subcategory_id ?? null,
+                            subcategory: subcategoryName || '',
+                            subcategoryName,
+                            brand: p.brand || p.marca || '',
+                            model: p.model || p.modelo || '',
+                            image: p.image || null,
+                        };
+                    });
                     filteredProducts = [...products];
                     itemsToShowNew = 8;
                     itemsToShowBest = 8;
@@ -552,6 +586,11 @@
                 if (item.quantity <= 0) {
                     cart = cart.filter(i => i.id !== productId);
                 }
+                refreshCartUI();
+            }
+
+            function removeFromCart(productId) {
+                cart = cart.filter(i => i.id !== productId);
                 refreshCartUI();
             }
 
@@ -662,6 +701,7 @@
             window.addToCart = addToCart;
             window.increaseQuantity = increaseQuantity;
             window.decreaseQuantity = decreaseQuantity;
+            window.removeFromCart = removeFromCart;
 
             // Inicializar datos
             (async () => {
