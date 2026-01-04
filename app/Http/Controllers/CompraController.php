@@ -2,17 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use Log;
 use Carbon\Carbon;
-use App\Models\almacen;
 use App\Models\Compra;
+use App\Models\almacen;
 use App\Models\Producto;
+use App\Models\Sucursal;
+use App\Models\Proveedor;
+use Illuminate\Http\Request;
+use App\Services\CajaService;
 use App\Models\Producto_compra;
 use App\Models\Producto_almacen;
-use App\Models\Proveedor;
-use App\Models\Sucursal;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class CompraController extends Controller
 {
@@ -240,6 +242,7 @@ class CompraController extends Controller
         $request->validate([
             'proveedor_id' => 'required|exists:proveedor,id',
             'almacen_id' => 'required|exists:almacen,id',
+            'sucursal_id' => 'required|exists:sucursal,id',
             'fecha_ingreso' => 'required|date',
             'tipo' => 'nullable|string',
             'observacion' => 'nullable|string',
@@ -257,10 +260,20 @@ class CompraController extends Controller
         DB::beginTransaction();
 
         try {
+            $empresaId = Auth::user()->id_empresa;
+            $sucursalId = (int) $request->sucursal_id;
+
+            $sucursal = Sucursal::where('empresa_id', $empresaId)->findOrFail($sucursalId);
+            $almacen = almacen::where('id', $request->almacen_id)
+                ->whereHas('sucursal', function ($q) use ($empresaId, $sucursalId) {
+                    $q->where('empresa_id', $empresaId)->where('id', $sucursalId);
+                })
+                ->firstOrFail();
+
             $compra = Compra::create([
-                'id_empresa'   => Auth::user()->id_empresa,
-                'sucursal_id'  => Auth::user()->sucursal_id ?? 1,
-                'almacen_id'   => $request->almacen_id,
+                'id_empresa'   => $empresaId,
+                'sucursal_id'  => $sucursal->id,
+                'almacen_id'   => $almacen->id,
                 'proveedor_id' => $request->proveedor_id,
                 'fecha_ingreso' => $request->fecha_ingreso,
                 'tipo'         => $request->tipo ?? 'compra',
@@ -276,7 +289,7 @@ class CompraController extends Controller
                 $detalle = Producto_compra::create([
                     'producto_id'       => $p['producto_id'],
                     'compra_id'         => $compra->id,
-                    'empresa_id'        => Auth::user()->id_empresa,
+                'empresa_id'        => Auth::user()->id_empresa,
                     'lote'              => $p['lote'] ?? null,
                     'fecha_vencimiento' => $p['fecha_vencimiento'] ?? null,
                     'cantidad'          => $p['cantidad'],
@@ -317,6 +330,15 @@ class CompraController extends Controller
             }
 
             DB::commit();
+            try {
+                \App\Services\CajaService::syncComprasCajaAbierta(
+                    $empresaId,
+                    $sucursal->id,
+                    Auth::id()
+                );
+            } catch (\Throwable $e) {
+                Log::warning('Sync compras a caja falló', ['err' => $e->getMessage()]);
+            }
 
             return response()->json([
                 'success' => true,

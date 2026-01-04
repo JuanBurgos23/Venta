@@ -691,30 +691,6 @@
                     hideError('email');
                 }
                 
-                // Validar contraseña
-                const password = document.getElementById('password').value;
-                if (password === '') {
-                    showError('password', 'La contraseña es obligatoria');
-                    isValid = false;
-                } else if (password.length < 8) {
-                    showError('password', 'La contraseña debe tener al menos 8 caracteres');
-                    isValid = false;
-                } else {
-                    hideError('password');
-                }
-                
-                // Validar confirmación de contraseña
-                const passwordConfirmation = document.getElementById('password_confirmation').value;
-                if (passwordConfirmation === '') {
-                    showError('password_confirmation', 'Confirma tu contraseña');
-                    isValid = false;
-                } else if (password !== passwordConfirmation) {
-                    showError('password_confirmation', 'Las contraseñas no coinciden');
-                    isValid = false;
-                } else {
-                    hideError('password_confirmation');
-                }
-                
                 return isValid;
             }
             

@@ -127,7 +127,7 @@ class ImportProductosController extends Controller
     public function store(ImportProductosRequest $request)
     {
         // 1️⃣ Determinar empresa
-        $empresaId = auth()->user()->empresa_id ?? $request->get('id_empresa');
+        $empresaId = auth()->user()->id_empresa ?? $request->get('id_empresa');
         if (!$empresaId) {
             return response()->json(['ok'=>false,'msg'=>'No se pudo determinar la empresa'], 422);
         }

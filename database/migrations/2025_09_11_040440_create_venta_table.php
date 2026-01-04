@@ -32,6 +32,7 @@ return new class extends Migration
             $table->enum('forma_pago', ['Efectivo', 'Tarjeta', 'Qr'])->nullable();
             $table->enum('tipo_pago', ['contado', 'credito'])->default('contado');
             $table->enum('estado', ['Registrado', 'Pagado', 'Pendiente', 'Anulado'])->default('Registrado');
+            $table->integer('sucursal_id')->nullable();
 
             // Observaciones y timestamps
             $table->text('observaciones')->nullable();

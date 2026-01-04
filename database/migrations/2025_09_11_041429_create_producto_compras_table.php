@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId('empresa_id')->constrained('empresa')->cascadeOnDelete();
         
             $table->string('lote', 100)->nullable();
-            $table->unsignedBigInteger('id_lote'); 
+            $table->unsignedBigInteger('id_lote')->nullable();
             $table->date('fecha_vencimiento')->nullable();
             $table->decimal('cantidad', 12, 2)->default(0);
             $table->decimal('costo_unitario', 12, 2)->default(0);

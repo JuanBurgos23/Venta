@@ -4,12 +4,11 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
-    <nav class="navbar ..."></nav>
     @vite(['resources/js/app.js'])
 
-    <div class="container-fluid py-4">
+    <div class="container-fluid p-2">
       <div class="col-12">
-        <div class="card my-4">
+        <div class="card my-2">
           <div class="card-header d-flex flex-wrap justify-content-between align-items-center">
             <h5 class="mb-0">Sucursales</h5>
             <div class="d-flex gap-2 flex-wrap">

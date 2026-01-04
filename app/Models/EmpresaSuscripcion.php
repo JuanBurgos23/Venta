@@ -13,11 +13,13 @@ class EmpresaSuscripcion extends Model
         'suscripcion_id',
         'fecha_inicio',
         'fecha_fin',
+        'estado',
     ];
 
     protected $casts = [
         'fecha_inicio' => 'date',
         'fecha_fin' => 'date',
+        'estado' => 'boolean',
     ];
 
     public function empresa()

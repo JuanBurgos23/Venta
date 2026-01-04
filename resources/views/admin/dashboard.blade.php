@@ -8,7 +8,6 @@
                 <div class="card-header border-bottom-0 pb-0">
                     <div class="d-flex flex-wrap align-items-center gap-2">
                         <h5 class="mb-0">Panel de Administración</h5>
-                        <span class="text-muted small">Multiempresa & Suscripciones</span>
                     </div>
                     <ul class="nav nav-pills mt-3" id="adminTabs" role="tablist">
                         <li class="nav-item" role="presentation">
@@ -32,9 +31,6 @@
                                     <input type="text" id="empresas-search" class="form-control" placeholder="Buscar empresa por nombre, NIT, correo...">
                                 </div>
                                 <div class="col-md-8 text-end">
-                                    <button class="btn btn-primary btn-sm" id="btn-crear-empresa" data-bs-toggle="modal" data-bs-target="#modalEmpresa">
-                                        <i class="bx bx-plus-circle"></i> Nueva Empresa
-                                    </button>
                                 </div>
                             </div>
 
@@ -188,6 +184,14 @@
                                 <label class="form-label">Correo</label>
                                 <input type="email" class="form-control" id="empresa-correo">
                             </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Fecha Inicio</label>
+                                <input type="date" class="form-control" id="fecha-inicio">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Fecha Fin</label>
+                                <input type="date" class="form-control" id="fecha-fin">
+                            </div>
                             <div class="col-12">
                                 <label class="form-label">Dirección</label>
                                 <input type="text" class="form-control" id="empresa-direccion">
@@ -288,8 +292,8 @@
                                 <td>${sus}</td>
                                 <td>${vigencia}</td>
                                 <td class="text-end">
-                                    <button class="btn btn-sm btn-outline-primary btn-edit-empresa" data-id="${e.id}"><i class="bx bx-edit"></i></button>
-                                    <button class="btn btn-sm btn-outline-success btn-asignar" data-id="${e.id}"><i class="bx bx-link"></i></button>
+                                    <button class="btn btn-sm btn-primary btn-edit-empresa" data-id="${e.id}"><i class="bx bx-edit"></i></button>
+                                    <button class="btn btn-sm btn-success btn-asignar" data-id="${e.id}"><i class="bx bx-link"></i></button>
                                 </td>
                             </tr>
                         `);
@@ -425,8 +429,8 @@
                                 <td>${s.nombre}</td>
                                 <td>${s.descripcion ?? '-'}</td>
                                 <td class="text-end">
-                                    <button class="btn btn-sm btn-outline-primary btn-edit-sus" data-id="${s.id}"><i class="bx bx-edit"></i></button>
-                                    <button class="btn btn-sm btn-outline-danger btn-del-sus" data-id="${s.id}"><i class="bx bx-trash"></i></button>
+                                    <button class="btn btn-sm btn-primary btn-edit-sus" data-id="${s.id}"><i class="bx bx-edit"></i></button>
+                                    <button class="btn btn-sm btn-danger btn-del-sus" data-id="${s.id}"><i class="bx bx-trash"></i></button>
                                 </td>
                             </tr>
                         `);

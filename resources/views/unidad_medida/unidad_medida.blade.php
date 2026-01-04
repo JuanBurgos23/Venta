@@ -1,12 +1,12 @@
 <x-layout bodyClass="g-sidenav-show bg-gray-200">
   <meta name="csrf-token" content="{{ csrf_token() }}">
 
-  <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
+  <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg compact-main">
     @vite(['resources/js/app.js'])
 
-    <div class="container-fluid py-4">
+    <div class="container-fluid py-2 px-2">
       <div class="col-12">
-        <div class="card my-4">
+        <div class="card shadow-sm mb-3">
           <div class="card-header d-flex flex-wrap justify-content-between align-items-center">
             <h5 class="mb-0">Unidades de Medida</h5>
             <div class="d-flex gap-2 flex-wrap">
@@ -280,3 +280,11 @@
     </div>
   </main>
 </x-layout>
+
+<style>
+  .compact-main {
+    padding-top: 6px !important;
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+</style>

@@ -2,15 +2,18 @@
 <x-layout bodyClass="g-sidenav-show bg-gray-200">
   <meta name="csrf-token" content="{{ csrf_token() }}">
 
-  <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
+  <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg compact-main">
     @vite(['resources/js/app.js'])
 
-    <div class="container-fluid py-4">
-      <div class="col-12">
-        <div class="container py-3">
-          <h3 class="mb-4">Categorías & Subcategorías</h3>
+    <div class="container-fluid py-2 px-2">
+      <div class="col-12 p-0">
+        <div class="card shadow-sm">
+          <div class="card-header">
+            <h5 class="mb-0">Categorías & Subcategorías</h5>
+          </div>
+          <div class="card-body">
 
-          <div class="row g-4">
+          <div class="row g-3">
             {{-- =================== CATEGORÍAS (Columna Izquierda) =================== --}}
             <div class="col-lg-6">
               <div class="card h-100">
@@ -93,6 +96,7 @@
                 </div>
               </div>
             </div>
+          </div>
           </div>
         </div>
 
@@ -622,3 +626,11 @@
     </div>
   </main>
 </x-layout>
+
+<style>
+  .compact-main {
+    padding-top: 6px !important;
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+</style>

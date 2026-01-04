@@ -1,8 +1,7 @@
+
 <x-layout bodyClass="g-sidenav-show bg-gray-200">
     <script src="{{asset('assets/vendor/js/template-customizer.js')}}"></script>
-    <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
-        <!-- Navbar -->
-        <nav class="navbar ..."></nav>
+    <main class="main-content position-relative max-height-vh-100 h-100">
         <!-- Scripts -->
         @vite([ 'resources/js/app.js'])
         <!-- End Navbar -->
@@ -12,9 +11,10 @@
         // Ajusta según tu app. Si no usas auth()->user(), pasa la empresa por $empresa->id.
         window.EMPRESA_ID = {{ auth()->user()->id_empresa ?? 'null' }};
         </script>
-        <div class="container-fluid py-4">
+        <div class="container-fluid p-3 importar-shell">
             <div class="col-12">
-                <div class="card-body">
+                <div class="card my-2">
+                    <div class="card-body p-5">
                     <!-- ======= Importador masivo de productos ======= -->
                     <div id="importador-productos">
 
@@ -22,7 +22,6 @@
                         <div class="d-flex flex-wrap gap-2 align-items-center mb-3">
                         <h5 class="mb-0 me-auto fw-bold">Importación masiva de productos</h5>
                         <div class="alert alert-primary" role="alert">
-                            <h4 class="alert-heading"><i class="fas fa-exclamation" aria-hidden="true"></i> Bienvenido al registro masivo de productos</h4>
                             <p>Aquí puedes registrar todos tus productos de una sola vez subiendo un archivo Excel en el formato establecido, primera descarga la plantilla de ejemplo
                             <hr>
                             <p class="mb-0">Una vez cargado tu archivo con tus productos estos se visualizarán en la tabla inferior, puedes cargar un nuevo archivo y la tabla se cargará nuevamente. Una vez valides tus productos puedes guardarlos para
@@ -58,17 +57,17 @@
                         </div>
   
                     
-                        <button id="btn-descargar-plantilla" class="btn btn-sm btn-outline-primary">
+                        <button id="btn-descargar-plantilla" class="btn btn-sm btn-primary">
                             <i class="fa fa-download me-1"></i> Descargar plantilla
                         </button>
                         
                     
-                        <label class="btn btn-sm btn-outline-secondary mb-0">
+                        <label class="btn btn-sm btn-secondary mb-0">
                             <input id="file-input" type="file" accept=".xlsx,.xls,.csv" hidden />
                             <i class="fa fa-upload me-1"></i> Seleccionar archivo
                         </label>
                     
-                        <button id="btn-limpiar" class="btn btn-sm btn-outline-dark">
+                        <button id="btn-limpiar" class="btn btn-sm btn-dark">
                             <i class="fa fa-eraser me-1"></i> Limpiar
                         </button>
                     
@@ -157,7 +156,6 @@
                         { key: 'unidad',         header: 'UNIDAD' },               // → unidad_medida_id      // → tipo_producto_id
                         { key: 'categoria',      header: 'CATEGORÍA' },            // → categoria_id
                         { key: 'subcategoria',   header: 'SUBCATEGORÍA' },         // → subcategoria_id
-                        { key: 'tipo_precio',    header: 'TIPO PRECIO' },          // → tipo_precio_id
                         { key: 'proveedor',      header: 'PROVEEDOR' },            // → proveedor_id
 
                         // Económicos usados en producto:
@@ -407,7 +405,6 @@
                                 case 'unidad':        return '';
                                 case 'categoria':     return '';
                                 case 'subcategoria':  return '';
-                                case 'tipo_precio':   return '';
                                 case 'proveedor':     return '';
                                 case 'precio':        return '';
                                 default:              return '';
@@ -488,10 +485,11 @@
                             });
 
                             try {
-                                const res = await fetch(urlGuardar, {
+                                 const res = await fetch(urlGuardar, {
                                     method: 'POST',
                                     headers: {
                                         'Content-Type': 'application/json',
+                                        'Accept': 'application/json',
                                         ...(csrfToken ? { 'X-CSRF-TOKEN': csrfToken } : {})
                                     },
                                     body: JSON.stringify({
@@ -584,11 +582,20 @@
                     </script>
 
   
+                    </div>
                 </div>
             </div>
         </div>
     </main>
     <style>
+        .importar-shell .card-body {
+            padding: 1rem 1.25rem;
+        }
+
+        #importador-productos {
+            padding: 0.25rem;
+        }
+
         #tipo-producto-select {
             border-radius: .5rem;
             }

@@ -14,8 +14,7 @@
         }
     </style>
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
-        <!-- Navbar -->
-        <nav class="navbar ..."></nav>
+
         @vite(['resources/js/app.js'])
 
         <div class="container-fluid py-4">

@@ -8,16 +8,18 @@ use App\Models\Cliente;
 use App\Models\Empresa;
 use App\Models\Sucursal;
 use Illuminate\View\View;
+use App\Models\Suscripcion;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rules;
 use Illuminate\Support\Facades\DB;
-use Database\Seeders\RolesSeeder;
+use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
+use App\Models\EmpresaSuscripcion;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\Log;
 
 class RegisteredUserController extends Controller
 {
@@ -38,7 +40,7 @@ class RegisteredUserController extends Controller
         $request->validate([
             'name'                  => ['required', 'string', 'max:255'],
             'email'                 => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password'              => ['required', 'confirmed', Rules\Password::defaults()],
+            'password'              => ['required'],
             // Empresa
             'empresa_nombre'        => ['required', 'string', 'max:255'],
             'empresa_nit'           => ['nullable', 'string', 'max:50'],
@@ -47,21 +49,18 @@ class RegisteredUserController extends Controller
             'empresa_direccion'     => ['nullable', 'string', 'max:255'],
         ]);
 
-        // 2) Sembrar roles y permisos necesarios antes de asignar roles
-        $this->seedRolesAndPermissions();
-
-        // 3) Transaccion: crear usuario, empresa, sucursal central y almacen central
+        // 2) Transaccion: crear usuario, empresa, sucursal central y almacen central
         DB::beginTransaction();
 
         try {
-            // 3.1 Crear usuario
+            // 2.1 Crear usuario
             $user = User::create([
                 'name'     => $request->name,
                 'email'    => $request->email,
                 'password' => bcrypt($request->password),
             ]);
 
-            // 3.2 Crear empresa
+            // 2.2 Crear empresa
             $empresa = Empresa::create([
                 'nombre'    => $request->empresa_nombre,
                 'telefono'  => $request->empresa_telefono,
@@ -70,17 +69,13 @@ class RegisteredUserController extends Controller
                 'nit'       => $request->empresa_nit,
             ]);
 
-            // 3.3 Cliente General por defecto
             Cliente::create([
                 'nombre'     => 'Cliente General',
                 'id_empresa' => $empresa->id,
             ]);
 
-            // 3.4 Vincular empresa al usuario
             $user->id_empresa = $empresa->id;
             $user->save();
-
-            // 3.5 Crear Sucursal Central
             $sucursal = Sucursal::create([
                 'empresa_id'   => $empresa->id,
                 'nombre'       => 'Sucursal Central',
@@ -101,11 +96,27 @@ class RegisteredUserController extends Controller
                 'estado'      => 1,
             ]);
 
-            // Crear o obtener el rol 'Administrador'
-            $role = Role::firstOrCreate(['name' => 'Administrador']);
+            // 2.4 Crear o reutilizar suscripción base (id=1 Plan Gratis)
+            $suscripcion = Suscripcion::firstOrCreate(
+                ['id' => 1],
+                ['nombre' => 'Plan Gratis', 'descripcion' => 'Plan gratuito por defecto', 'estado' => 1]
+            );
 
-            // Asignar el rol de administrador al usuario
-            $user->assignRole($role);
+            EmpresaSuscripcion::create([
+                'empresa_id'      => $empresa->id,
+                'suscripcion_id'  => $suscripcion->id,
+                'fecha_inicio'    => now(),
+                'fecha_fin'       => now()->addDays(5),
+                'estado'          => 1,
+            ]);
+
+            // 2.5 Sembrar roles/permisos base para la nueva empresa y obtener rol admin
+            $adminRole = $this->seedRolesAndPermissions($empresa->id);
+
+            // Asignar el rol de administrador al usuario con pivot empresa_id
+            $user->roles()->syncWithoutDetaching([
+                $adminRole->id => ['empresa_id' => $empresa->id],
+            ]);
 
             DB::commit();
 
@@ -115,6 +126,7 @@ class RegisteredUserController extends Controller
             return redirect('/inicio');
         } catch (\Throwable $e) {
             DB::rollBack();
+            Log::error('Error en registro', ['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
 
             return back()
                 ->withErrors(['register' => 'No se pudo completar el registro: ' . $e->getMessage()])
@@ -122,9 +134,60 @@ class RegisteredUserController extends Controller
         }
     }
 
-    private function seedRolesAndPermissions(): void
+    private function seedRolesAndPermissions(int $empresaId): Role
     {
-        // Uso del contenedor para que el seeder pueda resolver sus dependencias
-        app(RolesSeeder::class)->run();
+        $permissions = [
+            // Ventas
+            ['name' => 'ventas.ver', 'descripcion' => 'Permite ver las ventas'],
+            ['name' => 'ventas.crear', 'descripcion' => 'Permite crear una venta'],
+            ['name' => 'ventas.editar', 'descripcion' => 'Permite editar una venta'],
+            ['name' => 'ventas.eliminar', 'descripcion' => 'Permite eliminar una venta'],
+            // Compras
+            ['name' => 'compras.ver', 'descripcion' => 'Permite ver las compras'],
+            ['name' => 'compras.crear', 'descripcion' => 'Permite crear una compra'],
+            ['name' => 'compras.editar', 'descripcion' => 'Permite editar una compra'],
+            ['name' => 'compras.eliminar', 'descripcion' => 'Permite eliminar una compra'],
+            // Inventario
+            ['name' => 'inventario.ver', 'descripcion' => 'Permite ver el inventario'],
+            ['name' => 'inventario.crear', 'descripcion' => 'Permite crear un producto en el inventario'],
+            ['name' => 'inventario.editar', 'descripcion' => 'Permite editar un producto en el inventario'],
+            ['name' => 'inventario.eliminar', 'descripcion' => 'Permite eliminar un producto en el inventario'],
+            // Usuarios
+            ['name' => 'usuarios.ver', 'descripcion' => 'Permite ver los usuarios'],
+            ['name' => 'usuarios.crear', 'descripcion' => 'Permite crear un usuario'],
+            ['name' => 'usuarios.editar', 'descripcion' => 'Permite editar un usuario'],
+            ['name' => 'usuarios.eliminar', 'descripcion' => 'Permite eliminar un usuario'],
+            // Clientes
+            ['name' => 'Cliente', 'descripcion' => 'Permite gestionar clientes'],
+            ['name' => 'clientes.store', 'descripcion' => 'Permite registrar clientes'],
+            ['name' => 'clientes.update', 'descripcion' => 'Permite actualizar clientes'],
+            ['name' => 'clientes.borrar', 'descripcion' => 'Permite eliminar clientes'],
+        ];
+
+        $permModels = collect($permissions)->map(function ($perm) use ($empresaId) {
+            return Permission::firstOrCreate(
+                ['empresa_id' => $empresaId, 'name' => $perm['name'], 'guard_name' => 'web'],
+                ['descripcion' => $perm['descripcion']]
+            );
+        });
+
+        $admin = Role::firstOrCreate(
+            ['empresa_id' => $empresaId, 'name' => 'Administrador', 'guard_name' => 'web']
+        );
+        $recepcionista = Role::firstOrCreate(
+            ['empresa_id' => $empresaId, 'name' => 'Recepcionista', 'guard_name' => 'web']
+        );
+
+        // Admin con todos los permisos, recepcionista con los mismos por defecto (ajusta si necesitas menos)
+        $admin->permissions()->syncWithPivotValues(
+            $permModels->pluck('id')->all(),
+            ['empresa_id' => $empresaId]
+        );
+        $recepcionista->permissions()->syncWithPivotValues(
+            $permModels->pluck('id')->all(),
+            ['empresa_id' => $empresaId]
+        );
+
+        return $admin;
     }
 }

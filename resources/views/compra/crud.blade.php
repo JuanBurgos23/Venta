@@ -1,11 +1,10 @@
 <x-layout bodyClass="g-sidenav-show bg-gray-200">
     <script src="{{ asset('assets/vendor/js/template-customizer.js') }}"></script>
 
-    <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
-        <nav class="navbar ..."></nav>
+    <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg compact-main">
         @vite(['resources/js/app.js'])
 
-        <div class="container-fluid py-4">
+        <div class="container-fluid py-2 px-2">
             <div class="col-12">
                 <div class="card shadow-sm">
                     <div class="card-header d-flex flex-wrap justify-content-between align-items-center">
@@ -44,17 +43,17 @@
                         {{-- Tabla --}}
 
                         <div class="table-responsive d-none d-md-block">
-                            <table class="table table-striped align-middle">
+                            <table class="table table-sm table-striped align-middle table-compras">
                                 <thead class="bg-primary text-white">
                                     <tr>
-                                        <th style="width: 80px;">#</th>
+                                        <th style="width: 70px;">#</th>
                                         <th>Proveedor</th>
                                         <th>Nro. Factura</th>
                                         <th>Fecha</th>
                                         <th>Almacén</th>
                                         <th class="text-end">Total</th>
                                         <th>Estado</th>
-                                        <th style="width: 160px;" class="text-end">Acciones</th>
+                                        <th style="width: 140px;" class="text-end">Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody id="tbodyCompras">
@@ -109,6 +108,31 @@
     <style>
         .section-form { padding: 20px; border-radius: 12px; }
         .section-title { font-weight: 600; font-size: 1rem; margin-bottom: 15px; color: #344767; border-left: 4px solid #5e72e4; padding-left: 8px; }
+        .compact-main {
+            padding-top: 8px !important;
+            padding-left: 10px !important;
+            padding-right: 10px !important;
+        }
+        .compact-main .container-fluid {
+            padding-top: 8px !important;
+            padding-bottom: 12px !important;
+            padding-left: 4px !important;
+            padding-right: 4px !important;
+        }
+        .compact-main .card {
+            margin-top: 6px;
+        }
+        .table-compras td, .table-compras th {
+            font-size: 0.9rem;
+        }
+        .btn-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            padding: 0;
+        }
     </style>
 
 <script>
@@ -175,12 +199,12 @@
                 const almacen = r.almacen_nombre || '—';
                 const total = (Number(r.total) || 0).toFixed(2);
                 const estado = (r.estado == 1) ? `<span class="badge bg-success">Activo</span>` : `<span class="badge bg-secondary">Anulado</span>`;
-    
+
                 const num = ((meta.from || 1) + i);
-    
+
                 return `
-                    <tr id="row-${id}">
-                        <td>${num}</td>
+                    <tr id="row-${id}" class="fila-compra" data-id="${id}">
+                        <td class="text-muted">${num}</td>
                         <td>${proveedor}</td>
                         <td>${nroFactura}</td>
                         <td>${fecha}</td>
@@ -188,10 +212,13 @@
                         <td class="text-end">${total}</td>
                         <td>${estado}</td>
                         <td class="text-end">
-                            <div class="btn-group">
-                                <button class="btn btn-sm btn-outline-primary" data-id="${id}" data-action="toggle">Ver detalles</button>
-                                <a class="btn btn-sm btn-outline-secondary" href="/compras/${id}/edit">Editar</a>
-                                <button class="btn btn-sm btn-outline-danger" data-id="${id}" data-action="eliminar">Eliminar</button>
+                            <div class="btn-group btn-group-sm">
+                                <a class="btn btn-icon btn-secondary" href="/compras/${id}/edit" title="Editar">
+                                    <i class="bx bx-edit"></i>
+                                </a>
+                                <button class="btn btn-icon btn-danger" data-id="${id}" data-action="eliminar" title="Eliminar">
+                                    <i class="bx bx-trash"></i>
+                                </button>
                             </div>
                         </td>
                     </tr>
@@ -232,9 +259,9 @@
                         <div class="d-flex justify-content-between align-items-center mt-2">
                             <div class="small text-muted">${r.almacen_nombre || 'ƒ?"'}</div>
                             <div class="d-flex gap-2">
-                                <button class="btn btn-sm btn-outline-primary" data-id="${r.id}" data-action="detalle">Detalles</button>
-                                <a class="btn btn-sm btn-outline-secondary" href="/compras/${r.id}/edit">Editar</a>
-                                <button class="btn btn-sm btn-outline-danger" data-id="${r.id}" data-action="eliminar">Eliminar</button>
+                                <button class="btn btn-sm btn-icon btn-outline-primary" data-id="${r.id}" data-action="detalle" title="Detalles"><i class="bx bx-chevron-down"></i></button>
+                                <a class="btn btn-sm btn-icon btn-outline-secondary" href="/compras/${r.id}/edit" title="Editar"><i class="bx bx-edit"></i></a>
+                                <button class="btn btn-sm btn-icon btn-outline-danger" data-id="${r.id}" data-action="eliminar" title="Eliminar"><i class="bx bx-trash"></i></button>
                             </div>
                         </div>
                     </div>
@@ -292,54 +319,40 @@
             });
         }
     
-        // Toggle detalle + eliminar
+        // Toggle detalle con click en la fila; eliminar sigue en botones
         tbody.addEventListener('click', async (e) => {
             const btn = e.target.closest('button');
-            if (!btn) return;
-    
-            const id = btn.getAttribute('data-id');
-            const action = btn.getAttribute('data-action');
-    
-            if (action === 'toggle') {
-                const trDetail = document.getElementById(`detail-${id}`);
-                if (!trDetail) return;
-    
-                // si está oculto, mostrar y si no está cargado, traer datos
-                const isHidden = trDetail.classList.contains('d-none');
-                if (isHidden) {
-                    if (!trDetail.dataset.loaded) {
-                        trDetail.querySelector('td').innerHTML = `<div class="p-3 small text-muted">Cargando detalle...</div>`;
-                        try {
-                            const resp = await fetch(`/api/compras/${id}/detalles`);
-                            const data = await resp.json();
-                            trDetail.querySelector('td').innerHTML = renderDetalleTable(data.items || []);
-                            trDetail.dataset.loaded = '1';
-                        } catch (err) {
-                            trDetail.querySelector('td').innerHTML = `<div class="p-3 text-danger">Error al cargar el detalle.</div>`;
-                        }
-                    }
-                    trDetail.classList.remove('d-none');
-                    btn.textContent = 'Ocultar detalles';
-                } else {
-                    trDetail.classList.add('d-none');
-                    btn.textContent = 'Ver detalles';
-                }
+            const link = e.target.closest('a');
+            if (btn && btn.getAttribute('data-action') === 'eliminar') {
+                const id = btn.getAttribute('data-id');
+                await eliminarCompra(id);
+                return;
             }
-    
-            if (action === 'eliminar') {
-                eliminarCompra(id);
-            }
-);
-                    const data = await resp.json().catch(() => ({}));
-                    if (resp.ok) {
-                        showToast(data.message || 'Compra eliminada', 'success');
-                        fetchCompras(currentPage);
-                    } else {
-                        showToast(data.message || 'No se pudo eliminar', 'danger');
+            // evitar toggle si clic en botón/link
+            if (btn || link) return;
+
+            const row = e.target.closest('tr.fila-compra');
+            if (!row) return;
+            const id = row.getAttribute('data-id');
+            const trDetail = document.getElementById(`detail-${id}`);
+            if (!trDetail) return;
+
+            const isHidden = trDetail.classList.contains('d-none');
+            if (isHidden) {
+                if (!trDetail.dataset.loaded) {
+                    trDetail.querySelector('td').innerHTML = `<div class="p-3 small text-muted">Cargando detalle...</div>`;
+                    try {
+                        const resp = await fetch(`/api/compras/${id}/detalles`);
+                        const data = await resp.json();
+                        trDetail.querySelector('td').innerHTML = renderDetalleTable(data.items || []);
+                        trDetail.dataset.loaded = '1';
+                    } catch (err) {
+                        trDetail.querySelector('td').innerHTML = `<div class="p-3 text-danger">Error al cargar el detalle.</div>`;
                     }
-                } catch (err) {
-                    showToast('Error al eliminar la compra', 'danger');
                 }
+                trDetail.classList.remove('d-none');
+            } else {
+                trDetail.classList.add('d-none');
             }
         });
     

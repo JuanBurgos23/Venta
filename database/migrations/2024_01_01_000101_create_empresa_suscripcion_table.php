@@ -12,8 +12,9 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('empresa_id');
             $table->unsignedBigInteger('suscripcion_id');
-            $table->date('fecha_inicio');
-            $table->date('fecha_fin')->nullable();
+            $table->dateTime('fecha_inicio');
+            $table->dateTime('fecha_fin')->nullable();
+            $table->integer('estado')->default(1);
             $table->timestamps();
 
             $table->unique(['empresa_id', 'suscripcion_id']);

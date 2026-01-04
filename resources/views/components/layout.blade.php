@@ -1,4 +1,4 @@
-<html lang="en" class="layout-navbar-fixed layout-compact layout-menu-fixed layout-menu-collapsed" dir="ltr" data-skin="default" data-assets-path="{{asset('assets/')}}"
+﻿<html lang="en" class="layout-navbar-fixed layout-compact layout-menu-fixed layout-menu-collapsed" dir="ltr" data-skin="default" data-assets-path="{{asset('assets/')}}"
     data-template="vertical-menu-template" data-bs-theme="default">
 
 <head>
@@ -35,7 +35,7 @@
         })(window, document, 'script', 'dataLayer', 'GTM-5DDHKGP');
     </script>
     <!-- End Google Tag Manager -->
-    @vite([ 'resources/js/app.js'])
+    @vite([ 'resources/js/app.js', 'resources/js/datos_usuario.js' ])
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="{{asset('assets/img/favicon/gato.svg')}}">
 
@@ -78,15 +78,78 @@
     <style type="text/css">
         .layout-menu-fixed .layout-navbar-full .layout-menu,
         .layout-menu-fixed-offcanvas .layout-navbar-full .layout-menu {
-            top: 64px !important;
+            top: 0 !important;
         }
 
         .layout-page {
-            padding-top: 64px !important;
+            padding-top: 0 !important;
         }
 
         .content-wrapper {
-            padding-bottom: 54px !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+
+        /* Reduce vertical padding so content sits closer to navbar/menú */
+        /* Compacta la altura del navbar sin dejar espacio extra */
+        .layout-navbar .navbar {
+            padding-top: 0.1rem !important;
+            padding-bottom: 0.1rem !important;
+            min-height: 44px;
+        }
+
+        /* El navbar pegado al borde superior */
+        .layout-navbar {
+            margin-top: 0 !important;
+            padding-top: 0 !important;
+        }
+
+        .layout-navbar-full .layout-navbar {
+            top: 0 !important;
+        }
+
+        /* Expande el área de contenido al ancho completo */
+        .content-wrapper .container-fluid.flex-grow-1.container-p-y {
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+            padding-top: 0 !important;
+            margin-top: 0 !important;
+            width: 100% !important;
+            max-width: 100% !important;
+        }
+
+        /* Ajuste global de espaciado: contenido casi pegado a navbar/sidebar */
+        .container-p-y {
+            padding: 0.5rem !important;
+        }
+
+        .content-wrapper {
+            background: #f5f7fa;
+        }
+
+        .content-wrapper .container-fluid.flex-grow-1.container-p-y {
+            padding-left: 0.5rem !important;
+            padding-right: 0.5rem !important;
+            padding-top: 0.25rem !important;
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            min-height: calc(100vh - 70px);
+            background: #f5f7fa;
+        }
+
+        /* Contenedor uniforme para todas las vistas */
+        .page-shell {
+            width: 100%;
+            padding: 0.25rem 0.5rem 0.5rem;
+        }
+
+        /* Reduce el espacio vertical bajo el navbar para que sea sim£trico */
+        nav.layout-navbar {
+            margin-bottom: 0.25rem !important;
         }
     </style>
     <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
@@ -1048,7 +1111,7 @@
     display: grid;
     grid-template-columns: repeat(2, 1fr); /* dos columnas */
     gap: 0.75rem; /* espacio entre columnas y filas */
-    max-height: 400px; /* altura máxima */
+    max-height: 400px; /* altura mÃ¡xima */
     overflow-y: auto;  /* scroll vertical */
   }
 
@@ -1082,17 +1145,49 @@
             // Color guardado en localStorage
             const savedColor = localStorage.getItem('primaryColor') || '#696cff';
 
-            // Aplicar color como variable CSS antes de que se pinte la página
+            // Aplicar color como variable CSS antes de que se pinte la pÃ¡gina
             document.documentElement.style.setProperty('--bs-primary', savedColor);
 
-            // Si quieres, también puedes aplicar a otros colores usados en tu customizer
+            // Si quieres, tambiÃ©n puedes aplicar a otros colores usados en tu customizer
             // document.documentElement.style.setProperty('--bs-success', savedSuccessColor);
         })();
     </script>
 
 </head>
 
-<body class="{{ $bodyClass }}" style="--bs-scrollbar-width: 15px;">
+<body class="{{ $bodyClass ?? '' }}" style="--bs-scrollbar-width: 15px;">
+
+    @php
+        $empresaUser = auth()->user()?->empresa;
+        $suscripcionActual = $empresaUser?->empresaSuscripciones()->latest('fecha_fin')->first();
+        $fechaFinSuscripcion = $suscripcionActual?->fecha_fin;
+        $segundosRestantesSuscripcion = $fechaFinSuscripcion ? now()->diffInSeconds($fechaFinSuscripcion, false) : null;
+        $contadorSuscripcion = null;
+        if (!is_null($segundosRestantesSuscripcion)) {
+            $segundosAbs = abs($segundosRestantesSuscripcion);
+            $cDias = intdiv($segundosAbs, 86400);
+            $cHoras = intdiv($segundosAbs % 86400, 3600);
+            $cMin = intdiv($segundosAbs % 3600, 60);
+            $contadorSuscripcion = sprintf('%dd %02dh %02dm', $cDias, $cHoras, $cMin);
+        }
+
+        $badgeClassSuscripcion = 'bg-label-secondary';
+        $estadoSuscripcion = 'Sin suscripcion';
+
+        if ($fechaFinSuscripcion) {
+            $diasRestantesSuscripcion = now()->diffInDays($fechaFinSuscripcion, false);
+            if ($diasRestantesSuscripcion < 0) {
+                $badgeClassSuscripcion = 'bg-label-danger';
+                $estadoSuscripcion = 'Vencida';
+            } elseif ($diasRestantesSuscripcion <= 5) {
+                $badgeClassSuscripcion = 'bg-label-warning';
+                $estadoSuscripcion = 'Por vencer';
+            } else {
+                $badgeClassSuscripcion = 'bg-label-success';
+                $estadoSuscripcion = 'Vigente';
+            }
+        }
+    @endphp
 
     <!-- ?PROD Only: Google Tag Manager (noscript) (Default ThemeSelection: GTM-5DDHKGP, PixInvent: GTM-5J3LMKC) -->
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5DDHKGP" height="0" width="0" style="display: none; visibility: hidden"></iframe></noscript>
@@ -1241,6 +1336,8 @@
                         </ul>
                     </li>
                 </ul>
+
+
             </aside>
 
             <div class="menu-mobile-toggler d-xl-none rounded-1">
@@ -1272,6 +1369,11 @@
                         <a class="nav-item nav-link px-0 me-xl-6" href="javascript:void(0)">
                             <i class="icon-base bx bx-menu icon-md"></i>
                         </a>
+                    </div>
+                    <div class="d-flex align-items-center gap-2 flex-wrap mb-3">
+                        <span class="fw-semibold">Sucursal:</span>
+                        <select id="sucursal-select" class="form-select form-select-sm" style="width: auto; min-width: 180px;">
+                        </select>
                     </div>
 
 
@@ -1328,30 +1430,31 @@
                                         </div>
                                     </form>
 
-                                    <!-- Botón cerrar -->
+                                    <!-- BotÃ³n cerrar -->
                                     <button type="button" class="aa-DetachedCancelButton btn-search-close" onclick="closePalette()">
                                         <span class="text-body-secondary">[esc]</span>
                                         <span class="icon-base icon-md bx bx-x text-heading"></span>
                                     </button>
                                 </div>
 
-                                <!-- Panel de resultados: vacío, el script llenará dinámicamente -->
+                                <!-- Panel de resultados: vacÃ­o, el script llenarÃ¡ dinÃ¡micamente -->
                                 <div class="aa-Panel flex-grow content-wrapper overflow-hidden position-relative ps">
                                     <div class="p-5 p-lg-12" id="commandResults">
-                                        <!-- Aquí se cargarán las rutas dinámicamente -->
+                                        <!-- AquÃ­ se cargarÃ¡n las rutas dinÃ¡micamente -->
                                     </div>
                                 </div>
 
                             </div>
                         </div>
 
-
-
-
                         <ul class="navbar-nav flex-row align-items-center ms-md-auto">
 
-
-
+                            <li class="nav-item d-none d-md-flex align-items-center me-3">
+                                <div class="d-flex flex-column lh-1">
+                                    <span class="badge text-uppercase" id="suscripcionBadge">Cargando...</span>
+                                    <small class="text-body-secondary" id="suscripcionDetalle">...</small>
+                                </div>
+                            </li>
 
 
 
@@ -1411,7 +1514,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="flex-grow-1">
-                                                        <h6 class="small mb-0">Congratulation Lettie 🎉</h6>
+                                                        <h6 class="small mb-0">Congratulation Lettie ðŸŽ‰</h6>
                                                         <small class="mb-1 d-block text-body">Won the monthly best seller gold badge</small>
                                                         <small class="text-body-secondary">1h ago</small>
                                                     </div>
@@ -1447,7 +1550,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="flex-grow-1">
-                                                        <h6 class="small mb-0">New Message ✉️</h6>
+                                                        <h6 class="small mb-0">New Message âœ‰ï¸</h6>
                                                         <small class="mb-1 d-block text-body">You have new message from Natalie</small>
                                                         <small class="text-body-secondary">1h ago</small>
                                                     </div>
@@ -1465,7 +1568,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="flex-grow-1">
-                                                        <h6 class="small mb-0">Whoo! You have new order 🛒</h6>
+                                                        <h6 class="small mb-0">Whoo! You have new order ðŸ›’</h6>
                                                         <small class="mb-1 d-block text-body">ACME Inc. made new order $1,154</small>
                                                         <small class="text-body-secondary">1 day ago</small>
                                                     </div>
@@ -1483,7 +1586,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="flex-grow-1">
-                                                        <h6 class="small mb-0">Application has been approved 🚀</h6>
+                                                        <h6 class="small mb-0">Application has been approved ðŸš€</h6>
                                                         <small class="mb-1 d-block text-body">Your ABC project application has been approved.</small>
                                                         <small class="text-body-secondary">2 days ago</small>
                                                     </div>
@@ -1643,13 +1746,10 @@
                 <!-- Content wrapper -->
                 <div class="content-wrapper">
                     <!-- Content -->
-                    <div class="container-xxl flex-grow-1 container-p-y">
-
-                        <div class="row">
-
+                    <div class="container-fluid flex-grow-1 container-p-y">
+                        <div class="page-shell">
                             {{ $slot }}
                         </div>
-
                     </div>
                     <!-- / Content -->
 
@@ -1730,7 +1830,7 @@
                 <div class="template-customizer-theming">
                     <h5 class="m-0 px-6 pb-6">
                         <span class="template-customizer-t-theming_header bg-label-primary rounded-1 py-1 px-3 small">
-                            Tematización</span>
+                            TematizaciÃ³n</span>
                     </h5>
 
                     <!-- Color -->
@@ -1889,12 +1989,12 @@
                 <!-- Layout -->
                 <div class="template-customizer-layout">
                     <h5 class="m-0 px-6 pb-6">
-                        <span class="template-customizer-t-layout_header bg-label-primary rounded-2 py-1 px-3 small">Diseño</span>
+                        <span class="template-customizer-t-layout_header bg-label-primary rounded-2 py-1 px-3 small">DiseÃ±o</span>
                     </h5>
 
                     <!-- Layout(Menu) -->
                     <div class="m-0 px-6 pb-6 d-block template-customizer-layouts">
-                        <label for="customizerStyle" class="form-label d-block template-customizer-t-layout_label mb-2">Menu (Navegación)</label>
+                        <label for="customizerStyle" class="form-label d-block template-customizer-t-layout_label mb-2">Menu (NavegaciÃ³n)</label>
                         <div class="row px-1 template-customizer-layouts-options">
                             <div class="col-4 px-2">
                                 <div class="form-check custom-option custom-option-image custom-option-image-radio mb-0 checked">
@@ -1956,7 +2056,7 @@
 
                     <!-- Fixed navbar -->
                     <div class="m-0 px-6 pb-6 template-customizer-layoutNavbarOptions w-100">
-                        <label for="customizerNavbar" class="form-label template-customizer-t-layout_navbar_label mb-2">Tipo de Barra de Navegación</label>
+                        <label for="customizerNavbar" class="form-label template-customizer-t-layout_navbar_label mb-2">Tipo de Barra de NavegaciÃ³n</label>
                         <div class="row px-1 template-customizer-navbar-options">
                             <div class="col-4 px-2">
                                 <div class="form-check custom-option custom-option-image custom-option-image-radio mb-0 checked">
@@ -2008,7 +2108,7 @@
                                     </label>
                                     <input name="navbarOptionRadios" class="form-check-input d-none" type="radio" value="static" id="navbarOptionRadiosstatic">
                                 </div>
-                                <label class="form-check-label small text-nowrap text-body" for="navbarOptionRadiosstatic">Estático</label>
+                                <label class="form-check-label small text-nowrap text-body" for="navbarOptionRadiosstatic">EstÃ¡tico</label>
                             </div>
                             <div class="col-4 px-2">
                                 <div class="form-check custom-option custom-option-image custom-option-image-radio mb-0">
@@ -2134,6 +2234,8 @@
             </div>
             <div class="toast-body"></div>
         </div>
+        
+
         <link rel="stylesheet" href="{{asset('assets/vendor/libs/select2/select2.css')}}">
         <script src="{{asset('assets/vendor/libs/select2/select2.js')}}"></script>
         <script>
@@ -2156,7 +2258,7 @@
                     return [(num >> 16) & 255, (num >> 8) & 255, num & 255];
                 }
 
-                // --- Función para aplicar color y guardar
+                // --- FunciÃ³n para aplicar color y guardar
                 function aplicarColor(color) {
                     // variables Bootstrap
                     root.style.setProperty("--bs-primary", color);
@@ -2253,7 +2355,7 @@
                 const semiDarkDiv = document.querySelector('.template-customizer-semiDark');
                 const navbarIcon = document.querySelector('#nav-theme .theme-icon-active'); // Icono visible en navbar
 
-                // --- Función para aplicar tema
+                // --- FunciÃ³n para aplicar tema
                 function aplicarTema(selectedTheme) {
                     let appliedTheme = selectedTheme;
 
@@ -2315,7 +2417,7 @@
                     });
                 });
 
-                // --- Cambios del sistema si está en system
+                // --- Cambios del sistema si estÃ¡ en system
                 window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", e => {
                     const currentTheme = localStorage.getItem("theme") || "system";
                     if (currentTheme === "system") {
@@ -2332,7 +2434,7 @@
                 const skinOptions = document.querySelectorAll(".template-customizer-skins .custom-option");
                 const skinRadios = document.querySelectorAll('input[name="skinRadios"]');
 
-                // --- Función para aplicar skin
+                // --- FunciÃ³n para aplicar skin
                 function aplicarSkin(skin) {
                     // Actualizar atributo data-skin en <html>
                     root.setAttribute("data-skin", skin);
@@ -2354,7 +2456,7 @@
                 const savedSkin = localStorage.getItem("skin") || "default";
                 aplicarSkin(savedSkin);
 
-                // --- Click en toda la opción (div, label, svg)
+                // --- Click en toda la opciÃ³n (div, label, svg)
                 skinOptions.forEach(option => {
                     option.addEventListener("click", function() {
                         const radio = option.querySelector('input[name="skinRadios"]');
@@ -2458,7 +2560,7 @@
                     if (desdeUsuario) mostrarNotificacion();
                 }
 
-                // ---------- Inicialización ----------
+                // ---------- InicializaciÃ³n ----------
                 (function init() {
                     const savedPrimary = localStorage.getItem("primaryColor") || DEFAULTS.primaryColor;
                     aplicarPrimaryColor(savedPrimary, false, false);
@@ -2518,7 +2620,7 @@
                         // Limpiar localStorage completamente
                         localStorage.clear();
 
-                        // 🔹 Recargar página para aplicar defaults reales
+                        // ðŸ”¹ Recargar pÃ¡gina para aplicar defaults reales
                         location.reload();
                     });
                 }
@@ -2582,7 +2684,7 @@
                     // Partimos de clases base
                     let baseClasses = ['layout-compact', 'layout-menu-fixed'];
 
-                    // Añadir clases según tipo
+                    // AÃ±adir clases segÃºn tipo
                     if (type === 'sticky') baseClasses.push('layout-navbar-fixed');
                     else if (type === 'hidden') baseClasses.push('layout-navbar-hidden');
                     // Static no necesita clase extra
@@ -2673,7 +2775,7 @@
                     radio.addEventListener('change', function() {
                         aplicarContent(this.value);
                     });
-                    // Clic en la opción completa
+                    // Clic en la opciÃ³n completa
                     radio.closest('.custom-option')?.addEventListener('click', function() {
                         aplicarContent(radio.value);
                     });
@@ -2756,7 +2858,7 @@
                     return;
                 }
 
-                // Agrupar rutas por categoría
+                // Agrupar rutas por categorÃ­a
                 const grouped = {};
                 routes.forEach(r => {
                     const category = r.category || 'Otras rutas';
@@ -2764,7 +2866,7 @@
                     grouped[category].push(r);
                 });
 
-                // Iconos por categoría
+                // Iconos por categorÃ­a
                 const categoryIcons = {
                     'Dashboard': ['menu-icon icon-base bx bx-home-circle', 'menu-icon icon-base bx bx-grid-alt', 'menu-icon icon-base bx bx-bar-chart'],
                     'Clientes': ['menu-icon icon-base bx bx-user-circle', 'menu-icon icon-base bx bx-user', 'menu-icon icon-base bx bx-group'],
@@ -2789,7 +2891,7 @@
                         a.href = r.url;
                         a.className = 'suggestion-item d-flex align-items-center';
 
-                        // Elegir icono al azar de la categoría
+                        // Elegir icono al azar de la categorÃ­a
                         const icons = categoryIcons[section] || ['menu-icon icon-base bx bx-link'];
                         const iconClass = icons[Math.floor(Math.random() * icons.length)];
 
@@ -2845,6 +2947,66 @@
                     });
                 }
             }
+        </script>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', async () => {
+                const select = document.getElementById('sucursal-select');
+                if (!select) return;
+
+                const renderOptions = (lista, selectedId = null) => {
+                    select.innerHTML = '';
+                    if (!Array.isArray(lista) || !lista.length) {
+                        const opt = document.createElement('option');
+                        opt.textContent = 'Sin sucursales';
+                        opt.disabled = true;
+                        opt.selected = true;
+                        select.appendChild(opt);
+                        return;
+                    }
+                    lista.forEach(s => {
+                        const opt = document.createElement('option');
+                        opt.value = s.id;
+                        opt.textContent = s.nombre || `Sucursal ${s.id}`;
+                        if (selectedId && String(selectedId) === String(s.id)) opt.selected = true;
+                        select.appendChild(opt);
+                    });
+                };
+
+                const savedSelected = localStorage.getItem('sucursalSeleccionada');
+                let sucursales = [];
+
+                const cache = localStorage.getItem('sucursalesEmpresa');
+                if (cache) {
+                    try {
+                        sucursales = JSON.parse(cache) || [];
+                    } catch (err) {
+                        console.error('[sucursal-select] Cache invalido', err);
+                    }
+                }
+
+                if (!Array.isArray(sucursales) || !sucursales.length) {
+                    try {
+                        const res = await fetch('/sucursal/fetch?per_page=1000&page=1', {
+                            headers: { 'Accept': 'application/json' },
+                            credentials: 'same-origin'
+                        });
+                        if (res.ok) {
+                            const json = await res.json();
+                            sucursales = Array.isArray(json?.data) ? json.data : (Array.isArray(json) ? json : []);
+                            localStorage.setItem('sucursalesEmpresa', JSON.stringify(sucursales));
+                        }
+                    } catch (err) {
+                        console.error('[sucursal-select] Error al cargar sucursales', err);
+                    }
+                }
+
+                renderOptions(sucursales, savedSelected);
+
+                select.addEventListener('change', () => {
+                    localStorage.setItem('sucursalSeleccionada', select.value);
+                });
+            });
         </script>
 
 

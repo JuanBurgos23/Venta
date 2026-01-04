@@ -12,6 +12,7 @@ use App\Models\Sucursal;
 use App\Models\Categoria;
 use App\Models\DetalleVenta;
 use Illuminate\Http\Request;
+use App\Services\CajaService;
 use App\Models\Producto_compra;
 use App\Models\Producto_almacen;
 use App\Models\detalle_venta_lote;
@@ -210,15 +211,42 @@ class VentaController extends Controller
         $request->validate([
             'client_id'      => 'required|exists:cliente,id',
             'payment_method' => 'required|string',
-            'sale_type'      => 'required|string',
+            'sale_type'      => 'required|string|in:contado,credito',
             'date'           => 'required|date',
+            'sucursal_id'    => 'required|exists:sucursal,id',
             'items'          => 'required|array|min:1',
             'subtotal'       => 'required|numeric',
             'descuento'      => 'nullable|numeric|min:0',
             'total'          => 'required|numeric|min:0',
             'billete'        => 'nullable|numeric|min:0',
             'cambio'         => 'nullable|numeric|min:0',
+
+            // ✅ Asegura que venga almacén
+            'almacen_id'     => 'required|exists:almacen,id',
         ]);
+
+        $usuarioId = Auth::id();
+        $empresaId = Auth::user()->id_empresa;
+
+        // ✅ Derivar sucursal desde almacén
+        $almacenId = (int) $request->input('almacen_id');
+        $almacen = Almacen::findOrFail($almacenId);
+        $sucursalId = (int) $almacen->sucursal_id;
+
+        // ✅ Verificar caja abierta para empresa+sucursal+usuario (en el store también)
+        $cajaActiva = \App\Models\Caja::where('usuario_id', $usuarioId)
+            ->where('empresa_id', $empresaId)
+            ->where('sucursal_id', $sucursalId)
+            ->where('estado', 1)
+            ->orderBy('fecha_apertura', 'desc')
+            ->first();
+
+        if (!$cajaActiva) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No hay una caja activa para esta sucursal. Debes abrir caja para registrar ventas.'
+            ], 403);
+        }
 
         try {
             DB::beginTransaction();
@@ -226,31 +254,23 @@ class VentaController extends Controller
             // Generar código (ejemplo simple VTA-0001)
             $codigo = 'VTA-' . str_pad((Venta::count() + 1), 4, '0', STR_PAD_LEFT);
 
-            $total = 0;
-
-            // Calcular total desde los items enviados
-            foreach ($request->items as $item) {
-                $total += $item['price'] * $item['quantity'];
-            }
-
-            $almacenId = $request->input('almacen_id'); // 📌 almacén seleccionado
-
             // Crear venta
             $venta = Venta::create([
                 'codigo'        => $codigo,
                 'fecha'         => $request->date,
                 'cliente_id'    => $request->client_id,
-                'usuario_id'    => Auth::id(),
-                'empresa_id'    => Auth::user()->id_empresa ?? null,
+                'usuario_id'    => $usuarioId,
+                'empresa_id'    => $empresaId,
+                'sucursal_id'   => $sucursalId,
                 'almacen_id'    => $almacenId,
                 'descuento'     => $request->descuento ?? 0,
                 'total'         => $request->total,
                 'forma_pago'    => $request->payment_method,
-                'tipo_pago'     => $request->sale_type, // 👈 contado o credito
+                'tipo_pago'     => $request->sale_type, // contado o credito
                 'observaciones' => null,
-                'billete'       => $request->billete ?? 0,  // 🔹 billete entregado
-                'cambio'        => $request->cambio ?? 0,   // 🔹 cambio devuelto
-                'estado' => $request->sale_type === 'contado' ? 'Pagado' : 'Pendiente',
+                'billete'       => $request->billete ?? 0,
+                'cambio'        => $request->cambio ?? 0,
+                'estado'        => $request->sale_type === 'contado' ? 'Pagado' : 'Pendiente',
             ]);
 
             // Insertar detalles y descontar stock por lotes (FIFO)
@@ -262,62 +282,58 @@ class VentaController extends Controller
                     'precio_unitario' => $item['price'],
                     'subtotal'        => $item['price'] * $item['quantity'],
                 ]);
-            
+
                 $cantidadPendiente = $item['quantity'];
-            
+
                 $lotes = Producto_almacen::where('producto_id', $item['id'])
-                    ->where('empresa_id', Auth::user()->id_empresa)
+                    ->where('empresa_id', $empresaId)
                     ->where('almacen_id', $almacenId)
                     ->where('stock', '>', 0)
                     ->orderBy('created_at', 'asc')
                     ->get();
-            
+
                 foreach ($lotes as $lote) {
                     if ($cantidadPendiente <= 0) break;
-            
-                    // costo del lote
+
                     $costoUnit = 0;
                     if ($lote->producto_compra_id) {
                         $pc = Producto_compra::find($lote->producto_compra_id);
                         $costoUnit = $pc?->costo_unitario ?? 0;
                     }
-            
+
                     if ($lote->stock >= $cantidadPendiente) {
-                        // Consumimos todo desde este lote
                         $consumir = $cantidadPendiente;
-            
-                        // registrar pivot de costo
+
                         detalle_venta_lote::create([
-                            'detalle_venta_id'   => $detalle->id,
-                            'producto_id'        => $item['id'],
-                            'producto_compra_id' => $lote->producto_compra_id,
-                            'producto_almacen_id'=> $lote->id,
-                            'cantidad'           => $consumir,
-                            'costo_unitario'     => $costoUnit,
-                            'costo_total'        => $costoUnit * $consumir,
+                            'detalle_venta_id'    => $detalle->id,
+                            'producto_id'         => $item['id'],
+                            'producto_compra_id'  => $lote->producto_compra_id,
+                            'producto_almacen_id' => $lote->id,
+                            'cantidad'            => $consumir,
+                            'costo_unitario'      => $costoUnit,
+                            'costo_total'         => $costoUnit * $consumir,
                         ]);
-            
+
                         $lote->decrement('stock', $consumir);
                         $cantidadPendiente = 0;
                     } else {
-                        // Consumimos todo el lote y seguimos
                         $consumir = $lote->stock;
-            
+
                         detalle_venta_lote::create([
-                            'detalle_venta_id'   => $detalle->id,
-                            'producto_id'        => $item['id'],
-                            'producto_compra_id' => $lote->producto_compra_id,
-                            'producto_almacen_id'=> $lote->id,
-                            'cantidad'           => $consumir,
-                            'costo_unitario'     => $costoUnit,
-                            'costo_total'        => $costoUnit * $consumir,
+                            'detalle_venta_id'    => $detalle->id,
+                            'producto_id'         => $item['id'],
+                            'producto_compra_id'  => $lote->producto_compra_id,
+                            'producto_almacen_id' => $lote->id,
+                            'cantidad'            => $consumir,
+                            'costo_unitario'      => $costoUnit,
+                            'costo_total'         => $costoUnit * $consumir,
                         ]);
-            
+
                         $cantidadPendiente -= $consumir;
                         $lote->update(['stock' => 0]);
                     }
                 }
-            
+
                 if ($cantidadPendiente > 0) {
                     $productoNombre = Producto::find($item['id'])->nombre ?? 'Desconocido';
                     throw new \Exception("No hay stock suficiente para '{$productoNombre}' en el almacén seleccionado.");
@@ -326,11 +342,23 @@ class VentaController extends Controller
 
             DB::commit();
 
+            // ✅ Llamar al SP SOLO si es contado (caja)
+            CajaService::registrarVentaDirecta(
+                $empresaId,
+                $sucursalId,
+                $usuarioId,
+                $venta->id,
+                $venta->created_at->format('Y-m-d H:i:s'),
+                (float) $venta->total
+            );
+
+
             return response()->json([
                 'success' => true,
                 'message' => 'Venta registrada correctamente',
                 'venta'   => $venta->load('detalles'),
             ], 201);
+
         } catch (\Exception $e) {
             DB::rollBack();
 

@@ -1,14 +1,11 @@
 <x-layout bodyClass="g-sidenav-show bg-gray-200">
     <script src="{{asset('assets/vendor/js/template-customizer.js')}}"></script>
-
-    <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
         <!-- Navbar -->
-
-
-        <div class="container-fluid py-4">
+        @vite(['resources/js/datos_usuario.js'])
+        <div class="container-fluid p-2">
             <div class="row mb-3">
                 <div class="col-12">
-                    <div class="card shadow-sm">
+                    <div class="card shadow-sm my-2">
                         <div class="card-header d-flex flex-wrap justify-content-between align-items-center">
                             <div>
                                 <h5 class="mb-0">Listado de Ventas</h5>
@@ -201,9 +198,10 @@
             const cardsContainer = document.getElementById('ventas-cards');
 
             // Inicializar fechas (hoy)
-            const today = new Date().toISOString().slice(0, 10);
-            filterFrom.value = today;
-            filterTo.value = today;
+            const today = new Date();
+            const todayLocal = new Date(today.getTime() - today.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+            filterFrom.value = todayLocal;
+            filterTo.value = todayLocal;
             loadSales(1);
             // Debounce helper
             function debounce(fn, delay = 250) {

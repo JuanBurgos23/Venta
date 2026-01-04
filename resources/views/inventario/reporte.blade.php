@@ -81,9 +81,6 @@
         <!-- End Navbar -->
         <div class="container-fluid py-4">
             <div class="col-12">
-                <div class="card my-4">
-                    <div class="card-header">Reporte de Inventario</div>
-                </div>
                 <div class="card-body">
                         <div class="col-12">
                             <div class="card my-4">

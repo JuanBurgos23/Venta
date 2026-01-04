@@ -1,243 +1,945 @@
-<x-layout bodyClass="g-sidenav-show bg-gray-200">
-    <script src="{{asset('assets/vendor/js/template-customizer.js')}}"></script>
-    <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
-        <!-- Navbar -->
-        <nav class="navbar ..."></nav>
-        <!-- Scripts -->
-        @vite([ 'resources/js/app.js'])
-        <!-- End Navbar -->
-        <div class="container-fluid py-4">
-            <div class="col-12">
-                <div class="card my-4">
-                    <div class="card-header">Titulo</div>
-                </div>
-                <div class="card-body">
-                    contenido ssssss
-                </div>
-                <div class="elmoro-campaign Campaign CampaignType--floating" id="om-rtggssyej7eonp0vagzg" style="border: 0px; float: none; letter-spacing: normal; outline: none; text-decoration: none; text-indent: 0px; text-shadow: none; text-transform: none; visibility: visible; line-height: 1; font-family: Arial, sans-serif; box-shadow: none; -webkit-font-smoothing: antialiased; appearance: none; overflow: visible; min-height: 1px; display: block; position: fixed; z-index: 666666666; left: 0px; zoom: 1; width: 100%; margin: 0px; padding: 0px; bottom: 0px; transition: bottom 0.3s;"><div id="om-rtggssyej7eonp0vagzg-yesno" class="elmoro-c-canvas Campaign__canvas" style="width: 100%; display: block;"><div class="elmoro-c-wrapper Campaign__innerWrapper" style="position:relative"><div style="border-top-width:1px;border-right-width:0px;border-bottom-width:0px;border-left-width:0px;border-color:#e3e3e3;border-style:none;border-top-left-radius:0px;border-top-right-radius:0px;border-bottom-right-radius:0px;border-bottom-left-radius:0px;box-shadow:0px 0px 0px 0px #ffffff;position:relative" class="StyledBackgroundWrapper__BackgroundWrapper-sc-4136c0-0 dsFjIb elmoro-c-alpha Campaign__alphaLayer"><div style="background-position:center center;background-size:contain;background-repeat:no-repeat" class="StyledBackgroundWrapper__BackgroundWrapper-sc-4136c0-0 hiLASK elmoro-c-bravo Campaign__bravoLayer"><div class="elmoro-c-content Campaign__content" style="position:relative;display:block;text-align:center;margin:0 auto;clear:both;max-width:1370px;padding-top:0.0001em;padding-right:85px;padding-left:25px;padding-bottom:0.0001em;background:none"><style id="om-rtggssyej7eonp0vagzg-ResetCSS" type="text/css">html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas applet,html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas object,html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas div:not(.Campaign__content):not(.Row__content):not(.Column__content):not(.Element__content):not(.ignore-reset):not([class^="wpforms-"]),html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas span:not(.ignore-reset):not([class^="wpforms-"]),html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas iframe,html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas h1:not(.ignore-reset):not([class^="wpforms-"]),html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas h2:not(.ignore-reset):not([class^="wpforms-"]),html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas h3:not(.ignore-reset):not([class^="wpforms-"]),html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas h4:not(.ignore-reset):not([class^="wpforms-"]),html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas h5:not(.ignore-reset):not([class^="wpforms-"]),html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas h6:not(.ignore-reset):not([class^="wpforms-"]),html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas p,html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas blockquote,html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas pre,html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas a:not(.ignore-reset):not([class^="wpforms-"]),html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas abbr,html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas acronym,html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas address,html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas big,html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas cite,html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas code,html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas del,html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas dfn,html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas em,html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas img,html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas ins,html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas kbd,html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas q,html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas s,html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas samp,html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas small,html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas strike,html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas strong,html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas sub,html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas sup,html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas tt,html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas var,html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas b,html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas u,html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas center,html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas dl,html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas dt,html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas dd,html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas ol:not(.ignore-reset):not([class^="wpforms-"]),html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas ul:not(.ignore-reset):not([class^="wpforms-"]),html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas li:not(.ignore-reset):not([class^="wpforms-"]),html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas fieldset,html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas form:not([class^="wpforms-"]),html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas label:not(.ignore-reset):not([class^="wpforms-"]),html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas legend,html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas table,html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas caption,html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas tbody,html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas tfoot,html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas thead,html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas tr,html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas th,html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas td,html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas article,html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas aside,html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas canvas,html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas details,html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas embed,html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas figure,html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas figcaption,html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas footer,html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas header,html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas hgroup,html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas menu,html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas nav,html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas output,html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas ruby,html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas section,html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas summary,html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas time,html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas mark,html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas audio,html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas video,html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas i:not(.fa):not([class^="wpforms-"]){margin: 0;padding: 0;border: 0;font-size: 100%;font: inherit;vertical-align: baseline;}html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas div.Campaign__content, html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas div.Row__content, html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas div.Column__content, html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas div.Element__content {margin: 0;border: 0;font-size: 100%;font: inherit;vertical-align: baseline;}</style><style id="om-rtggssyej7eonp0vagzg-CampaignCSS" type="text/css">
-		html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas *:not(.ignore-reset):not([class^="wpforms-"]) {box-sizing:border-box;}
-		html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas .Element__content {min-height: 30px;}
-		html div#om-rtggssyej7eonp0vagzg .elmoro-c-canvas button:not(.ignore-reset):not([class^="wpforms-"]) {width: auto;}
-	
-	html div#om-rtggssyej7eonp0vagzg .elmoro-FieldsElement--wrapper input:not([type="submit"]):not(.ignore-reset):not([class^="wpforms-"]),
-	html div#om-rtggssyej7eonp0vagzg .elmoro-FieldsElement--wrapper select:not(.ignore-reset):not([class^="wpforms-"]),
-	html div#om-rtggssyej7eonp0vagzg .elmoro-FieldsElement--wrapper textarea:not(.ignore-reset):not([class^="wpforms-"]) {
-		background-color: #fff;
-		width: 100%;
-		height: auto;
-		border: 1px solid;
-		padding: 10px 6px;
-		overflow: hidden;
-		margin: 0;
-		vertical-align: middle;
-		font-style: normal;
-		width: 100%;
-		line-height: 1.5;
-	}
+﻿<x-layout>
+<div class="container-xxl flex-grow-1 container-p-y">
+          
+  <div class="row">
+    <div class="col-xxl-8 mb-6 order-0">
+      <div class="card">
+        <div class="d-flex align-items-start row">
+          <div class="col-sm-7">
+            <div class="card-body">
+              <h5 class="card-title text-primary mb-3">Congratulations John!</h5>
+              <p class="mb-6">You have done 72% more sales today.<br />Check your new badge in your profile.</p>
 
-	html div#om-rtggssyej7eonp0vagzg .elmoro-FieldsElement--wrapper textarea:not(.ignore-reset):not([class^="wpforms-"]) {
-		height: 60px;
-	}
-
-	html div#om-rtggssyej7eonp0vagzg .elmoro-FieldsElement--wrapper textarea:not(.ignore-reset):not([class^="wpforms-"]),
-	html div#om-rtggssyej7eonp0vagzg .elmoro-FieldsElement--wrapper input:not(.ignore-reset):not([class^="wpforms-"]) {
-		overflow: hidden;
-		-webkit-appearance: none;
-	}
-
-	html div#om-rtggssyej7eonp0vagzg .elmoro-FieldsElement--wrapper input[type=submit]:not(.ignore-reset):not([class^="wpforms-"]),
-	html div#om-rtggssyej7eonp0vagzg .elmoro-FieldsElement--wrapper button:not(.ignore-reset):not([class^="wpforms-"]) {
-		cursor: pointer;
-	}
-
-	html div#om-rtggssyej7eonp0vagzg .elmoro-FieldsElement--wrapper input[type=checkbox]:not(.ignore-reset):not([class^="wpforms-"]),
-	html div#om-rtggssyej7eonp0vagzg .elmoro-FieldsElement--wrapper input[type=radio]:not(.ignore-reset):not([class^="wpforms-"]) {
-		width: auto !important;
-		outline: invert none medium;
-		padding: 0;
-		margin: 0;
-		height: auto !important;
-		box-shadow: none;
-		-webkit-box-shadow: none;
-		-moz-box-shadow: none;
-		display: inline;
-	}
-
-	html div#om-rtggssyej7eonp0vagzg .elmoro-FieldsElement--wrapper input[type=checkbox]:not(.ignore-reset):not([class^="wpforms-"]) {
-		-webkit-appearance: checkbox;
-	}
-
-	html div#om-rtggssyej7eonp0vagzg .elmoro-FieldsElement--wrapper input[type=radio]:not(.ignore-reset):not([class^="wpforms-"]) {
-		-webkit-appearance: radio;
-	}
-	html div#om-rtggssyej7eonp0vagzg .elmoro-FieldsElement--wrapper strong:not(.ignore-reset):not([class^="wpforms-"]) {
-		font-weight: bolder;
-	}
-	html div#om-rtggssyej7eonp0vagzg .elmoro-FieldsElement--wrapper em:not(.ignore-reset):not([class^="wpforms-"]) {
-		font-style: italic;
-	}
-	html div#om-rtggssyej7eonp0vagzg .elmoro-FieldsElement--wrapper ul:not(.ignore-reset):not([class^="wpforms-"]) {
-		list-style-type: disc;
-		margin: 1em 0 1em 1.5em;
-	}
-	html div#om-rtggssyej7eonp0vagzg .elmoro-FieldsElement--wrapper ol:not(.ignore-reset):not([class^="wpforms-"]) {
-		list-style: decimal;
-		margin: 1em 0 1em 1.5em;
-	}
-
-	html div#om-rtggssyej7eonp0vagzg .elmoro-FieldsElement--wrapper sup:not(.ignore-reset):not([class^="wpforms-"]) {
-		top: -0.5em;
-	}
-
-	html div#om-rtggssyej7eonp0vagzg .elmoro-FieldsElement--wrapper sub:not(.ignore-reset):not([class^="wpforms-"]) {
-		bottom: -0.5em;
-	}
-
-	html div#om-rtggssyej7eonp0vagzg .elmoro-FieldsElement--wrapper sub:not(.ignore-reset):not([class^="wpforms-"]),
-	html div#om-rtggssyej7eonp0vagzg .elmoro-FieldsElement--wrapper sup:not(.ignore-reset):not([class^="wpforms-"]) {
-		font-size: 75%;
-		line-height: 0;
-		position: relative;
-		vertical-align: baseline;
-	}
-
-	html div#om-rtggssyej7eonp0vagzg .elmoro-FieldsElement--wrapper p:not(.ignore-reset):not([class^="wpforms-"]) {
-		margin: 0 0 5px;
-	}
-	html div#om-rtggssyej7eonp0vagzg .elmoro-FieldsElement--wrapper p:first-of-type:not(.ignore-reset):not([class^="wpforms-"]) {
-		margin-top: 0;
-	}
-	html div#om-rtggssyej7eonp0vagzg .elmoro-FieldsElement--wrapper p:last-of-type:not(.ignore-reset):not([class^="wpforms-"]) {
-		margin-bottom: 0;
-	}
-	
-	html div#om-rtggssyej7eonp0vagzg .elmoro-TextElement--content strong:not(.ignore-reset):not([class^="wpforms-"]) {
-		font-weight: bolder;
-	}
-	html div#om-rtggssyej7eonp0vagzg .elmoro-TextElement--content em:not(.ignore-reset):not([class^="wpforms-"]) {
-		font-style: italic;
-	}
-	html div#om-rtggssyej7eonp0vagzg .elmoro-TextElement--content ul:not(.ignore-reset):not([class^="wpforms-"]) {
-		list-style-type: disc;
-		margin: 1em 0 1em 1.5em;
-	}
-	html div#om-rtggssyej7eonp0vagzg .elmoro-TextElement--content ol:not(.ignore-reset):not([class^="wpforms-"]) {
-		list-style: decimal;
-		margin: 1em 0 1em 1.5em;
-	}
-
-	html div#om-rtggssyej7eonp0vagzg .elmoro-TextElement--content sup:not(.ignore-reset):not([class^="wpforms-"]) {
-		top: -0.5em;
-	}
-
-	html div#om-rtggssyej7eonp0vagzg .elmoro-TextElement--content sub:not(.ignore-reset):not([class^="wpforms-"]) {
-		bottom: -0.5em;
-	}
-
-	html div#om-rtggssyej7eonp0vagzg .elmoro-TextElement--content sub:not(.ignore-reset):not([class^="wpforms-"]),
-	html div#om-rtggssyej7eonp0vagzg .elmoro-TextElement--content sup:not(.ignore-reset):not([class^="wpforms-"]) {
-		font-size: 75%;
-		line-height: 0;
-		position: relative;
-		vertical-align: baseline;
-	}
-
-	html div#om-rtggssyej7eonp0vagzg .elmoro-TextElement--content p:not(.ignore-reset):not([class^="wpforms-"]) {
-		margin: 0 0 5px;
-		font-weight: inherit !important;
-
-		letter-spacing: inherit !important;
-		text-transform: inherit !important;
-	}
-	html div#om-rtggssyej7eonp0vagzg .elmoro-TextElement--content span.fr-emoticon:not(.ignore-reset):not([class^="wpforms-"]) {
-		vertical-align: middle !important;
-	}
-	html div#om-rtggssyej7eonp0vagzg .elmoro-TextElement--content p:first-of-type:not(.ignore-reset):not([class^="wpforms-"]) {
-		margin-top: 0;
-	}
-	html div#om-rtggssyej7eonp0vagzg .elmoro-TextElement--content p:last-of-type:not(.ignore-reset):not([class^="wpforms-"]) {
-		margin-bottom: 0;
-	}
-
-	html div#om-rtggssyej7eonp0vagzg .elmoro-TextElement--content span[style~="color:"] a:not(.ignore-reset):not([class^="wpforms-"]) {
-		color: inherit;
-	}
-	
-	@media screen and (min-width: 1px) and (max-width: 768px) {
-		
-		html div#om-rtggssyej7eonp0vagzg .elmoro-ClosePosition--top-right { right: 0 !important }
-		html div#om-rtggssyej7eonp0vagzg .elmoro-ClosePosition--top-left { left: 0 !important }
-		html div#om-rtggssyej7eonp0vagzg .elmoro-ClosePosition--bottom-right { right: 0 !important }
-		html div#om-rtggssyej7eonp0vagzg .elmoro-ClosePosition--bottom-left { left: 0 !important }
-
-		html div#om-rtggssyej7eonp0vagzg .Row .Row__content,
-		html div#om-rtggssyej7eonp0vagzg .om-row .Row__content {
-			flex-direction: column;
-		}
-
-		html div#om-rtggssyej7eonp0vagzg .Row .Row__content .Column,
-		html div#om-rtggssyej7eonp0vagzg .om-row .Row__content .om-column {
-			width: 100% !important;
-		}
-
-		html div#om-rtggssyej7eonp0vagzg .FieldsElement--horizontal button {
-			width: 100% !important;
-		}
-	
-	}
-	
-	@media screen and (min-width: 1px) and (max-width: 428px) {
-		
-	}
-	</style><style id="om-rtggssyej7eonp0vagzg-CustomCSS" type="text/css">html div#om-rtggssyej7eonp0vagzg.elmoro-campaign {
-    z-index: 100 !important;
-}
-html div#om-rtggssyej7eonp0vagzg .elmoro-c-wrapper{
- background: #442C8C;
-}
-html div#om-rtggssyej7eonp0vagzg #cyber-count-down .number-string {
-    background: rgb(255 255 255 / 13%);
-    padding: 6px !important;
-    border-radius: 2px;
-    border: 1px solid #ffffff5c !important;
-    width: 45px;
-    margin-bottom: 0.5rem;
-    display: inline-block;
-}
-
-html div#om-rtggssyej7eonp0vagzg .elmoro-close {
-    transform: translateY(-50%);
-    top: 50% !important;
-}
-
-html div#om-rtggssyej7eonp0vagzg .elmoro-cde-content {
-    display: flex;
-}
-
-html div#om-rtggssyej7eonp0vagzg .btn-cyber .elmoro-field-button {
-    position: relative;
-    overflow: hidden;
-}
-
-html div#om-rtggssyej7eonp0vagzg .btn-cyber .elmoro-field-button::before {
-    content: "";
-    position: absolute;
-    inset: -5px;
-    border-radius: 2px;
-    border: 7px dashed #fff;
-}
-
-html div#om-rtggssyej7eonp0vagzg .elmoro-ele-2 {
-    height: 13px;
-}
-html div#om-rtggssyej7eonp0vagzg .btn-cyber-close .elmoro-field-button:hover {
-    font-size: 12px !important;
-    font-weight: 500 !important;
-}</style><div class="Row__StyledRow-sc-3p43ya-0 gWmuIY elmoro-row elmoro-row-1 Row om-row"><div class="elmoro-row-content Row__content"><div style="display:flex;width:100%;flex-direction:inherit;align-items:center;border-style:none;border-color:#e3e3e3;border-top-left-radius:0px;border-top-right-radius:0px;border-bottom-right-radius:0px;border-bottom-left-radius:0px;border-top-width:1px;border-right-width:0px;border-bottom-width:0px;border-left-width:1px;padding-top:0px;padding-right:0px;padding-bottom:0px;padding-left:0px;margin-top:0px;margin-right:0px;margin-bottom:0px;margin-left:0px;box-shadow:0px 0px 0px 0px rgba(0, 0, 0, 0.5);max-width:100%;z-index:0;justify-content:space-between" class="StyledBackgroundWrapper__BackgroundWrapper-sc-4136c0-0 hVluvJ elmoro-row-inner"><div class="elmoro-column elmoro-col-1 Column om-column" style="display:inline-block;width:22%"><div class="elmoro-col-content Column__content" style="height:100%"><div style="align-items:flex-start;border-style:solid;border-color:#000000;border-top-left-radius:0px;border-top-right-radius:0px;border-bottom-right-radius:0px;border-bottom-left-radius:0px;border-top-width:0px;border-right-width:0px;border-bottom-width:0px;border-left-width:0px;padding-top:0px;padding-right:0px;padding-bottom:0px;padding-left:0px;margin-top:0px;margin-right:0px;margin-bottom:0px;margin-left:0px;box-shadow:0px 0px 0px 0px rgba(0, 0, 0, 0.5);max-width:100%;z-index:0;height:100%" class="StyledBackgroundWrapper__BackgroundWrapper-sc-4136c0-0 UXyks elmoro-col-inner"><div class="elmoro-element elmoro-ele-1 Element om-element"><div class="elmoro-ele-content Element__content"><div class="elmoro-cde-wrapper elmoro-CountdownElement--wrapper popup-timer-arrow arrow-cyber" id="cyber-count-down" style="border-top-left-radius:0px;border-top-right-radius:0px;border-bottom-right-radius:0px;border-bottom-left-radius:0px;border-top-width:0px;border-right-width:0px;border-bottom-width:0px;border-left-width:0px;padding-top:5px;padding-right:5px;padding-bottom:5px;padding-left:5px;margin-top:0px;margin-right:0px;margin-bottom:0px;margin-left:0px;background:rgba(0, 0, 0, 0);border-style:solid;border-color:#000000;box-shadow:none;width:auto;max-width:100%;position:relative;z-index:0;text-align:center"><div id="elmoro-CountdownElement--MxFi1kkVWaZcPlnklgwt" class="elmoro-cde-content elmoro-CountdownElement--content" data-omcd-time="1121108" data-omcd-type="dynamic" data-omcd-id="MxFi1kkVWaZcPlnklgwt" data-omcd-local="true" data-gablockid="om-tVWu3h8mbOHnfQQQBHrL-yesno-countdown"><div style="border-top-left-radius:0px;border-top-right-radius:0px;border-bottom-right-radius:0px;border-bottom-left-radius:0px;border-top-width:0px;border-right-width:0px;border-bottom-width:0px;border-left-width:0px;padding-top:5px;padding-right:5px;padding-bottom:5px;padding-left:5px;margin-top:0px;margin-right:0px;margin-bottom:0px;margin-left:0px;border-style:none;border-color:#000000;box-shadow:none;width:auto;max-width:100%;min-width:25px;display:inline-block;text-align:center;z-index:0" class="StyledBackgroundWrapper__BackgroundWrapper-sc-4136c0-0 UXyks elmoro-days"><span class="number-string number-days" style="color:#ffffff;font-family:Rubik;font-weight:600;font-size:20px;text-transform:none;text-decoration:none;line-height:1.5;letter-spacing:0px;font-style:normal"><span class="char" aria-hidden="true" style="display:inline-block;text-align:center;min-width:0px;">1</span><span class="char" aria-hidden="true" style="display:inline-block;text-align:center;min-width:0px;">2</span></span><div class="unit-days" style="color:rgba(255, 255, 255, 0.88);font-family:Rubik;font-weight:500;font-size:13px;text-transform:none;text-decoration:none;line-height:1;letter-spacing:0;font-style:normal" dir="auto">Days</div></div><div style="border-top-left-radius:0px;border-top-right-radius:0px;border-bottom-right-radius:0px;border-bottom-left-radius:0px;border-top-width:0px;border-right-width:0px;border-bottom-width:0px;border-left-width:0px;padding-top:5px;padding-right:5px;padding-bottom:5px;padding-left:5px;margin-top:0px;margin-right:0px;margin-bottom:0px;margin-left:0px;border-style:none;border-color:#000000;box-shadow:none;width:auto;max-width:100%;min-width:25px;display:inline-block;text-align:center;z-index:0" class="StyledBackgroundWrapper__BackgroundWrapper-sc-4136c0-0 UXyks elmoro-hours"><span class="number-string number-hours" style="color:#ffffff;font-family:Rubik;font-weight:600;font-size:20px;text-transform:none;text-decoration:none;line-height:1.5;letter-spacing:0px;font-style:normal"><span class="char" aria-hidden="true" style="display:inline-block;text-align:center;min-width:0px;">2</span><span class="char" aria-hidden="true" style="display:inline-block;text-align:center;min-width:0px;">3</span></span><div class="unit-hours" style="color:rgba(255, 255, 255, 0.88);font-family:Rubik;font-weight:500;font-size:13px;text-transform:none;text-decoration:none;line-height:1;letter-spacing:0;font-style:normal" dir="auto">Hours</div></div><div style="border-top-left-radius:0px;border-top-right-radius:0px;border-bottom-right-radius:0px;border-bottom-left-radius:0px;border-top-width:0px;border-right-width:0px;border-bottom-width:0px;border-left-width:0px;padding-top:5px;padding-right:5px;padding-bottom:5px;padding-left:5px;margin-top:0px;margin-right:0px;margin-bottom:0px;margin-left:0px;border-style:none;border-color:#000000;box-shadow:none;width:auto;max-width:100%;min-width:25px;display:inline-block;text-align:center;z-index:0" class="StyledBackgroundWrapper__BackgroundWrapper-sc-4136c0-0 UXyks elmoro-minutes"><span class="number-string number-minutes" style="color:#ffffff;font-family:Rubik;font-weight:600;font-size:20px;text-transform:none;text-decoration:none;line-height:1.5;letter-spacing:0px;font-style:normal"><span class="char" aria-hidden="true" style="display:inline-block;text-align:center;min-width:0px;">2</span><span class="char" aria-hidden="true" style="display:inline-block;text-align:center;min-width:0px;">1</span></span><div class="unit-minutes" style="color:rgba(255, 255, 255, 0.88);font-family:Rubik;font-weight:500;font-size:13px;text-transform:none;text-decoration:none;line-height:1;letter-spacing:0;font-style:normal" dir="auto">Mins</div></div><div style="border-top-left-radius:0px;border-top-right-radius:0px;border-bottom-right-radius:0px;border-bottom-left-radius:0px;border-top-width:0px;border-right-width:0px;border-bottom-width:0px;border-left-width:0px;padding-top:5px;padding-right:5px;padding-bottom:5px;padding-left:5px;margin-top:0px;margin-right:0px;margin-bottom:0px;margin-left:0px;border-style:none;border-color:#000000;box-shadow:none;width:auto;max-width:100%;min-width:25px;display:inline-block;text-align:center;z-index:0" class="StyledBackgroundWrapper__BackgroundWrapper-sc-4136c0-0 UXyks elmoro-seconds"><span class="number-string number-seconds" style="color:#ffffff;font-family:Rubik;font-weight:600;font-size:20px;text-transform:none;text-decoration:none;line-height:1.5;letter-spacing:0px;font-style:normal"><span class="char" aria-hidden="true" style="display:inline-block;text-align:center;min-width:0px;">5</span><span class="char" aria-hidden="true" style="display:inline-block;text-align:center;min-width:0px;">0</span></span><div class="unit-seconds" style="color:rgba(255, 255, 255, 0.88);font-family:Rubik;font-weight:500;font-size:13px;text-transform:none;text-decoration:none;line-height:1;letter-spacing:0;font-style:normal" dir="auto">Secs</div></div></div></div></div></div></div></div></div><div class="elmoro-column elmoro-col-2 Column om-column text-start" style="display:inline-block;width:58%"><div class="elmoro-col-content Column__content" style="height:100%"><div style="align-items:flex-start;border-style:solid;border-color:#000000;border-top-left-radius:0px;border-top-right-radius:0px;border-bottom-right-radius:0px;border-bottom-left-radius:0px;border-top-width:0px;border-right-width:0px;border-bottom-width:0px;border-left-width:0px;padding-top:0px;padding-right:0px;padding-bottom:0px;padding-left:0px;margin-top:0px;margin-right:0px;margin-bottom:0px;margin-left:0px;box-shadow:0px 0px 0px 0px rgba(0, 0, 0, 0.5);max-width:100%;z-index:0;height:100%" class="StyledBackgroundWrapper__BackgroundWrapper-sc-4136c0-0 hVluvJ elmoro-col-inner"><div class="elmoro-element elmoro-ele-1 Element om-element"><div class="elmoro-ele-content Element__content"><div class="elmoro-te-wrapper elmoro-TextElement--wrapper " id="elmoro-TextElement--wrapper--wg42fyIxvFMbLr60wdRI" style="border-top-left-radius:0%;border-top-right-radius:0%;border-bottom-right-radius:0%;border-bottom-left-radius:0%;border-top-width:0px;border-right-width:0px;border-bottom-width:0px;border-left-width:0px;padding-top:0px;padding-right:0px;padding-bottom:0px;padding-left:0px;margin-top:10px;margin-right:28px;margin-bottom:11px;margin-left:34px;background:transparent;border-style:solid;border-color:#000000;box-shadow:0px 0px 0px 0px #ffffff;width:auto;max-width:100%;position:relative;z-index:0"><div class="elmoro-te-content elmoro-TextElement--content" style="overflow-wrap:break-word;color:#000000;font-family:Montserrat;font-weight:400;font-size:16px;text-transform:none;text-decoration:none;line-height:1;letter-spacing:0;font-style:normal;text-align:left"><p style="text-align: left; line-height: 1.6;"><span style="font-size: 20px; font-family: Lato; font-weight: 600; color: rgb(255, 255, 255);"><strong>Cyber Sale Offer</strong></span><span style="font-family: Arial, sans-serif;"><br></span><span style="font-family: &quot;Droid Sans&quot;;"><span style="font-size: 18px; font-weight: 700; color: rgb(255, 255, 255);">Get</span><span style="font-size: 18px; font-weight: 700; color: rgb(255, 0, 183);">&nbsp;30% OFF</span><span style="font-weight: 400; font-size: 18px;"><span style="color: rgb(255, 255, 255);">&nbsp;when you use promo code</span></span><span style="font-weight: 400; font-size: 18px;"><span style="color: rgb(255, 255, 255);">&nbsp;</span><span style="color: rgb(255, 0, 183);"><strong>BFCM30FY&nbsp;</strong></span><span style="color: rgb(255, 255, 255);">- limited time only!</span></span></span></p></div></div></div></div></div></div></div><div class="elmoro-column elmoro-col-3 Column om-column" style="display:inline-block;width:18.00%"><div class="elmoro-col-content Column__content" style="height:100%"><div style="align-items:flex-start;border-style:solid;border-color:#000000;border-top-left-radius:0px;border-top-right-radius:0px;border-bottom-right-radius:0px;border-bottom-left-radius:0px;border-top-width:0px;border-right-width:0px;border-bottom-width:0px;border-left-width:0px;padding-top:0px;padding-right:0px;padding-bottom:0px;padding-left:0px;margin-top:0px;margin-right:0px;margin-bottom:0px;margin-left:0px;box-shadow:0px 0px 0px 0px rgba(0, 0, 0, 0.5);max-width:100%;z-index:0;height:100%" class="StyledBackgroundWrapper__BackgroundWrapper-sc-4136c0-0 hVluvJ elmoro-col-inner"><div class="elmoro-element elmoro-ele-1 Element om-element"><div class="elmoro-ele-content Element__content"><div class="elmoro-be-wrapper elmoro-ButtonElement--wrapper btn-cyber" id="elmoro-ButtonElement--wrapper--yaNa1ddpFzioE1phasVi" style="text-align:center;border-top-left-radius:0px;border-top-right-radius:0px;border-bottom-right-radius:0px;border-bottom-left-radius:0px;border-top-width:0px;border-right-width:0px;border-bottom-width:0px;border-left-width:0px;padding-top:5px;padding-right:5px;padding-bottom:5px;padding-left:5px;margin-top:0px;margin-right:0px;margin-bottom:0px;margin-left:0px;background:transparent;border-style:solid;border-color:#000000;box-shadow:none;width:auto;max-width:100%;position:relative;z-index:0"><div class="elmoro-be-content elmoro-ButtonElement--content"><button id="elmoro-ButtonElement--yaNa1ddpFzioE1phasVi" name="elmoro-button--yaNa1ddpFzioE1phasVi" class="StyledIconButtonElement-sc-114x20d-0 byiwes elmoro-field-button" title="BFCM30FY" value="BFCM30FY" aria-live="polite" type="button" data-gablockid="om-yaNa1ddpFzioE1phasVi-yesno-button-noButton">BFCM30FY</button></div></div></div></div><div class="elmoro-element elmoro-ele-2 Element om-element"><div class="elmoro-ele-content Element__content"><div class="elmoro-be-wrapper elmoro-ButtonElement--wrapper btn-cyber-close" id="elmoro-ButtonElement--wrapper--GnsKONkGasAEiy78EbQf" style="text-align:center;border-top-left-radius:0px;border-top-right-radius:0px;border-bottom-right-radius:0px;border-bottom-left-radius:0px;border-top-width:0px;border-right-width:0px;border-bottom-width:0px;border-left-width:0px;padding-top:0px;padding-right:0px;padding-bottom:0px;padding-left:0px;margin-top:0px;margin-right:0px;margin-bottom:0px;margin-left:0px;background:transparent;border-style:solid;border-color:#000000;box-shadow:none;width:auto;max-width:100%;position:relative;z-index:0"><div class="elmoro-be-content elmoro-ButtonElement--content"><button id="elmoro-ButtonElement--GnsKONkGasAEiy78EbQf" name="elmoro-button--GnsKONkGasAEiy78EbQf" class="StyledIconButtonElement-sc-114x20d-0 itfYsR elmoro-field-button" title="Close, not required" value="Close, not required" aria-live="polite" type="button" data-gablockid="om-GnsKONkGasAEiy78EbQf-yesno-button-noButton">Close, not required</button></div></div></div></div></div></div></div></div></div></div><div id="om-rtggssyej7eonp0vagzg-CustomJS" style="display:none"></div></div></div></div></div></div></div>
+              <a href="javascript:;" class="btn btn-sm btn-label-primary">View Badges</a>
             </div>
+          </div>
+          <div class="col-sm-5 text-center text-sm-left">
+            <div class="card-body pb-0 px-0 px-md-6">
+              <img src="{{ asset('assets/') }}/img/illustrations/man-with-laptop.png" height="175" class="scaleX-n1-rtl" alt="View Badge User" />
+            </div>
+          </div>
         </div>
-    </main>
+      </div>
+    </div>
+    <div class="col-xxl-4 col-lg-12 col-md-4 order-1">
+      <div class="row">
+        <div class="col-lg-6 col-md-12 col-6 mb-6">
+          <div class="card h-100">
+            <div class="card-body pb-4">
+              <span class="d-block fw-medium mb-1">Order</span>
+              <h4 class="card-title mb-0">276k</h4>
+            </div>
+            <div id="orderChart" class="pb-3 pe-1"></div>
+          </div>
+        </div>
+        <div class="col-lg-6 col-md-12 col-6 mb-6">
+          <div class="card h-100">
+            <div class="card-body">
+              <div class="card-title d-flex align-items-start justify-content-between mb-4">
+                <div class="avatar flex-shrink-0">
+                  <img src="{{ asset('assets/') }}/img/icons/unicons/wallet-info.png" alt="wallet info" class="rounded" />
+                </div>
+                <div class="dropdown">
+                  <button class="btn p-0" type="button" id="cardOpt6" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="icon-base bx bx-dots-vertical-rounded text-body-secondary"></i>
+                  </button>
+                  <div class="dropdown-menu dropdown-menu-end" aria-labelledby="cardOpt6">
+                    <a class="dropdown-item" href="javascript:void(0);">View More</a>
+                    <a class="dropdown-item" href="javascript:void(0);">Delete</a>
+                  </div>
+                </div>
+              </div>
+              <p class="mb-1">Sales</p>
+              <h4 class="card-title mb-3">$4,679</h4>
+              <small class="text-success fw-medium"><i class="icon-base bx bx-up-arrow-alt"></i> +28.42%</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Total Revenue -->
+    <div class="col-12 col-xxl-8 order-2 order-md-3 order-xxl-2 mb-6">
+      <div class="card">
+        <div class="row row-bordered g-0">
+          <div class="col-lg-8">
+            <div class="card-header d-flex align-items-center justify-content-between">
+              <div class="card-title mb-0">
+                <h5 class="m-0 me-2">Total Revenue</h5>
+              </div>
+              <div class="dropdown">
+                <button class="btn p-0" type="button" id="totalRevenue" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <i class="icon-base bx bx-dots-vertical-rounded icon-lg text-body-secondary"></i>
+                </button>
+                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="totalRevenue">
+                  <a class="dropdown-item" href="javascript:void(0);">Select All</a>
+                  <a class="dropdown-item" href="javascript:void(0);">Refresh</a>
+                  <a class="dropdown-item" href="javascript:void(0);">Share</a>
+                </div>
+              </div>
+            </div>
+            <div id="totalRevenueChart" class="px-3"></div>
+          </div>
+          <div class="col-lg-4">
+            <div class="card-body px-xl-9 py-12 d-flex align-items-center flex-column">
+              <div class="text-center mb-6">
+                <div class="btn-group">
+                  <button type="button" class="btn btn-label-primary">
+                    <script>
+                      document.write(new Date().getFullYear() - 1);
+                    </script>
+                  </button>
+                  <button type="button" class="btn btn-label-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                    <span class="visually-hidden">Toggle Dropdown</span>
+                  </button>
+                  <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="javascript:void(0);">2021</a></li>
+                    <li><a class="dropdown-item" href="javascript:void(0);">2020</a></li>
+                    <li><a class="dropdown-item" href="javascript:void(0);">2019</a></li>
+                  </ul>
+                </div>
+              </div>
 
-    <!-- Template Customizer va fuera de main y slot -->
+              <div id="growthChart"></div>
+              <div class="text-center fw-medium my-6">62% Company Growth</div>
 
+              <div class="d-flex gap-11 justify-content-between">
+                <div class="d-flex">
+                  <div class="avatar me-2">
+                    <span class="avatar-initial rounded-2 bg-label-primary"><i class="icon-base bx bx-dollar icon-lg text-primary"></i></span>
+                  </div>
+                  <div class="d-flex flex-column">
+                    <small>
+                      <script>
+                        document.write(new Date().getFullYear() - 1);
+                      </script>
+                    </small>
+                    <h6 class="mb-0">$32.5k</h6>
+                  </div>
+                </div>
+                <div class="d-flex">
+                  <div class="avatar me-2">
+                    <span class="avatar-initial rounded-2 bg-label-info"><i class="icon-base bx bx-wallet icon-lg text-info"></i></span>
+                  </div>
+                  <div class="d-flex flex-column">
+                    <small>
+                      <script>
+                        document.write(new Date().getFullYear() - 2);
+                      </script>
+                    </small>
+                    <h6 class="mb-0">$41.2k</h6>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--/ Total Revenue -->
+    <div class="col-12 col-md-8 col-lg-12 col-xxl-4 order-3 order-md-2">
+      <div class="row">
+        <div class="col-6 mb-6">
+          <div class="card h-100">
+            <div class="card-body">
+              <div class="card-title d-flex align-items-start justify-content-between mb-4">
+                <div class="avatar flex-shrink-0">
+                  <img src="{{ asset('assets/') }}/img/icons/unicons/paypal.png" alt="paypal" class="rounded" />
+                </div>
+                <div class="dropdown">
+                  <button class="btn p-0" type="button" id="cardOpt4" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="icon-base bx bx-dots-vertical-rounded text-body-secondary"></i>
+                  </button>
+                  <div class="dropdown-menu dropdown-menu-end" aria-labelledby="cardOpt4">
+                    <a class="dropdown-item" href="javascript:void(0);">View More</a>
+                    <a class="dropdown-item" href="javascript:void(0);">Delete</a>
+                  </div>
+                </div>
+              </div>
+              <p class="mb-1">Payments</p>
+              <h4 class="card-title mb-3">$2,456</h4>
+              <small class="text-danger fw-medium"><i class="icon-base bx bx-down-arrow-alt"></i> -14.82%</small>
+            </div>
+          </div>
+        </div>
+        <div class="col-6 mb-6">
+          <div class="card h-100">
+            <div class="card-body pb-0">
+              <span class="d-block fw-medium mb-1">Revenue</span>
+              <h4 class="card-title mb-0 mb-lg-4">425k</h4>
+              <div id="revenueChart"></div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 mb-6">
+          <div class="card">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-center flex-sm-row flex-column gap-10 flex-wrap">
+                <div class="d-flex flex-sm-column flex-row align-items-start justify-content-between">
+                  <div class="card-title mb-6">
+                    <h5 class="text-nowrap mb-1">Profile Report</h5>
+                    <span class="badge bg-label-warning">YEAR 2022</span>
+                  </div>
+                  <div class="mt-sm-auto">
+                    <span class="text-success text-nowrap fw-medium"><i class="icon-base bx bx-up-arrow-alt"></i> 68.2%</span>
+                    <h4 class="mb-0">$84,686k</h4>
+                  </div>
+                </div>
+                <div id="profileReportChart"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <!-- Order Statistics -->
+    <div class="col-md-6 col-lg-4 col-xl-4 order-0 mb-6">
+      <div class="card h-100">
+        <div class="card-header d-flex justify-content-between">
+          <div class="card-title mb-0">
+            <h5 class="mb-1 me-2">Order Statistics</h5>
+            <p class="card-subtitle">42.82k Total Sales</p>
+          </div>
+          <div class="dropdown">
+            <button class="btn text-body-secondary p-0" type="button" id="orederStatistics" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <i class="icon-base bx bx-dots-vertical-rounded icon-lg"></i>
+            </button>
+            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="orederStatistics">
+              <a class="dropdown-item" href="javascript:void(0);">Select All</a>
+              <a class="dropdown-item" href="javascript:void(0);">Refresh</a>
+              <a class="dropdown-item" href="javascript:void(0);">Share</a>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-6">
+            <div class="d-flex flex-column align-items-center gap-1">
+              <h3 class="mb-1">8,258</h3>
+              <small>Total Orders</small>
+            </div>
+            <div id="orderStatisticsChart"></div>
+          </div>
+          <ul class="p-0 m-0">
+            <li class="d-flex align-items-center mb-5">
+              <div class="avatar flex-shrink-0 me-3">
+                <span class="avatar-initial rounded bg-label-primary"><i class="icon-base bx bx-mobile-alt"></i></span>
+              </div>
+              <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                <div class="me-2">
+                  <h6 class="mb-0">Electronic</h6>
+                  <small>Mobile, Earbuds, TV</small>
+                </div>
+                <div class="user-progress">
+                  <h6 class="mb-0">82.5k</h6>
+                </div>
+              </div>
+            </li>
+            <li class="d-flex align-items-center mb-5">
+              <div class="avatar flex-shrink-0 me-3">
+                <span class="avatar-initial rounded bg-label-success"><i class="icon-base bx bx-closet"></i></span>
+              </div>
+              <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                <div class="me-2">
+                  <h6 class="mb-0">Fashion</h6>
+                  <small>T-shirt, Jeans, Shoes</small>
+                </div>
+                <div class="user-progress">
+                  <h6 class="mb-0">23.8k</h6>
+                </div>
+              </div>
+            </li>
+            <li class="d-flex align-items-center mb-5">
+              <div class="avatar flex-shrink-0 me-3">
+                <span class="avatar-initial rounded bg-label-info"><i class="icon-base bx bx-home-alt"></i></span>
+              </div>
+              <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                <div class="me-2">
+                  <h6 class="mb-0">Decor</h6>
+                  <small>Fine Art, Dining</small>
+                </div>
+                <div class="user-progress">
+                  <h6 class="mb-0">849k</h6>
+                </div>
+              </div>
+            </li>
+            <li class="d-flex align-items-center">
+              <div class="avatar flex-shrink-0 me-3">
+                <span class="avatar-initial rounded bg-label-secondary"><i class="icon-base bx bx-football"></i></span>
+              </div>
+              <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                <div class="me-2">
+                  <h6 class="mb-0">Sports</h6>
+                  <small>Football, Cricket Kit</small>
+                </div>
+                <div class="user-progress">
+                  <h6 class="mb-0">99</h6>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!--/ Order Statistics -->
+
+    <!-- Expense Overview -->
+    <div class="col-md-6 col-lg-4 order-1 mb-6">
+      <div class="card h-100">
+        <div class="card-header nav-align-top">
+          <ul class="nav nav-pills flex-wrap row-gap-2" role="tablist">
+            <li class="nav-item">
+              <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#navs-tabs-line-card-income" aria-controls="navs-tabs-line-card-income" aria-selected="true">Income</button>
+            </li>
+            <li class="nav-item">
+              <button type="button" class="nav-link" role="tab">Expenses</button>
+            </li>
+            <li class="nav-item">
+              <button type="button" class="nav-link" role="tab">Profit</button>
+            </li>
+          </ul>
+        </div>
+        <div class="card-body">
+          <div class="tab-content p-0">
+            <div class="tab-pane fade show active" id="navs-tabs-line-card-income" role="tabpanel">
+              <div class="d-flex mb-6">
+                <div class="avatar flex-shrink-0 me-3">
+                  <img src="{{ asset('assets/') }}/img/icons/unicons/wallet-primary.png" alt="User" />
+                </div>
+                <div>
+                  <p class="mb-0">Total Balance</p>
+                  <div class="d-flex align-items-center">
+                    <h6 class="mb-0 me-1">$459.10</h6>
+                    <small class="text-success fw-medium">
+                      <i class="icon-base bx bx-chevron-up icon-lg"></i>
+                      42.9%
+                    </small>
+                  </div>
+                </div>
+              </div>
+              <div id="incomeChart"></div>
+              <div class="d-flex align-items-center justify-content-center mt-6 gap-3">
+                <div class="flex-shrink-0">
+                  <div id="expensesOfWeek"></div>
+                </div>
+                <div>
+                  <h6 class="mb-0">Income this week</h6>
+                  <small>$39k less than last week</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--/ Expense Overview -->
+
+    <!-- Transactions -->
+    <div class="col-md-6 col-lg-4 order-2 mb-6">
+      <div class="card h-100">
+        <div class="card-header d-flex align-items-center justify-content-between">
+          <h5 class="card-title m-0 me-2">Transactions</h5>
+          <div class="dropdown">
+            <button class="btn text-body-secondary p-0" type="button" id="transactionID" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <i class="icon-base bx bx-dots-vertical-rounded icon-lg"></i>
+            </button>
+            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="transactionID">
+              <a class="dropdown-item" href="javascript:void(0);">Last 28 Days</a>
+              <a class="dropdown-item" href="javascript:void(0);">Last Month</a>
+              <a class="dropdown-item" href="javascript:void(0);">Last Year</a>
+            </div>
+          </div>
+        </div>
+        <div class="card-body pt-4">
+          <ul class="p-0 m-0">
+            <li class="d-flex align-items-center mb-6">
+              <div class="avatar flex-shrink-0 me-3">
+                <img src="{{ asset('assets/') }}/img/icons/unicons/paypal.png" alt="User" class="rounded" />
+              </div>
+              <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                <div class="me-2">
+                  <small class="d-block">Paypal</small>
+                  <h6 class="fw-normal mb-0">Send money</h6>
+                </div>
+                <div class="user-progress d-flex align-items-center gap-2">
+                  <h6 class="fw-normal mb-0">+82.6</h6>
+                  <span class="text-body-secondary">USD</span>
+                </div>
+              </div>
+            </li>
+            <li class="d-flex align-items-center mb-6">
+              <div class="avatar flex-shrink-0 me-3">
+                <img src="{{ asset('assets/') }}/img/icons/unicons/wallet.png" alt="User" class="rounded" />
+              </div>
+              <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                <div class="me-2">
+                  <small class="d-block">Wallet</small>
+                  <h6 class="fw-normal mb-0">Mac'D</h6>
+                </div>
+                <div class="user-progress d-flex align-items-center gap-2">
+                  <h6 class="fw-normal mb-0">+270.69</h6>
+                  <span class="text-body-secondary">USD</span>
+                </div>
+              </div>
+            </li>
+            <li class="d-flex align-items-center mb-6">
+              <div class="avatar flex-shrink-0 me-3">
+                <img src="{{ asset('assets/') }}/img/icons/unicons/chart.png" alt="User" class="rounded" />
+              </div>
+              <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                <div class="me-2">
+                  <small class="d-block">Transfer</small>
+                  <h6 class="fw-normal mb-0">Refund</h6>
+                </div>
+                <div class="user-progress d-flex align-items-center gap-2">
+                  <h6 class="fw-normal mb-0">+637.91</h6>
+                  <span class="text-body-secondary">USD</span>
+                </div>
+              </div>
+            </li>
+            <li class="d-flex align-items-center mb-6">
+              <div class="avatar flex-shrink-0 me-3">
+                <img src="{{ asset('assets/') }}/img/icons/unicons/cc-primary.png" alt="User" class="rounded" />
+              </div>
+              <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                <div class="me-2">
+                  <small class="d-block">Credit Card</small>
+                  <h6 class="fw-normal mb-0">Ordered Food</h6>
+                </div>
+                <div class="user-progress d-flex align-items-center gap-2">
+                  <h6 class="fw-normal mb-0">-838.71</h6>
+                  <span class="text-body-secondary">USD</span>
+                </div>
+              </div>
+            </li>
+            <li class="d-flex align-items-center mb-6">
+              <div class="avatar flex-shrink-0 me-3">
+                <img src="{{ asset('assets/') }}/img/icons/unicons/wallet.png" alt="User" class="rounded" />
+              </div>
+              <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                <div class="me-2">
+                  <small class="d-block">Wallet</small>
+                  <h6 class="fw-normal mb-0">Starbucks</h6>
+                </div>
+                <div class="user-progress d-flex align-items-center gap-2">
+                  <h6 class="fw-normal mb-0">+203.33</h6>
+                  <span class="text-body-secondary">USD</span>
+                </div>
+              </div>
+            </li>
+            <li class="d-flex align-items-center">
+              <div class="avatar flex-shrink-0 me-3">
+                <img src="{{ asset('assets/') }}/img/icons/unicons/cc-warning.png" alt="User" class="rounded" />
+              </div>
+              <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                <div class="me-2">
+                  <small class="d-block">Mastercard</small>
+                  <h6 class="fw-normal mb-0">Ordered Food</h6>
+                </div>
+                <div class="user-progress d-flex align-items-center gap-2">
+                  <h6 class="fw-normal mb-0">-92.45</h6>
+                  <span class="text-body-secondary">USD</span>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!--/ Transactions -->
+    <!-- Activity Timeline -->
+    <div class="col-md-12 col-lg-6 order-4 order-lg-3">
+      <div class="card h-100">
+        <div class="card-header d-flex justify-content-between">
+          <h5 class="card-title m-0 me-2">Activity Timeline</h5>
+          <div class="dropdown">
+            <button class="btn text-body-secondary p-0" type="button" id="timelineWapper" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <i class="icon-base bx bx-dots-vertical-rounded icon-lg"></i>
+            </button>
+            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="timelineWapper">
+              <a class="dropdown-item" href="javascript:void(0);">Select All</a>
+              <a class="dropdown-item" href="javascript:void(0);">Refresh</a>
+              <a class="dropdown-item" href="javascript:void(0);">Share</a>
+            </div>
+          </div>
+        </div>
+        <div class="card-body pt-2">
+          <ul class="timeline mb-0">
+            <li class="timeline-item timeline-item-transparent">
+              <span class="timeline-point timeline-point-primary"></span>
+              <div class="timeline-event">
+                <div class="timeline-header mb-3">
+                  <h6 class="mb-0">12 Invoices have been paid</h6>
+                  <small class="text-body-secondary">12 min ago</small>
+                </div>
+                <p class="mb-2">Invoices have been paid to the company</p>
+                <div class="d-flex align-items-center mb-1">
+                  <div class="badge bg-lighter rounded-2">
+                    <img src="{{ asset('assets/') }}//img/icons/misc/pdf.png" alt="img" width="15" class="me-2" />
+                    <span class="h6 mb-0 text-body">invoices.pdf</span>
+                  </div>
+                </div>
+              </div>
+            </li>
+            <li class="timeline-item timeline-item-transparent">
+              <span class="timeline-point timeline-point-success"></span>
+              <div class="timeline-event">
+                <div class="timeline-header mb-3">
+                  <h6 class="mb-0">Client Meeting</h6>
+                  <small class="text-body-secondary">45 min ago</small>
+                </div>
+                <p class="mb-2">Project meeting with john @10:15am</p>
+                <div class="d-flex justify-content-between flex-wrap gap-2">
+                  <div class="d-flex flex-wrap align-items-center">
+                    <div class="avatar avatar-sm me-2">
+                      <img src="{{ asset('assets/') }}/img/avatars/1.png" alt="Avatar" class="rounded-circle" />
+                    </div>
+                    <div>
+                      <p class="mb-0 small fw-medium">Lester McCarthy (Client)</p>
+                      <small>CEO of ThemeSelection</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </li>
+            <li class="timeline-item timeline-item-transparent">
+              <span class="timeline-point timeline-point-info"></span>
+              <div class="timeline-event">
+                <div class="timeline-header mb-3">
+                  <h6 class="mb-0">Create a new project for client</h6>
+                  <small class="text-body-secondary">2 Day Ago</small>
+                </div>
+                <p class="mb-2">6 team members in a project</p>
+                <ul class="list-group list-group-flush">
+                  <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap p-0">
+                    <div class="d-flex flex-wrap align-items-center">
+                      <ul class="list-unstyled users-list d-flex align-items-center avatar-group m-0 me-2">
+                        <li data-bs-toggle="tooltip" data-popup="tooltip-custom" data-bs-placement="top" title="Vinnie Mostowy" class="avatar pull-up">
+                          <img class="rounded-circle" src="{{ asset('assets/') }}/img/avatars/5.png" alt="Avatar" />
+                        </li>
+                        <li data-bs-toggle="tooltip" data-popup="tooltip-custom" data-bs-placement="top" title="Allen Rieske" class="avatar pull-up">
+                          <img class="rounded-circle" src="{{ asset('assets/') }}/img/avatars/12.png" alt="Avatar" />
+                        </li>
+                        <li data-bs-toggle="tooltip" data-popup="tooltip-custom" data-bs-placement="top" title="Julee Rossignol" class="avatar pull-up">
+                          <img class="rounded-circle" src="{{ asset('assets/') }}/img/avatars/6.png" alt="Avatar" />
+                        </li>
+                        <li class="avatar">
+                          <span class="avatar-initial rounded-circle pull-up text-heading" data-bs-toggle="tooltip" data-bs-placement="bottom" title="3 more">+3</span>
+                        </li>
+                      </ul>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!--/ Activity Timeline -->
+    <!-- pill table -->
+    <div class="col-md-6 order-3 order-lg-4 mb-6 mb-lg-0">
+      <div class="card text-center h-100">
+        <div class="card-header nav-align-top">
+          <ul class="nav nav-pills flex-wrap row-gap-2" role="tablist">
+            <li class="nav-item">
+              <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-browser" aria-controls="navs-pills-browser" aria-selected="true">Browser</button>
+            </li>
+            <li class="nav-item">
+              <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-os" aria-controls="navs-pills-os" aria-selected="false">Operating System</button>
+            </li>
+            <li class="nav-item">
+              <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-country" aria-controls="navs-pills-country" aria-selected="false">Country</button>
+            </li>
+          </ul>
+        </div>
+        <div class="tab-content pt-0 pb-4">
+          <div class="tab-pane fade show active" id="navs-pills-browser" role="tabpanel">
+            <div class="table-responsive text-start text-nowrap">
+              <table class="table table-borderless">
+                <thead>
+                  <tr>
+                    <th>No</th>
+                    <th>Browser</th>
+                    <th>Visits</th>
+                    <th class="w-50">Data In Percentage</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>1</td>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <img src="{{ asset('assets/') }}/img/icons/brands/chrome.png" alt="Chrome" height="24" class="me-3" />
+                        <span class="text-heading">Chrome</span>
+                      </div>
+                    </td>
+                    <td class="text-heading">8.92k</td>
+                    <td>
+                      <div class="d-flex justify-content-between align-items-center gap-4">
+                        <div class="progress w-100" style="height:10px;">
+                          <div class="progress-bar bg-success" role="progressbar" style="width: 64.75%" aria-valuenow="64.75" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <small class="fw-medium">64.75%</small>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>2</td>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <img src="{{ asset('assets/') }}/img/icons/brands/safari.png" alt="Safari" height="24" class="me-3" />
+                        <span class="text-heading">Safari</span>
+                      </div>
+                    </td>
+                    <td class="text-heading">1.29k</td>
+                    <td>
+                      <div class="d-flex justify-content-between align-items-center gap-4">
+                        <div class="progress w-100" style="height:10px;">
+                          <div class="progress-bar bg-primary" role="progressbar" style="width: 18.43%" aria-valuenow="18.43" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <small class="fw-medium">18.43%</small>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>3</td>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <img src="{{ asset('assets/') }}/img/icons/brands/firefox.png" alt="Firefox" height="24" class="me-3" />
+                        <span class="text-heading">Firefox</span>
+                      </div>
+                    </td>
+                    <td class="text-heading">328</td>
+                    <td>
+                      <div class="d-flex justify-content-between align-items-center gap-4">
+                        <div class="progress w-100" style="height:10px;">
+                          <div class="progress-bar bg-info" role="progressbar" style="width: 8.37%" aria-valuenow="8.37" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <small class="fw-medium">8.37%</small>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>4</td>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <img src="{{ asset('assets/') }}/img/icons/brands/edge.png" alt="Edge" height="24" class="me-3" />
+                        <span class="text-heading">Edge</span>
+                      </div>
+                    </td>
+                    <td class="text-heading">142</td>
+                    <td>
+                      <div class="d-flex justify-content-between align-items-center gap-4">
+                        <div class="progress w-100" style="height:10px;">
+                          <div class="progress-bar bg-warning" role="progressbar" style="width: 6.12%" aria-valuenow="6.12" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <small class="fw-medium">6.12%</small>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>5</td>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <img src="{{ asset('assets/') }}/img/icons/brands/opera.png" alt="Opera" height="24" class="me-3" />
+                        <span class="text-heading">Opera</span>
+                      </div>
+                    </td>
+                    <td class="text-heading">82</td>
+                    <td>
+                      <div class="d-flex justify-content-between align-items-center gap-4">
+                        <div class="progress w-100" style="height:10px;">
+                          <div class="progress-bar bg-danger" role="progressbar" style="width: 2.12%" aria-valuenow="1.94" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <small class="fw-medium">2.12%</small>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>6</td>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <img src="{{ asset('assets/') }}/img/icons/brands/uc.png" alt="uc" height="24" class="me-3" />
+                        <span class="text-heading">UC Browser</span>
+                      </div>
+                    </td>
+                    <td class="text-heading">328</td>
+                    <td>
+                      <div class="d-flex justify-content-between align-items-center gap-4">
+                        <div class="progress w-100" style="height:10px;">
+                          <div class="progress-bar bg-danger" role="progressbar" style="width: 20.14%" aria-valuenow="1.94" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <small class="fw-medium">20.14%</small>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="tab-pane fade" id="navs-pills-os" role="tabpanel">
+            <div class="table-responsive text-start text-nowrap">
+              <table class="table table-borderless">
+                <thead>
+                  <tr>
+                    <th>No</th>
+                    <th>System</th>
+                    <th>Visits</th>
+                    <th class="w-50">Data In Percentage</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>1</td>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <img src="{{ asset('assets/') }}/img/icons/brands/windows.png" alt="Windows" height="24" class="me-3" />
+                        <span class="text-heading">Windows</span>
+                      </div>
+                    </td>
+                    <td class="text-heading">875.24k</td>
+                    <td>
+                      <div class="d-flex justify-content-between align-items-center gap-4">
+                        <div class="progress w-100" style="height:10px;">
+                          <div class="progress-bar bg-success" role="progressbar" style="width: 61.50%" aria-valuenow="61.50" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <small class="fw-medium">61.50%</small>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>2</td>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <img src="{{ asset('assets/') }}/img/icons/brands/mac.png" alt="Mac" height="24" class="me-3" />
+                        <span class="text-heading">Mac</span>
+                      </div>
+                    </td>
+                    <td class="text-heading">89.68k</td>
+                    <td>
+                      <div class="d-flex justify-content-between align-items-center gap-4">
+                        <div class="progress w-100" style="height:10px;">
+                          <div class="progress-bar bg-primary" role="progressbar" style="width: 16.67%" aria-valuenow="16.67" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <small class="fw-medium">16.67%</small>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>3</td>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <img src="{{ asset('assets/') }}/img/icons/brands/ubuntu.png" alt="Ubuntu" height="24" class="me-3" />
+                        <span class="text-heading">Ubuntu</span>
+                      </div>
+                    </td>
+                    <td class="text-heading">37.68k</td>
+                    <td>
+                      <div class="d-flex justify-content-between align-items-center gap-4">
+                        <div class="progress w-100" style="height:10px;">
+                          <div class="progress-bar bg-info" role="progressbar" style="width: 12.82%" aria-valuenow="12.82" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <small class="fw-medium">12.82%</small>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>4</td>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <img src="{{ asset('assets/') }}/img/icons/brands/chrome.png" alt="Chrome" height="24" class="me-3" />
+                        <span class="text-heading">Chrome</span>
+                      </div>
+                    </td>
+                    <td class="text-heading">8.34k</td>
+                    <td>
+                      <div class="d-flex justify-content-between align-items-center gap-4">
+                        <div class="progress w-100" style="height:10px;">
+                          <div class="progress-bar bg-warning" role="progressbar" style="width: 6.25%" aria-valuenow="6.25" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <small class="fw-medium">6.25%</small>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>5</td>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <img src="{{ asset('assets/') }}/img/icons/brands/cent.png" alt="Cent" height="24" class="me-3" />
+                        <span class="text-heading">Cent</span>
+                      </div>
+                    </td>
+                    <td class="text-heading">2.25k</td>
+                    <td>
+                      <div class="d-flex justify-content-between align-items-center gap-4">
+                        <div class="progress w-100" style="height:10px;">
+                          <div class="progress-bar bg-danger" role="progressbar" style="width: 2.76%" aria-valuenow="2.76" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <small class="fw-medium">2.76%</small>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>6</td>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <img src="{{ asset('assets/') }}/img/icons/brands/linux.png" alt="linux" height="24" class="me-3" />
+                        <span class="text-heading">Linux</span>
+                      </div>
+                    </td>
+                    <td class="text-heading">328k</td>
+                    <td>
+                      <div class="d-flex justify-content-between align-items-center gap-4">
+                        <div class="progress w-100" style="height:10px;">
+                          <div class="progress-bar bg-danger" role="progressbar" style="width: 20.14%" aria-valuenow="2.76" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <small class="fw-medium">20.14%</small>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="tab-pane fade" id="navs-pills-country" role="tabpanel">
+            <div class="table-responsive text-start text-nowrap">
+              <table class="table table-borderless">
+                <thead>
+                  <tr>
+                    <th>No</th>
+                    <th>Country</th>
+                    <th>Visits</th>
+                    <th class="w-50">Data In Percentage</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>1</td>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <i class="fis fi fi-us rounded-circle fs-4 me-3"></i>
+                        <span class="text-heading">USA</span>
+                      </div>
+                    </td>
+                    <td class="text-heading">87.24k</td>
+                    <td>
+                      <div class="d-flex justify-content-between align-items-center gap-4">
+                        <div class="progress w-100" style="height:10px;">
+                          <div class="progress-bar bg-success" role="progressbar" style="width: 38.12%" aria-valuenow="38.12" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <small class="fw-medium">38.12%</small>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>2</td>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <i class="fis fi fi-br rounded-circle fs-4 me-3"></i>
+                        <span class="text-heading">Brazil</span>
+                      </div>
+                    </td>
+                    <td class="text-heading">42.68k</td>
+                    <td>
+                      <div class="d-flex justify-content-between align-items-center gap-4">
+                        <div class="progress w-100" style="height:10px;">
+                          <div class="progress-bar bg-primary" role="progressbar" style="width: 28.23%" aria-valuenow="28.23" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <small class="fw-medium">28.23%</small>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>3</td>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <i class="fis fi fi-in rounded-circle fs-4 me-3"></i>
+                        <span class="text-heading">India</span>
+                      </div>
+                    </td>
+                    <td class="text-heading">12.58k</td>
+                    <td>
+                      <div class="d-flex justify-content-between align-items-center gap-4">
+                        <div class="progress w-100" style="height:10px;">
+                          <div class="progress-bar bg-info" role="progressbar" style="width: 14.82%" aria-valuenow="14.82" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <small class="fw-medium">14.82%</small>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>4</td>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <i class="fis fi fi-au rounded-circle fs-4 me-3"></i>
+                        <span class="text-heading">Australia</span>
+                      </div>
+                    </td>
+                    <td class="text-heading">4.13k</td>
+                    <td>
+                      <div class="d-flex justify-content-between align-items-center gap-4">
+                        <div class="progress w-100" style="height:10px;">
+                          <div class="progress-bar bg-warning" role="progressbar" style="width: 12.72%" aria-valuenow="12.72" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <small class="fw-medium">12.72%</small>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>5</td>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <i class="fis fi fi-fr rounded-circle fs-4 me-3"></i>
+                        <span class="text-heading">France</span>
+                      </div>
+                    </td>
+                    <td class="text-heading">2.21k</td>
+                    <td>
+                      <div class="d-flex justify-content-between align-items-center gap-4">
+                        <div class="progress w-100" style="height:10px;">
+                          <div class="progress-bar bg-danger" role="progressbar" style="width: 7.11%" aria-valuenow="7.11" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <small class="fw-medium">7.11%</small>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>6</td>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <i class="fis fi fi-ca rounded-circle fs-4 me-3"></i>
+                        <span class="text-heading">Canada</span>
+                      </div>
+                    </td>
+                    <td class="text-heading">22.35k</td>
+                    <td>
+                      <div class="d-flex justify-content-between align-items-center gap-4">
+                        <div class="progress w-100" style="height:10px;">
+                          <div class="progress-bar bg-danger" role="progressbar" style="width: 15.13%" aria-valuenow="7.11" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <small class="fw-medium">15.13%</small>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--/ pill table -->
+  </div>
+
+        </div>
+        <!-- / Content -->
+
+        
+        
+
+
+HTML !!}
 </x-layout>
+
+

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Cliente;
 use App\Models\Empresa;
+use App\Models\EmpresaSuscripcion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -67,6 +68,57 @@ class EmpresaController extends Controller
         $empresas = $query
             ->orderByDesc('id')
             ->paginate($perPage, ['*'], 'page', $page);
+
+        return response()->json($empresas);
+    }
+    public function fetchgeneral(Request $request)
+    {
+        $search  = $request->input('search', '');
+        $perPage = (int) $request->input('per_page', 10);
+        $page    = (int) $request->input('page', 1);
+
+        $user = Auth::user();
+        $empresaId = $user->id_empresa ?? null; // por si luego quieres filtrar por empresa del usuario
+
+        $query = Empresa::with(['empresaSuscripciones.suscripcion']);
+
+
+        if ($search !== '') {
+            $query->where(function ($q) use ($search) {
+                $q->where('nombre', 'like', "%{$search}%")
+                ->orWhere('telefono', 'like', "%{$search}%")
+                ->orWhere('correo', 'like', "%{$search}%")
+                ->orWhere('nit', 'like', "%{$search}%")
+                ->orWhere('direccion', 'like', "%{$search}%");
+            })
+            ->orWhereHas('empresaSuscripciones.suscripcion', function ($q) use ($search) {
+                $q->where('suscripcion.nombre', 'like', "%{$search}%")
+                ->orWhere('empresa_suscripcion.fecha_inicio', 'like', "%{$search}%")
+                ->orWhere('empresa_suscripcion.fecha_fin', 'like', "%{$search}%");
+            });
+        }
+
+        $empresas = $query
+            ->orderByDesc('id')
+            ->paginate($perPage, ['*'], 'page', $page);
+    
+        $empresas->getCollection()->transform(function ($empresa) {
+            $suscripcionActual = $empresa->empresaSuscripciones
+                ->sortByDesc('fecha_inicio')
+                ->first();
+
+            return [
+                'id'                => $empresa->id,
+                'nombre'            => $empresa->nombre,
+                'nit'               => $empresa->nit,
+                'telefono'          => $empresa->telefono,
+                'correo'            => $empresa->correo,
+                'direccion'         => $empresa->direccion,
+                'suscripcion_actual'=> $suscripcionActual?->suscripcion?->nombre,
+                'fecha_inicio'      => optional($suscripcionActual?->fecha_inicio)->format('Y-m-d'),
+                'fecha_fin'         => optional($suscripcionActual?->fecha_fin)->format('Y-m-d'),
+            ];
+        });
 
         return response()->json($empresas);
     }

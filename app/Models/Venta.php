@@ -13,6 +13,7 @@ class Venta extends Model
         'cliente_id',
         'usuario_id',
         'empresa_id',
+        'sucursal_id',
         'almacen_id',
         'descuento',
         'billete',
@@ -33,6 +34,10 @@ class Venta extends Model
     public function almacen()
     {
         return $this->belongsTo(Almacen::class);    
+    }
+    public function sucursal()
+    {
+        return $this->belongsTo(Sucursal::class);
     }
     public function detalles()
     {

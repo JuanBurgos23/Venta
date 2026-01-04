@@ -12,7 +12,7 @@ class ImportProductosRequest extends FormRequest
     {
         return [
             'items' => ['required','array','min:1'],
-            'items.*.codigo' => ['required','string','max:100'],
+            'items.*.codigo' => ['required'],
             'items.*.nombre' => ['required','string','max:200'],
 
             'items.*.descripcion' => ['nullable','string'],

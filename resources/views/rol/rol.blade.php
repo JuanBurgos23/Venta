@@ -52,6 +52,7 @@
                                     <form action="{{ route('roles.update', $role->id) }}" method="POST" class="row g-6">
                                         @csrf
                                         @method('PUT')
+                                        <input type="hidden" name="empresa_id" class="empresa-id-input" value="">
 
                                         <div class="col-12">
                                             <label class="form-label">Nombre del Rol</label>
@@ -127,6 +128,7 @@
                             </div>
                             <form action="{{ route('roles.store') }}" method="POST" class="row g-6">
                                 @csrf
+                                <input type="hidden" name="empresa_id" class="empresa-id-input" value="">
                                 <div class="col-12">
                                     <label class="form-label">Nombre del Rol</label>
                                     <input type="text" name="name" class="form-control" placeholder="Ej: Recepcionista" required>
@@ -161,6 +163,24 @@
                 </div>
             </div>
     </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const resolveEmpresaId = () => {
+                try {
+                    const data = JSON.parse(localStorage.getItem('empresaSuscripcion') || 'null');
+                    return data?.empresa_id || data?.id_empresa || data?.empresa?.id || window.APP?.empresaId || null;
+                } catch (e) {
+                    return window.APP?.empresaId || null;
+                }
+            };
+
+            const empresaId = resolveEmpresaId();
+            if (!empresaId) return;
+
+            document.querySelectorAll('.empresa-id-input').forEach(el => el.value = empresaId);
+        });
+    </script>
 
     <!-- Template Customizer va fuera de main y slot -->
 
