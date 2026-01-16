@@ -2412,7 +2412,7 @@
                             </div>
                             <div class="number-info">
                                 <h4>Ventas</h4>
-                                <p>+51 987 654 321</p>
+                                <p>+591 78538094</p>
                             </div>
                         </div>
                         <div class="contact-number">
@@ -2421,7 +2421,7 @@
                             </div>
                             <div class="number-info">
                                 <h4>Soporte Técnico</h4>
-                                <p>+51 912 345 678</p>
+                                <p>+591 78538094</p>
                             </div>
                         </div>
                     </div>
@@ -2488,14 +2488,14 @@
                 <div class="footer-col">
                     <h4>Contacto</h4>
                     <div class="footer-contact">
-                        <p><i class="fas fa-map-marker-alt"></i> Av. Tecnológica 1234, Lima, Perú</p>
+                        <p><i class="fas fa-map-marker-alt"></i> Bolivia Santa Cruz - Montero</p>
                         <p><i class="fas fa-clock"></i> Lunes a Viernes: 9am - 6pm</p>
                         <p><i class="fas fa-envelope"></i> info@tuxon.com</p>
                     </div>
                 </div>
             </div>
             <div class="copyright">
-                <p>&copy; 2024 TUXON. Todos los derechos reservados.</p>
+                <p>&copy; 2026 TUXON. Todos los derechos reservados.</p>
             </div>
         </div>
     </footer>
