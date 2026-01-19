@@ -352,6 +352,11 @@
             const loadMoreBestBtn = document.getElementById('load-more-best');
             const clientSelect = document.getElementById('client-select');
             const clientInfoCard = document.getElementById('client-info-card');
+            const qcNombre = document.getElementById('qc-nombre');
+            const qcCi = document.getElementById('qc-ci');
+            const qcTelefono = document.getElementById('qc-telefono');
+            const qcGuardar = document.getElementById('qc-guardar');
+            let quickInitial = { nombre: '', ci: '', telefono: '' };
             const subtotalEl = document.getElementById('subtotal');
             const discountEl = document.getElementById('discount-input');
             const totalEl = document.getElementById('total');
@@ -387,6 +392,21 @@
                 renderProducts(newSlice, newProductsContainer);
                 renderProducts(bestSlice, bestProductsContainer);
             };
+
+            function showProductLoaders(container, count = 8) {
+                if (!container) return;
+                let html = '';
+                for (let i = 0; i < count; i++) {
+                    html += `
+                        <div class="product-skeleton">
+                            <div class="skeleton-shine skeleton-img"></div>
+                            <div class="skeleton-shine skeleton-line" style="width: 80%;"></div>
+                            <div class="skeleton-shine skeleton-line" style="width: 60%;"></div>
+                        </div>
+                    `;
+                }
+                container.innerHTML = html;
+            }
 
             async function loadSucursales() {
                 if (!sucursalSelect) return;
@@ -468,6 +488,8 @@
                 const almacenId = almacenSelect.value;
                 if (!almacenId) return;
                 try {
+                    showProductLoaders(newProductsContainer);
+                    showProductLoaders(bestProductsContainer);
                     const res = await fetch(`/producto/venta?almacen_id=${almacenId}`);
                     if (res.status === 403) {
                         const data = await res.json();
@@ -514,14 +536,29 @@
                     const res = await fetch('/clientes/fetch-json');
                     if (!res.ok) throw new Error('No se pudieron cargar los clientes');
                     const data = await res.json();
-                    clientSelect.innerHTML = '<option value="">Selecciona cliente</option>';
+                    clientSelect.innerHTML = '';
                     data.forEach(c => {
                         const opt = document.createElement('option');
                         opt.value = c.id;
-                        opt.textContent = [c.nombre, c.paterno].filter(Boolean).join(' ');
+                        opt.textContent = c.nombre || `Cliente ${c.id}`;
                         opt.dataset.client = JSON.stringify(c);
                         clientSelect.appendChild(opt);
                     });
+                    if (data.length) {
+                        const general = data.find(c => (c.nombre || '').toLowerCase().includes('general')) || data[0];
+                        clientSelect.value = general.id;
+                        updateClientInfo({ target: clientSelect });
+                        // precargar quick card
+                        if (qcNombre) qcNombre.value = general.nombre || '';
+                        if (qcCi) qcCi.value = general.ci || '';
+                        if (qcTelefono) qcTelefono.value = general.telefono || '';
+                        quickInitial = {
+                            nombre: qcNombre?.value || '',
+                            ci: qcCi?.value || '',
+                            telefono: qcTelefono?.value || ''
+                        };
+                        toggleQuickSave(false);
+                    }
                 } catch (err) {
                     console.error(err);
                     showMessage(err.message || 'Error cargando clientes', 'error');
@@ -530,15 +567,18 @@
 
             function updateClientInfo(e) {
                 const option = e.target.options[e.target.selectedIndex];
-                if (!option || !option.dataset.client) {
-                    clientInfoCard.classList.add('d-none');
-                    return;
-                }
+                if (!option || !option.dataset.client) return;
                 const data = JSON.parse(option.dataset.client);
-                document.getElementById('client-name').textContent = [data.nombre, data.paterno].filter(Boolean).join(' ') || '-';
-                document.getElementById('client-ci').textContent = data.ci || '-';
-                document.getElementById('client-phone').textContent = data.telefono || '-';
-                clientInfoCard.classList.remove('d-none');
+                // reflejar datos en los inputs editables
+                if (qcNombre) qcNombre.value = data.nombre || '';
+                if (qcCi) qcCi.value = data.ci || '';
+                if (qcTelefono) qcTelefono.value = data.telefono || '';
+                quickInitial = {
+                    nombre: qcNombre?.value || '',
+                    ci: qcCi?.value || '',
+                    telefono: qcTelefono?.value || ''
+                };
+                toggleQuickSave(false);
             }
 
             function refreshCartUI() {
@@ -603,6 +643,17 @@
                     if (dueDateInput) dueDateInput.value = '';
                     if (installmentsInput) installmentsInput.value = '1';
                 }
+            }
+
+            function toggleQuickSave(force) {
+                if (!qcGuardar) return;
+                const current = {
+                    nombre: qcNombre?.value || '',
+                    ci: qcCi?.value || '',
+                    telefono: qcTelefono?.value || ''
+                };
+                const changed = force || current.nombre !== quickInitial.nombre || current.ci !== quickInitial.ci || current.telefono !== quickInitial.telefono;
+                qcGuardar.classList.toggle('d-none', !changed);
             }
 
             async function completeSale() {
@@ -677,6 +728,55 @@
             if (productSearch) {
                 productSearch.addEventListener('input', e => filterProducts(e.target.value));
             }
+            qcGuardar?.addEventListener('click', async e => {
+                e.preventDefault();
+                const nombre = qcNombre?.value?.trim();
+                const ci = qcCi?.value?.trim();
+                const telefono = qcTelefono?.value?.trim();
+                if (!nombre) {
+                    showMessage('Ingresa un nombre para el cliente', 'warning');
+                    return;
+                }
+                const selectedId = clientSelect?.value;
+                const payload = new FormData();
+                payload.append('nombre', nombre);
+                payload.append('ci', ci || '');
+                payload.append('telefono', telefono || '');
+                payload.append('correo', '');
+
+                const isUpdate = Boolean(selectedId);
+                if (isUpdate) {
+                    payload.append('_method', 'PUT');
+                }
+
+                try {
+                    const url = isUpdate ? `/clientes/${selectedId}` : '/clientes/store';
+                    const res = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'X-CSRF-TOKEN': csrfToken },
+                        body: payload
+                    });
+                    const data = await res.json();
+                    if (!data.success) throw new Error(data.message || 'No se pudo guardar el cliente');
+
+                    await loadClients();
+                    const targetId = isUpdate ? selectedId : data.cliente?.id;
+                    if (clientSelect && targetId) {
+                        clientSelect.value = targetId;
+                        updateClientInfo({ target: clientSelect });
+                    }
+                    showMessage('Cliente guardado y seleccionado', 'success');
+                    quickInitial = { nombre, ci: ci || '', telefono: telefono || '' };
+                    toggleQuickSave(false);
+                } catch (err) {
+                    console.error(err);
+                    showMessage(err.message || 'Error guardando cliente', 'error');
+                }
+            });
+
+            [qcNombre, qcCi, qcTelefono].forEach(el => {
+                el?.addEventListener('input', () => toggleQuickSave(false));
+            });
 
             loadMoreNewBtn?.addEventListener('click', () => {
                 itemsToShowNew += 8;

@@ -42,9 +42,7 @@ class ClienteController extends Controller
 
         if ($search) {
             $query->where(function ($q) use ($search) {
-                $q->where('nombre', 'like', "%$search%")
-                    ->orWhere('paterno', 'like', "%$search%")
-                    ->orWhere('materno', 'like', "%$search%")
+                $q->where('nombres', 'like', "%$search%")
                     ->orWhere('telefono', 'like', "%$search%")
                     ->orWhere('correo', 'like', "%$search%")
                     ->orWhere('ci', 'like', "%$search%");
@@ -60,9 +58,7 @@ class ClienteController extends Controller
     {
         // Validar datos
         $validator = Validator::make($request->all(), [
-            'nombre'   => 'required|string|max:255',
-            'paterno'  => 'required|string|max:255',
-            'materno'  => 'nullable|string|max:255',
+            'nombres'   => 'required|string|max:255',
             'telefono' => 'nullable|string|max:20',
             'correo'   => 'nullable|email|max:255',
             'ci'       => 'nullable|string|max:20|unique:cliente,ci',
@@ -90,9 +86,7 @@ class ClienteController extends Controller
 
         // Crear cliente
         $cliente = Cliente::create([
-            'nombre'     => $request->nombre,
-            'paterno'    => $request->paterno,
-            'materno'    => $request->materno,
+            'nombres'     => $request->nombres,
             'telefono'   => $request->telefono,
             'correo'     => $request->correo,
             'ci'         => $request->ci,
@@ -116,9 +110,7 @@ class ClienteController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'nombre' => 'required|string|max:255',
-            'paterno' => 'required|string|max:255',
-            'materno' => 'nullable|string|max:255',
+            'nombres' => 'required|string|max:255',
             'telefono' => 'nullable|string|max:20',
             'correo' => 'nullable|email|max:255',
             'ci' => 'nullable|string|max:20|unique:cliente,ci,' . $id,

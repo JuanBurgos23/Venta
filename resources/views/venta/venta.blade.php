@@ -41,7 +41,7 @@
             </div>
 
             <!-- Contenido principal -->
-            <div class="row g-4">
+            <div class="row g-2">
                 <!-- Panel de productos -->
                 <div class="col-lg-8">
                     <div class="venta-main-card">
@@ -127,26 +127,27 @@
                                         <div class="client-select">
                                             <select class="form-control" id="client-select"></select>
                                         </div>
-                                        <button type="button" class="btn btn-primary" 
-                                                data-bs-toggle="modal" data-bs-target="#newClientModal">
-                                            <i class="bx bx-plus"></i>
-                                        </button>
                                     </div>
                                 </div>
-                                <!-- Info del cliente -->
-                                <div class="card border mt-2 p-2 d-none" id="client-info-card">
-                                    <div class="row g-2">
-                                        <div class="col-6">
-                                            <small class="text-muted">Nombre:</small>
-                                            <div id="client-name">-</div>
+                                <!-- Info + Alta rápida -->
+                                <div class="card border mt-2 p-2 client-card" id="client-info-card">
+                                    <div class="row g-1 align-items-center">
+                                        <div class="col-12">
+                                            <small class="text-muted">Cliente seleccionado / nuevo</small>
                                         </div>
-                                        <div class="col-6">
-                                            <small class="text-muted">CI:</small>
-                                            <div id="client-ci">-</div>
+                                        <div class="col-12 col-md-4">
+                                            <input type="text" class="quick-inline-input" placeholder="Nombre" id="qc-nombre">
+                                        </div>
+                                        <div class="col-6 col-md-4">
+                                            <input type="text" class="quick-inline-input" placeholder="CI" id="qc-ci">
+                                        </div>
+                                        <div class="col-6 col-md-4">
+                                            <input type="text" class="quick-inline-input" placeholder="Teléfono" id="qc-telefono">
                                         </div>
                                         <div class="col-12">
-                                            <small class="text-muted">Teléfono:</small>
-                                            <div id="client-phone">-</div>
+                                            <button class="btn btn-sm btn-primary w-100 d-none" id="qc-guardar">
+                                                <i class="bx bx-save me-1"></i>Guardar y usar
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -368,7 +369,7 @@
     </div>
     <style>
         .compact-main {
-            padding-top: 8px !important;
+            padding-top: 2px !important;
             padding-left: 10px !important;
             padding-right: 10px !important;
         }
