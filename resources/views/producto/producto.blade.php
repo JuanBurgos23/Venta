@@ -121,6 +121,14 @@
                                     </select>
                                 </div>
                             </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Inventario</label>
+                                <select class="form-select" name="inventariable" id="inventariable">
+                                    <option value="1">Inventariable</option>
+                                    <option value="0">No inventariable</option>
+                                </select>
+                            </div>
+
 
 
                             <div class="row">
@@ -351,6 +359,7 @@
                         document.getElementById("precio").value = p.precio ?? "";
                         $("#categoria-select").val(p.categoria_id).trigger("change");
                         $("#subcategoria-select").val(p.subcategoria_id).trigger("change");
+                        $("#inventariable").val(p.inventariable ? "1" : "0");
                         // Cargar subcategorías de esa categoría
                         fetch(`/subcategorias/byCategoria/${p.categoria_id}`)
                             .then(res => res.json())
@@ -411,6 +420,8 @@
                 formData.append("precio", document.getElementById("precio").value);
                 formData.append("categoria_id", $("#categoria-select").val());
                 formData.append("subcategoria_id", $("#subcategoria-select").val());
+                formData.append("inventariable", $("#inventariable").val());
+
                 // Solo agrega imagen si hay un archivo
                 if (dropzone && dropzone.getAcceptedFiles().length > 0) {
                     formData.append("foto", dropzone.getAcceptedFiles()[0]);

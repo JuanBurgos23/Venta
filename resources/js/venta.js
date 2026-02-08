@@ -49,6 +49,7 @@
             function createProductCard(product) {
                 const div = document.createElement('div');
                 div.className = 'product-card-pro';
+                const isInventariable = Number(product.inventariable ?? 1) === 1;
                 
                 // Determinar estado de stock
                 let stockStatus = '';
@@ -100,15 +101,15 @@
                         
                         <div class="product-price-pro">
                             <div class="price-main-pro">Bs/ ${parseFloat(product.price).toFixed(2)}</div>
-                            <div class="price-unit-pro">Stock: ${product.stock} unidades</div>
+                            ${isInventariable ? `<div class="price-unit-pro">Stock: ${product.stock} unidades</div>` : `<div class="price-unit-pro">No inventariable</div>`}
                         </div>
                         
                         <div class="product-action-pro">
                             <button class="btn-add-pro add-to-cart" 
                                     data-product-id="${product.id}"
-                                    ${product.stock === 0 ? 'disabled' : ''}>
+                                    ${isInventariable && product.stock === 0 ? 'disabled' : ''}>
                                 <i class="bx bx-cart-add"></i>
-                                ${product.stock === 0 ? 'AGOTADO' : 'AGREGAR'}
+                                ${isInventariable && product.stock === 0 ? 'AGOTADO' : 'AGREGAR'}
                             </button>
                         </div>
                     </div>
@@ -116,7 +117,7 @@
                 
                 // Agregar evento de click
                 const addButton = div.querySelector('.add-to-cart');
-                if (product.stock > 0) {
+                if (!isInventariable || product.stock > 0) {
                     addButton.addEventListener('click', function(e) {
                         e.stopPropagation();
                         addToCart(product);
@@ -509,6 +510,7 @@
                             codigo: p.codigo || p.code,
                             description: p.description || p.descripcion || '',
                             price: parseFloat(p.price ?? 0),
+                            inventariable: Number(p.inventariable ?? 1),
                             stock: Number(p.stock ?? 0),
                             categoryId: p.category ?? p.category_id ?? null,
                             category: categoryName || '',
@@ -593,13 +595,13 @@
             function addToCart(product) {
                 const existing = cart.find(i => i.id === product.id);
                 if (existing) {
-                    if (existing.quantity >= product.stock) {
+                    if (Number(existing.inventariable ?? 1) === 1 && existing.quantity >= product.stock) {
                         showMessage('No hay suficiente stock para este producto', 'warning');
                         return;
                     }
                     existing.quantity += 1;
                 } else {
-                    if (product.stock <= 0) {
+                    if (Number(product.inventariable ?? 1) === 1 && product.stock <= 0) {
                         showMessage('Producto sin stock', 'warning');
                         return;
                     }
@@ -611,7 +613,7 @@
             function increaseQuantity(productId) {
                 const item = cart.find(i => i.id === productId);
                 if (!item) return;
-                if (item.quantity >= item.stock) {
+                if (Number(item.inventariable ?? 1) === 1 && item.quantity >= item.stock) {
                     showMessage('No hay suficiente stock', 'warning');
                     return;
                 }

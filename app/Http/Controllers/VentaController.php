@@ -59,12 +59,13 @@ class VentaController extends Controller
             ->get();
 
         $data = $productos->map(function ($p) use ($empresaId, $almacenId) {
+            $esInventariable = (int) ($p->inventariable ?? 1) === 1;
             $stock = \App\Models\Producto_almacen::where('producto_id', $p->id)
                 ->where('empresa_id', $empresaId)
                 ->where('almacen_id', $almacenId)
                 ->sum('stock');
 
-            if ($stock <= 0) return null;
+            if ($esInventariable && $stock <= 0) return null;
 
             return [
                 'id'               => $p->id,
@@ -78,7 +79,8 @@ class VentaController extends Controller
                 'subcategory_name' => $p->subcategoria?->nombre,
                 'brand'            => $p->marca,
                 'model'            => $p->modelo,
-                'stock'            => $stock,
+                'inventariable'    => $esInventariable ? 1 : 0,
+                'stock'            => $esInventariable ? $stock : null,
                 'image'            => $p->foto ? asset('storage/' . $p->foto) : null,
             ];
         })->filter()->values();
@@ -117,6 +119,7 @@ class VentaController extends Controller
             ->get();
 
         $data = $productos->map(function ($p) use ($empresaId) {
+            $esInventariable = (int) ($p->inventariable ?? 1) === 1;
             $stock = Producto_almacen::where('producto_id', $p->id)
                 ->where('empresa_id', $empresaId)
                 ->sum('stock');
@@ -132,7 +135,8 @@ class VentaController extends Controller
                 'subcategory_name' => $p->subcategoria?->nombre,
                 'brand'            => $p->marca,
                 'model'            => $p->modelo,
-                'stock'            => $stock ?? 0,
+                'inventariable'    => $esInventariable ? 1 : 0,
+                'stock'            => $esInventariable ? ($stock ?? 0) : null,
                 'image'            => $p->foto ? asset('storage/' . $p->foto) : null,
             ];
         });
@@ -189,6 +193,7 @@ class VentaController extends Controller
         $stock = Producto_almacen::where('producto_id', $producto->id)
             ->where('empresa_id', $empresaId)
             ->sum('stock');
+        $esInventariable = (int) ($producto->inventariable ?? 1) === 1;
 
         $data = [
             'id'               => $producto->id,
@@ -202,7 +207,8 @@ class VentaController extends Controller
             'subcategory_name' => $producto->subcategoria?->nombre,
             'brand'            => $producto->marca,
             'model'            => $producto->modelo,
-            'stock'            => $stock ?? 0,
+            'inventariable'    => $esInventariable ? 1 : 0,
+            'stock'            => $esInventariable ? ($stock ?? 0) : null,
             'image'            => $producto->foto ? asset('storage/' . $producto->foto) : null,
         ];
 
@@ -307,13 +313,22 @@ class VentaController extends Controller
 
             // Insertar detalles y descontar stock por lotes (FIFO)
             foreach ($request->items as $item) {
+                $producto = Producto::select('id', 'nombre', 'inventariable')->find($item['id']);
+                if (!$producto) {
+                    throw new \Exception("Producto no encontrado.");
+                }
+                $esInventariable = (int) ($producto->inventariable ?? 1) === 1;
                 $detalle = DetalleVenta::create([
                     'venta_id'        => $venta->id,
-                    'producto_id'     => $item['id'],
+                    'producto_id'     => $producto->id,
                     'cantidad'        => $item['quantity'],
                     'precio_unitario' => $item['price'],
                     'subtotal'        => $item['price'] * $item['quantity'],
                 ]);
+
+                if (!$esInventariable) {
+                    continue;
+                }
 
                 $cantidadPendiente = $item['quantity'];
 
@@ -367,7 +382,7 @@ class VentaController extends Controller
                 }
 
                 if ($cantidadPendiente > 0) {
-                    $productoNombre = Producto::find($item['id'])->nombre ?? 'Desconocido';
+                    $productoNombre = $producto->nombre ?? 'Desconocido';
                     throw new \Exception("No hay stock suficiente para '{$productoNombre}' en el almacén seleccionado.");
                 }
             }
@@ -409,6 +424,8 @@ class VentaController extends Controller
     public function fetchVentas(Request $request)
     {
         $empresaId = auth()->user()->id_empresa;
+        $user = auth()->user();
+
 
         $query = Venta::with([
             'cliente',
@@ -475,4 +492,25 @@ class VentaController extends Controller
 
         return view('venta.imprimir.imprimirVenta', compact('venta', 'empresa', 'logoBase64'));
     }
+    public function anular(Request $request, Venta $venta)
+    {
+        // 1) permiso (aunque ya lo controla el middleware, esto es “seguro por si acaso”)
+        if (! $request->user()->can('venta.anular')) {
+            abort(403, 'No tienes permiso para anular ventas');
+        }
+
+        // 2) multiempresa: la venta debe ser de la empresa activa
+        $empresaId = $request->user()->id_empresa;
+        if ((int) $venta->empresa_id !== (int) $empresaId) {
+            abort(403, 'No autorizado para esta empresa');
+        }
+
+        // 3) anulación lógica
+        $venta->estado = 'Anulado';
+        $venta->save();
+
+        return response()->json(['success' => true, 'message' => 'Venta anulada']);
+    }
+    
+
 }

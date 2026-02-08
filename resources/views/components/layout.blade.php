@@ -83,6 +83,8 @@
 
         .layout-page {
             padding-top: 0 !important;
+            width: 100% !important;
+            margin: 0 !important;
         }
 
         .content-wrapper {
@@ -102,6 +104,8 @@
         .layout-navbar {
             margin-top: 0 !important;
             padding-top: 0 !important;
+            width: 100% !important;
+            max-width: none !important;
         }
 
         .layout-navbar-full .layout-navbar {
@@ -122,34 +126,45 @@
 
         /* Ajuste global de espaciado: contenido casi pegado a navbar/sidebar */
         .container-p-y {
-            padding: 0.5rem !important;
+            padding: 0 !important;
         }
 
         .content-wrapper {
-            background: #f5f7fa;
+            background: transparent;
         }
 
         .content-wrapper .container-fluid.flex-grow-1.container-p-y {
-            padding-left: 0.5rem !important;
-            padding-right: 0.5rem !important;
-            padding-top: 0.25rem !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+            padding-top: 0 !important;
             margin-left: 0 !important;
             margin-right: 0 !important;
             width: 100% !important;
             max-width: 100% !important;
-            min-height: calc(100vh - 70px);
-            background: #f5f7fa;
+            min-height: 100vh;
+            background: transparent;
         }
 
         /* Contenedor uniforme para todas las vistas */
         .page-shell {
             width: 100%;
-            padding: 0.25rem 0.5rem 0.5rem;
+            padding: 0;
         }
 
         /* Reduce el espacio vertical bajo el navbar para que sea sim£trico */
         nav.layout-navbar {
-            margin-bottom: 0.25rem !important;
+            margin: 0 !important;
+        }
+
+        .navbar-detached {
+            margin: 0 !important;
+            border-radius: 0 !important;
+        }
+
+        .layout-page .container-xxl {
+            max-width: none !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
         }
     </style>
     <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
@@ -1712,6 +1727,9 @@
                                     </li>
                                     <li>
                                         <div class="dropdown-divider my-1"></div>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="{{ route('Perfil') }}"> <i class="icon-base bx bx-user icon-md me-3"></i><span>My Profile</span> </a>
                                     </li>
                                     <li>
                                         <a class="dropdown-item" href="{{ route('Perfil') }}"> <i class="icon-base bx bx-user icon-md me-3"></i><span>My Profile</span> </a>

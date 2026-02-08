@@ -1,8 +1,7 @@
 <x-layout bodyClass="g-sidenav-show bg-gray-200">
     <script src="{{asset('assets/vendor/js/template-customizer.js')}}"></script>
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
-        <!-- Navbar -->
-        <nav class="navbar ..."></nav>
+
         <style>
             /* Estilos personalizados para la vista de inventario */
             .inventory-table {
@@ -52,6 +51,22 @@
                 overflow-y: auto;
             }
         </style>
+            <style>
+        .compact-main {
+            padding-top: 2px !important;
+            padding-left: 10px !important;
+            padding-right: 10px !important;
+        }
+        .compact-main .container-fluid,
+        .compact-main .venta-container {
+            padding-top: 8px !important;
+            padding-bottom: 12px !important;
+        }
+        .compact-main .venta-main-card,
+        .compact-main .card {
+            margin-top: 6px;
+        }
+    </style>
         <!-- Scripts -->
         <script>
             window.APP = {

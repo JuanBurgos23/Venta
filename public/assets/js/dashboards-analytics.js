@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", function (o) {
+  var dashboardData = window.dashboardData || {};
   var e = config.colors.cardColor
     , r = config.colors.headingColor
     , t = config.colors.bodyColor
@@ -62,7 +63,7 @@ document.addEventListener("DOMContentLoaded", function (o) {
         width: 2,
         curve: "smooth"
       },
-      series: [{
+      series: dashboardData.orderChart && dashboardData.orderChart.series ? dashboardData.orderChart.series : [{
         data: [180, 175, 275, 140, 205, 190, 295]
       }],
       xaxis: {
@@ -90,7 +91,7 @@ document.addEventListener("DOMContentLoaded", function (o) {
     , n = (null !== n && new ApexCharts(n, l).render(),
       document.querySelector("#totalRevenueChart"))
     , l = {
-      series: [{
+      series: dashboardData.totalRevenueChart && dashboardData.totalRevenueChart.series ? dashboardData.totalRevenueChart.series : [{
         name: (new Date).getFullYear() - 1,
         data: [18, 7, 15, 29, 18, 12, 9]
       }, {
@@ -160,7 +161,7 @@ document.addEventListener("DOMContentLoaded", function (o) {
         opacity: [1, 1]
       },
       xaxis: {
-        categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"],
+        categories: dashboardData.totalRevenueChart && dashboardData.totalRevenueChart.categories ? dashboardData.totalRevenueChart.categories : ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"],
         labels: {
           style: {
             fontSize: "13px",
@@ -311,7 +312,7 @@ document.addEventListener("DOMContentLoaded", function (o) {
     , n = (null !== n && new ApexCharts(n, l).render(),
       document.querySelector("#growthChart"))
     , l = {
-      series: [78],
+      series: dashboardData.growthChart && dashboardData.growthChart.series ? dashboardData.growthChart.series : [78],
       labels: ["Growth"],
       chart: {
         height: 210,
@@ -416,14 +417,14 @@ document.addEventListener("DOMContentLoaded", function (o) {
       dataLabels: {
         enabled: !1
       },
-      series: [{
+      series: dashboardData.revenueChart && dashboardData.revenueChart.series ? dashboardData.revenueChart.series : [{
         data: [40, 95, 60, 45, 90, 50, 75]
       }],
       legend: {
         show: !1
       },
       xaxis: {
-        categories: ["M", "T", "W", "T", "F", "S", "S"],
+        categories: dashboardData.revenueChart && dashboardData.revenueChart.categories ? dashboardData.revenueChart.categories : ["M", "T", "W", "T", "F", "S", "S"],
         axisBorder: {
           show: !1
         },
@@ -479,7 +480,7 @@ document.addEventListener("DOMContentLoaded", function (o) {
         width: 5,
         curve: "smooth"
       },
-      series: [{
+      series: dashboardData.profileReportChart && dashboardData.profileReportChart.series ? dashboardData.profileReportChart.series : [{
         data: [110, 270, 145, 245, 205, 285]
       }],
       xaxis: {
@@ -507,8 +508,8 @@ document.addEventListener("DOMContentLoaded", function (o) {
         type: "donut",
         offsetX: 15
       },
-      labels: ["Electronic", "Sports", "Decor", "Fashion"],
-      series: [50, 85, 25, 40],
+      labels: dashboardData.orderStatisticsChart && dashboardData.orderStatisticsChart.labels ? dashboardData.orderStatisticsChart.labels : ["Electronic", "Sports", "Decor", "Fashion"],
+      series: dashboardData.orderStatisticsChart && dashboardData.orderStatisticsChart.series ? dashboardData.orderStatisticsChart.series : [50, 85, 25, 40],
       colors: [config.colors.success, config.colors.primary, config.colors.secondary, config.colors.info],
       stroke: {
         width: 5,
@@ -579,7 +580,7 @@ document.addEventListener("DOMContentLoaded", function (o) {
     , e = (null !== n && new ApexCharts(n, l).render(),
       document.querySelector("#incomeChart"))
     , r = {
-      series: [{
+      series: dashboardData.incomeChart && dashboardData.incomeChart.series ? dashboardData.incomeChart.series : [{
         data: [21, 30, 22, 42, 26, 35, 29]
       }],
       chart: {
@@ -642,7 +643,7 @@ document.addEventListener("DOMContentLoaded", function (o) {
         }
       },
       xaxis: {
-        categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"],
+        categories: dashboardData.incomeChart && dashboardData.incomeChart.categories ? dashboardData.incomeChart.categories : ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"],
         axisBorder: {
           show: !1
         },
@@ -661,15 +662,15 @@ document.addEventListener("DOMContentLoaded", function (o) {
         labels: {
           show: !1
         },
-        min: 10,
-        max: 50,
-        tickAmount: 4
+        min: dashboardData.incomeChart && dashboardData.incomeChart.series ? undefined : 10,
+        max: dashboardData.incomeChart && dashboardData.incomeChart.series ? undefined : 50,
+        tickAmount: dashboardData.incomeChart && dashboardData.incomeChart.series ? undefined : 4
       }
     }
     , n = (null !== e && new ApexCharts(e, r).render(),
       document.querySelector("#expensesOfWeek"))
     , l = {
-      series: [65],
+      series: dashboardData.expensesOfWeek && dashboardData.expensesOfWeek.series ? dashboardData.expensesOfWeek.series : [65],
       chart: {
         width: 60,
         height: 60,

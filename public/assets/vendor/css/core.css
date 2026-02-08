@@ -18085,10 +18085,6 @@ li:not(:first-child) .dropdown-item,
   margin-block-end: .75rem !important
 }
 
-.my-4 {
-  margin-block-start: 1rem !important;
-  margin-block-end: 1rem !important
-}
 
 .my-5 {
   margin-block-start: 1.25rem !important;

@@ -939,7 +939,11 @@
         
 
 
-HTML !!}
-</x-layout>
+@if (!empty($dashboardData))
+  <script>
+    window.dashboardData = @json($dashboardData);
+  </script>
+@endif
 
+</x-layout>
 

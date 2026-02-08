@@ -99,6 +99,8 @@ class ProductoController extends Controller
                 'unidad_medida_id' => 'nullable|exists:unidad_medida,id',
                 'tipo_producto_id' => 'nullable|exists:tipo_producto,id',
                 'tipo_precio_id'  => 'nullable|exists:tipo_precio,id',
+                'inventariable' => 'required|in:0,1',
+
             ]);
 
             $producto = new Producto();
@@ -172,6 +174,7 @@ class ProductoController extends Controller
                 'stock_actual' => $stock,
                 'minimo'       => $p->minimo ?? null,
                 'image'        => $p->foto ? asset('storage/' . $p->foto) : null,
+                'inventariable' => $p->inventariable,
             ];
         })->values();
 
@@ -204,6 +207,7 @@ class ProductoController extends Controller
             'tipo_precio_id'  => $producto->tipo_precio_id,
             'foto'        => $producto->foto,
             'precio'      => $producto->precio ?? 0, // precio directo en producto
+            'inventariable' => $producto->inventariable,
         ]);
     }
 
@@ -225,6 +229,8 @@ class ProductoController extends Controller
                 'unidad_medida_id' => 'nullable|exists:unidad_medida,id',
                 'tipo_producto_id' => 'nullable|exists:tipo_producto,id',
                 'tipo_precio_id'  => 'nullable|exists:tipo_precio,id',
+                'inventariable' => 'required|in:0,1',
+
             ]);
             $producto->fill($validated);
 

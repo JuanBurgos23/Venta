@@ -159,7 +159,7 @@ Route::get('clientes/fetch', [ClienteController::class, 'fetch'])->name('cliente
     Route::post('/roles', [RolController::class, 'store'])->name('roles.store');
     Route::put('/roles/{role}', [RolController::class, 'update'])->name('roles.update');
     Route::delete('/roles/{role}', [RolController::class, 'destroy'])->name('roles.destroy');
-
+    
 
     //sucursal
     Route::get('/sucursal', [SucursalController::class, 'index'])->name('sucursal.index');
@@ -282,6 +282,10 @@ Route::get('clientes/fetch', [ClienteController::class, 'fetch'])->name('cliente
     Route::get('/ventas/fetch', [VentaController::class, 'fetchVentas'])->name('ventas.fetch');
     //impirmir venta
     Route::get('/ventas/print/{id}', [VentaController::class, 'imprimir'])->name('ventas.print');
+    Route::post('/ventas/{venta}/anular', [VentaController::class, 'anular'])
+    ->name('ventas.anular')
+    ->middleware('permission:venta.anular');
+
 
     //caja
     Route::get('/caja/verificar', [CajaController::class, 'verificarCajaActiva']);

@@ -4,6 +4,11 @@
         @vite(['resources/js/datos_usuario.js'])
         <div class="container-fluid p-2">
             <div class="row mb-3">
+                <pre>
+                const CAN_ANULAR = @json(auth()->check() ? auth()->user()->can('venta.anular') : false);
+
+                Permisos = {{ auth()->user()->getAllPermissions()->pluck('name')->join(', ') }}
+                </pre>
                 <div class="col-12">
                     <div class="card shadow-sm my-2">
                         <div class="card-header d-flex flex-wrap justify-content-between align-items-center">
@@ -173,6 +178,7 @@
     {{-- Scripts --}}
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            const CAN_ANULAR = @json(auth()->user()->can('venta.anular'));
             // Config
             const LIST_URL = '/ventas/fetch'; // endpoint que debe devolver paginado { data: [...], current_page, last_page, total }
             const ANULAR_URL = id => `/venta/${id}/anular`; // endpoint PUT/POST que marca estado Eliminado
@@ -279,8 +285,8 @@
                         <td class="text-center">${escapeHtml(v.forma_pago ?? '-')}</td>
                         <td class="text-center"><span class="badge bg-${v.estado === 'Anulado' ? 'danger' : (v.estado === 'Pagado' ? 'success' : 'secondary')}">${escapeHtml(v.estado)}</span></td>
                         <td class="text-center">
-                            <button class="btn btn-sm btn-outline-secondary btn-print" data-id="${v.id}" title="Imprimir"><i class="bx bx-printer"></i></button>
-                            ${v.estado !== 'Anulado' ? `<button class="btn btn-sm btn-outline-danger btn-anular" data-id="${v.id}" title="Anular"><i class="bx bx-x"></i></button>` : ''}
+                            <button class="btn btn-sm btn-secondary btn-print" data-id="${v.id}" title="Imprimir"><i class="bx bx-printer"></i></button>
+                            ${CAN_ANULAR && v.estado !== 'Anulado' ? `<button class="btn btn-sm btn-danger btn-anular" data-id="${v.id}" title="Anular"><i class="bx bx-x"></i></button>` : ''}
                         </td>
                     `;
                     body.appendChild(tr);
@@ -369,7 +375,7 @@
                                 <div class="small text-muted">${escapeHtml(v.forma_pago ?? '-')} · ${escapeHtml(v.almacen?.nombre ?? '-')}</div>
                                 <div class="d-flex gap-2">
                                     <button class="btn btn-sm btn-outline-secondary btn-print" data-id="${v.id}"><i class="bx bx-printer"></i></button>
-                                    ${v.estado !== 'Anulado' ? `<button class="btn btn-sm btn-outline-danger btn-anular" data-id="${v.id}"><i class="bx bx-x"></i></button>` : ''}
+                                    ${CAN_ANULAR && v.estado !== 'Anulado' ? `<button class="btn btn-sm btn-outline-danger btn-anular" data-id="${v.id}"><i class="bx bx-x"></i></button>` : ''}
                                 </div>
                             </div>
                         </div>

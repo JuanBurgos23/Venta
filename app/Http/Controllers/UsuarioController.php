@@ -13,7 +13,8 @@ class UsuarioController extends Controller
 {
     public function index()
     {
-        $roles = Role::all();
+        $user = Auth::user();
+        $roles = Role::where('empresa_id', $user->id_empresa ?? 0)->get();
         return view('usuario.usuario', compact('roles'));
     }
 
@@ -68,10 +69,12 @@ class UsuarioController extends Controller
         $authUser = Auth::user();
 
         // Determinar empresa
-        if ($authUser->hasRole('Administrador')) {
-            $idEmpresa = $request->input('id_empresa', $authUser->id_empresa);
-        } else {
-            $idEmpresa = $authUser->id_empresa;
+        $idEmpresa = $authUser->id_empresa;
+        if (!$idEmpresa) {
+            return redirect()
+                ->back()
+                ->with('error', 'El usuario autenticado no tiene empresa asignada.')
+                ->withInput();
         }
 
         // Crear usuario
