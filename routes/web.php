@@ -154,11 +154,11 @@ Route::put('/usuarios/{id}', [UsuarioController::class, 'update'])->name('usuari
 Route::delete('/usuarios/{id}', [UsuarioController::class, 'destroy'])->name('usuarios.destroy');
 
 
-//Crear Rol y Permisos
-Route::get('/rol', [RolController::class, 'index'])->name('rol.index');
-Route::post('/roles', [RolController::class, 'store'])->name('roles.store');
-Route::put('/roles/{role}', [RolController::class, 'update'])->name('roles.update');
-Route::delete('/roles/{role}', [RolController::class, 'destroy'])->name('roles.destroy');
+    //Crear Rol y Permisos
+    Route::get('/rol', [RolController::class, 'index'])->name('rol.index');
+    Route::post('/roles', [RolController::class, 'store'])->name('roles.store');
+    Route::put('/roles/{role}', [RolController::class, 'update'])->name('roles.update');
+    Route::delete('/roles/{role}', [RolController::class, 'destroy'])->name('roles.destroy');
 
 
 //sucursal
@@ -267,21 +267,21 @@ Route::put('/subcategorias/{id}', [SubcategoriaController::class, 'update'])->na
 Route::delete('/subcategorias/{id}', [SubcategoriaController::class, 'destroy'])->name('subcategorias.destroy');
 
 
-//venta
-Route::get('/venta', [VentaController::class, 'index'])->name('ventas.index');
-Route::get('/producto/venta', [VentaController::class, 'fetchProducto'])->name('productos.fetch');
-Route::get('/venta/almacenes', [VentaController::class, 'fetchAlmacenes']);
-Route::get('/producto/search', [VentaController::class, 'BuscarProducto'])->name('productos.search');
-Route::get('/categorias/fetch-json', [VentaController::class, 'fetchJson'])->name('categorias.fetchJson');
-Route::get('/clientes/fetch-json', [VentaController::class, 'fetchClientes'])->name('clientes.fetch-json');
-Route::get('/buscar-producto/{codigo}', [VentaController::class, 'buscarPorCodigo'])
-    ->name('productos.buscar');
-Route::post('/clientes/store', [VentaController::class, 'ClienteStore'])->name('clientes.store');
-Route::post('/venta/store', [VentaController::class, 'store'])->name('venta.store');
-Route::get('/venta/registradas', [VentaController::class, 'ventasRegistradas'])->name('ventas.registradas');
-Route::get('/ventas/fetch', [VentaController::class, 'fetchVentas'])->name('ventas.fetch');
-//impirmir venta
-Route::get('/ventas/print/{id}', [VentaController::class, 'imprimir'])->name('ventas.print');
+    //venta
+    Route::get('/venta', [VentaController::class, 'index'])->name('ventas.index');
+    Route::get('/producto/venta', [VentaController::class, 'fetchProducto'])->name('productos.fetch');
+    Route::get('/venta/almacenes', [VentaController::class, 'fetchAlmacenes']);
+    Route::get('/producto/search', [VentaController::class, 'BuscarProducto'])->name('productos.search');
+    Route::get('/categorias/fetch-json', [VentaController::class, 'fetchJson'])->name('categorias.fetchJson');
+    Route::get('/clientes/fetch-json', [VentaController::class, 'fetchClientes'])->name('clientes.fetch-json');
+    Route::get('/buscar-producto/{codigo}', [VentaController::class, 'buscarPorCodigo'])
+        ->name('productos.buscar');
+    Route::post('/clientes/store', [VentaController::class, 'ClienteStore'])->name('clientes.store');
+    Route::post('/venta/store', [VentaController::class, 'store'])->name('venta.store');
+    Route::get('/venta/registradas', [VentaController::class, 'ventasRegistradas'])->name('ventas.registradas');
+    Route::get('/ventas/fetch', [VentaController::class, 'fetchVentas'])->name('ventas.fetch');
+    //impirmir venta
+    Route::get('/ventas/print/{id}', [VentaController::class, 'imprimir'])->name('ventas.print');
 
 //caja
 Route::get('/caja/verificar', [CajaController::class, 'verificarCajaActiva']);

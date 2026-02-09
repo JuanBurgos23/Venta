@@ -1332,6 +1332,59 @@ e
 }
 
 /* Compact sale summary */
+.product-skeleton {
+    background: #fff;
+    border: 1px solid #e4e8f0;
+    border-radius: 8px;
+    padding: 8px;
+    height: 160px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+}
+
+.skeleton-shine {
+    position: relative;
+    overflow: hidden;
+    background: #eceff4;
+    border-radius: 6px;
+}
+
+.skeleton-shine::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -150px;
+    height: 100%;
+    width: 120px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+    animation: shine 1.1s infinite;
+}
+
+.skeleton-img {
+    height: 90px;
+}
+
+.skeleton-line {
+    height: 10px;
+}
+
+@keyframes shine {
+    0% { left: -150px; }
+    100% { left: 150px; }
+}
+
+.venta-container .row {
+    --bs-gutter-x: 0.5rem !important;
+    --bs-gutter-y: 0.5rem !important;
+}
+
+.venta-main-card,
+.venta-header {
+    margin-bottom: 8px !important;
+}
+
 .sale-summary-pro {
     padding: 8px !important;
     margin-bottom: 8px !important;
@@ -1375,4 +1428,30 @@ e
     outline: none;
     border-bottom-color: var(--secondary-color);
     background: #f6f8fb;
+}
+
+.quick-client-card {
+    background: #f7f9fc;
+    border: 1px dashed #d8dde6;
+    border-radius: 8px;
+    padding: 8px;
+}
+
+.client-card {
+    border-radius: 8px;
+}
+
+.quick-inline-input {
+    width: 100%;
+    border: none;
+    border-bottom: 1px dashed #cfd5de;
+    background: transparent;
+    padding: 4px 6px;
+    font-size: 13px;
+}
+
+.quick-inline-input:focus {
+    outline: none;
+    border-bottom-color: var(--secondary-color);
+    background: #f2f5fa;
 }

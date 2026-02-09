@@ -26,29 +26,30 @@ class InventarioReporteController extends Controller
         $q = DB::table('producto')
             ->leftJoin('categoria', 'categoria.id', '=', 'producto.categoria_id')
             ->leftJoin('producto_almacen as pa', function($j){
-                $j->on('pa.producto_id', '=', 'producto.id')
-                  ->where('pa.estado', '=', 1);
+            $j->on('pa.producto_id', '=', 'producto.id')
+              ->where('pa.estado', '=', 1);
             })
             ->where('producto.id_empresa', $empresaId)
+            ->where('producto.inventariable', 1)
             ->groupBy(
-                'producto.id',
-                'producto.codigo',
-                'producto.nombre',
-                'producto.precio',
-                'producto.estado',
-                'producto.categoria_id',
-                'categoria.nombre'
+            'producto.id',
+            'producto.codigo',
+            'producto.nombre',
+            'producto.precio',
+            'producto.estado',
+            'producto.categoria_id',
+            'categoria.nombre'
             )
             ->selectRaw("
-                producto.id,
-                producto.codigo,
-                producto.nombre,
-                producto.precio,
-                producto.estado as estado_producto,
-                producto.categoria_id,
-                categoria.nombre as categoria_nombre,
-                COALESCE(SUM(pa.stock), 0) as stock_total,
-                COALESCE(SUM(pa.stock), 0) * producto.precio as valor_total
+            producto.id,
+            producto.codigo,
+            producto.nombre,
+            producto.precio,
+            producto.estado as estado_producto,
+            producto.categoria_id,
+            categoria.nombre as categoria_nombre,
+            COALESCE(SUM(pa.stock), 0) as stock_total,
+            COALESCE(SUM(pa.stock), 0) * producto.precio as valor_total
             ");
 
         // Filtros
