@@ -6,8 +6,10 @@ use App\Models\Caja;
 use App\Models\IngresoEgreso;
 use App\Models\Sucursal;
 use App\Models\TipoIngresoEgreso;
+use App\Services\CajaService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class IngresoEgresoController extends Controller
@@ -156,8 +158,6 @@ class IngresoEgresoController extends Controller
     {
         $usuario = Auth::user();
         $empresaId = $usuario->id_empresa;
-
-        // 🔹 Verificar si hay caja activa
         $cajaActiva = Caja::where('usuario_id', $usuario->id)
             ->where('empresa_id', $empresaId)
             ->where('estado', 1)
@@ -170,6 +170,7 @@ class IngresoEgresoController extends Controller
             ], 403);
         }
 
+        $sucursalId = $cajaActiva->sucursal_id; // ✅ AQUÍ ESTÁ LA CLAVE
         // 🔹 Validación
         $validator = Validator::make($request->all(), [
             'tipo_ingreso_egreso_id' => 'required|exists:tipo_ingreso_egreso,id',
@@ -185,21 +186,42 @@ class IngresoEgresoController extends Controller
             ], 422);
         }
 
-        // 🔹 Crear el registro
-        $registro = IngresoEgreso::create([
-            'usuario_id' => $usuario->id,
-            'descripcion' => $request->descripcion,
-            'fecha' => now(),
-            'motivo' => $request->motivo,
-            'tipo_ingreso_egreso_id' => $request->tipo_ingreso_egreso_id,
-            'monto' => $request->monto,
-        ]);
+        DB::beginTransaction();
+        try {
+            // 🔹 Crear el registro
+            $registro = IngresoEgreso::create([
+                'usuario_id' => $usuario->id,
+                'descripcion' => $request->descripcion,
+                'fecha' => now(),
+                'motivo' => $request->motivo,
+                'tipo_ingreso_egreso_id' => $request->tipo_ingreso_egreso_id,
+                'monto' => $request->monto,
+            ]);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Registro creado correctamente',
-            'registro' => $registro
-        ]);
+            // 🔥 SINCRONIZAR CAJA (IGUAL QUE VENTAS)
+            CajaService::syncIngresoEgresoCajaAbierta(
+                $empresaId,
+                $sucursalId,
+                $usuario->id
+            );
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Registro creado correctamente',
+                'registro' => $registro
+            ]);
+
+        } catch (\Throwable $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al registrar ingreso/egreso',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
     public function showIngresoEgreso($id)
     {

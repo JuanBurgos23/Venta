@@ -1,26 +1,28 @@
-﻿<html lang="en" class="layout-navbar-fixed layout-compact layout-menu-fixed layout-menu-collapsed" dir="ltr" data-skin="default" data-assets-path="{{asset('assets/')}}"
-    data-template="vertical-menu-template" data-bs-theme="default">
+﻿<html lang="en" class="layout-navbar-fixed layout-compact layout-menu-fixed layout-menu-collapsed" dir="ltr"
+    data-skin="default" data-assets-path="{{asset('assets/')}}" data-template="vertical-menu-template"
+    data-bs-theme="default">
 
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
     <meta name="robots" content="noindex, nofollow">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/classic.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 
     <script src="https://cdn.jsdelivr.net/npm/@simonwep/pickr"></script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Venta</title>
+    <title>TUXON ERP</title>
     <script src="{{asset('assets/js/ui-toasts.js')}}"></script>
 
     <!-- Canonical SEO -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
+
 
     <!-- ? PROD Only: Google Tag Manager (Default ThemeSelection: GTM-5DDHKGP, PixInvent: GTM-5J3LMKC) -->
     <script async="" src="https://www.googletagmanager.com/gtm.js?id=GTM-5DDHKGP"></script>
     <script>
-        (function(w, d, s, l, i) {
+        (function (w, d, s, l, i) {
             w[l] = w[l] || [];
             w[l].push({
                 'gtm.start': new Date().getTime(),
@@ -35,14 +37,16 @@
         })(window, document, 'script', 'dataLayer', 'GTM-5DDHKGP');
     </script>
     <!-- End Google Tag Manager -->
-    @vite([ 'resources/js/app.js', 'resources/js/datos_usuario.js' ])
+    @vite(['resources/js/app.js', 'resources/js/datos_usuario.js'])
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="{{asset('assets/img/favicon/gato.svg')}}">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&amp;display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&amp;display=swap"
+        rel="stylesheet">
 
     <link rel="stylesheet" href="{{asset('assets/vendor/fonts/iconify-icons.css')}}">
 
@@ -1107,29 +1111,34 @@
         .command-item.active {
             background: #f5f5f5;
         }
-         #commandResults {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr); /* dos columnas */
-    gap: 0.75rem; /* espacio entre columnas y filas */
-    max-height: 400px; /* altura mÃ¡xima */
-    overflow-y: auto;  /* scroll vertical */
-  }
 
-  /* Cada item del listado */
-  #commandResults .command-item {
-    background: #f8f9fa;
-    padding: 0.75rem 1rem;
-    border-radius: 0.5rem;
-    cursor: pointer;
-    transition: background 0.2s ease;
-  }
+        #commandResults {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            /* dos columnas */
+            gap: 0.75rem;
+            /* espacio entre columnas y filas */
+            max-height: 400px;
+            /* altura mÃ¡xima */
+            overflow-y: auto;
+            /* scroll vertical */
+        }
 
-  #commandResults .command-item:hover {
-    background: #e9ecef;
-  }
+        /* Cada item del listado */
+        #commandResults .command-item {
+            background: #f8f9fa;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        #commandResults .command-item:hover {
+            background: #e9ecef;
+        }
     </style>
     <script>
-        (function() {
+        (function () {
             const savedTheme = localStorage.getItem('theme') || 'system';
             let themeToApply = savedTheme;
 
@@ -1141,7 +1150,7 @@
         })();
     </script>
     <script>
-        (function() {
+        (function () {
             // Color guardado en localStorage
             const savedColor = localStorage.getItem('primaryColor') || '#696cff';
 
@@ -1190,7 +1199,8 @@
     @endphp
 
     <!-- ?PROD Only: Google Tag Manager (noscript) (Default ThemeSelection: GTM-5DDHKGP, PixInvent: GTM-5J3LMKC) -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5DDHKGP" height="0" width="0" style="display: none; visibility: hidden"></iframe></noscript>
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5DDHKGP" height="0" width="0"
+            style="display: none; visibility: hidden"></iframe></noscript>
     <!-- End Google Tag Manager (noscript) -->
 
     <!-- Layout wrapper -->
@@ -1198,18 +1208,18 @@
         <div class="layout-container">
             <!-- Menu -->
 
-            <aside id="layout-menu" class="layout-menu menu-vertical menu" style="touch-action: none; user-select: none; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
+            <aside id="layout-menu" class="layout-menu menu-vertical menu"
+                style="touch-action: none; user-select: none; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
 
                 <div class="app-brand demo">
                     <a href="{{ route('Inicio') }}" class="app-brand-link">
                         <span class="app-brand-logo demo">
                             <span class="text-primary">
-                                <svg xmlns="http://www.w3.org/2000/svg"
-                                    width="2000" height="2000"
-                                    viewBox="0 0 1500 1500"
-                                    fill="currentColor">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="2000" height="2000"
+                                    viewBox="0 0 1500 1500" fill="currentColor">
 
-                                    <path d="M 1199 1844.933594 C 1197.101562 
+                                    <path
+                                        d="M 1199 1844.933594 C 1197.101562 
                                     1861.714844 1185.410156 1871.304688 1170.398438 1876.808594 C 1169.558594 1877.109375 1169.738281 1878.332031 
                                     1170.640625 1878.386719 C 1173.308594 1878.523438 1177.261719 1877.296875 1179.390625 1877.296875 C 1203.199219 
                                     1877.078125 1227.058594 1877.460938 1250.960938 1878.441406 C 1252.179688 1878.496094 1252.269531 1878.167969 1251.261719 
@@ -1261,8 +1271,14 @@
                             <div data-i18n="Ventas">Ventas</div>
                         </a>
                         <ul class="menu-sub">
-                            <li class="menu-item {{ Request::routeIs('ventas.index') ? 'active' : '' }}"><a href="{{ route('ventas.index') }}" class="menu-link"><div data-i18n="Registrar Venta">Registrar venta</div></a></li>
-                            <li class="menu-item {{ Request::routeIs('ventas.registradas') ? 'active' : '' }}"><a href="{{ route('ventas.registradas') }}" class="menu-link"><div data-i18n="Lista de Ventas">Listado de ventas</div></a></li>
+                            <li class="menu-item {{ Request::routeIs('ventas.index') ? 'active' : '' }}"><a
+                                    href="{{ route('ventas.index') }}" class="menu-link">
+                                    <div data-i18n="Registrar Venta">Registrar venta</div>
+                                </a></li>
+                            <li class="menu-item {{ Request::routeIs('ventas.registradas') ? 'active' : '' }}"><a
+                                    href="{{ route('ventas.registradas') }}" class="menu-link">
+                                    <div data-i18n="Lista de Ventas">Listado de ventas</div>
+                                </a></li>
                         </ul>
                     </li>
                     <li class="menu-item {{ Request::routeIs('compras.index') ? 'active' : '' }}">
@@ -1273,21 +1289,46 @@
                     </li>
 
                     <li class="menu-header small"><span class="menu-header-text">Inventario</span></li>
-                    <li class="menu-item {{ Request::routeIs('productos.index') || Request::routeIs('categorias.index') || Request::routeIs('unidad_medida.index') || Request::routeIs('producto.importar') ? 'active open' : '' }}">
+                    <li
+                        class="menu-item {{ Request::routeIs('productos.index') || Request::routeIs('categorias.index') || Request::routeIs('unidad_medida.index') || Request::routeIs('producto.importar') ? 'active open' : '' }}">
                         <a href="javascript:void(0);" class="menu-link menu-toggle">
                             <i class="menu-icon icon-base bx bx-package"></i>
                             <div data-i18n="Productos">Productos</div>
                         </a>
                         <ul class="menu-sub">
-                            <li class="menu-item {{ Request::routeIs('categorias.index') ? 'active' : '' }}"><a href="{{ route('categorias.index') }}" class="menu-link"><div>Categoria</div></a></li>
-                            <li class="menu-item {{ Request::routeIs('unidad_medida.index') ? 'active' : '' }}"><a href="{{ route('unidad_medida.index') }}" class="menu-link"><div>Unidades</div></a></li>
-                            <li class="menu-item {{ Request::routeIs('productos.index') ? 'active' : '' }}"><a href="{{ route('productos.index') }}" class="menu-link"><div>Listado / registro</div></a></li>
-                            <li class="menu-item {{ Request::routeIs('producto.importar') ? 'active' : '' }}"><a href="{{ route('producto.importar') }}" class="menu-link"><div>Importar productos</div></a></li>
+                            <li class="menu-item {{ Request::routeIs('categorias.index') ? 'active' : '' }}"><a
+                                    href="{{ route('categorias.index') }}" class="menu-link">
+                                    <div>Categoria</div>
+                                </a></li>
+                            <li class="menu-item {{ Request::routeIs('unidad_medida.index') ? 'active' : '' }}"><a
+                                    href="{{ route('unidad_medida.index') }}" class="menu-link">
+                                    <div>Unidades</div>
+                                </a></li>
+                            <li class="menu-item {{ Request::routeIs('productos.index') ? 'active' : '' }}"><a
+                                    href="{{ route('productos.index') }}" class="menu-link">
+                                    <div>Listado / registro</div>
+                                </a></li>
+                            <li class="menu-item {{ Request::routeIs('producto.importar') ? 'active' : '' }}"><a
+                                    href="{{ route('producto.importar') }}" class="menu-link">
+                                    <div>Importar productos</div>
+                                </a></li>
                         </ul>
                     </li>
-                    <li class="menu-item {{ Request::routeIs('sucursal.index') ? 'active' : '' }}"><a href="{{ route('sucursal.index') }}" class="menu-link"><i class="menu-icon icon-base bx bx-git-branch"></i><div data-i18n="Sucursal">Sucursales</div></a></li>
-                    <li class="menu-item {{ Request::routeIs('almacen.index') ? 'active' : '' }}"><a href="{{ route('almacen.index') }}" class="menu-link"><i class="menu-icon icon-base bx bx-store-alt"></i><div data-i18n="Almacen">Almacenes</div></a></li>
-                    <li class="menu-item {{ Request::routeIs('inventario.view') ? 'active' : '' }}"><a href="{{ route('inventario.view') }}" class="menu-link"><i class="menu-icon icon-base bx bx-collection"></i><div data-i18n="Rep. de inventario">Reporte de inventario</div></a></li>
+                    <li class="menu-item {{ Request::routeIs('sucursal.index') ? 'active' : '' }}"><a
+                            href="{{ route('sucursal.index') }}" class="menu-link"><i
+                                class="menu-icon icon-base bx bx-git-branch"></i>
+                            <div data-i18n="Sucursal">Sucursales</div>
+                        </a></li>
+                    <li class="menu-item {{ Request::routeIs('almacen.index') ? 'active' : '' }}"><a
+                            href="{{ route('almacen.index') }}" class="menu-link"><i
+                                class="menu-icon icon-base bx bx-store-alt"></i>
+                            <div data-i18n="Almacen">Almacenes</div>
+                        </a></li>
+                    <li class="menu-item {{ Request::routeIs('inventario.view') ? 'active' : '' }}"><a
+                            href="{{ route('inventario.view') }}" class="menu-link"><i
+                                class="menu-icon icon-base bx bx-collection"></i>
+                            <div data-i18n="Rep. de inventario">Reporte de inventario</div>
+                        </a></li>
 
                     <li class="menu-header small"><span class="menu-header-text">Finanzas</span></li>
                     <li class="menu-item {{ Request::routeIs('ingreso-*') ? 'active open' : '' }}">
@@ -1296,19 +1337,35 @@
                             <div data-i18n="Ingreso/Egreso">Ingreso / Egreso</div>
                         </a>
                         <ul class="menu-sub">
-                            <li class="menu-item {{ Request::routeIs('ingreso-egreso-tipo.index') ? 'active' : '' }}"><a href="{{ route('ingreso-egreso-tipo.index') }}" class="menu-link"><div>Tipos</div></a></li>
-                            <li class="menu-item {{ Request::routeIs('ingreso-egreso.registrar') ? 'active' : '' }}"><a href="{{ route('ingreso-egreso.registrar') }}" class="menu-link"><div>Registro</div></a></li>
+                            <li class="menu-item {{ Request::routeIs('ingreso-egreso-tipo.index') ? 'active' : '' }}"><a
+                                    href="{{ route('ingreso-egreso-tipo.index') }}" class="menu-link">
+                                    <div>Tipos</div>
+                                </a></li>
+                            <li class="menu-item {{ Request::routeIs('ingreso-egreso.registrar') ? 'active' : '' }}"><a
+                                    href="{{ route('ingreso-egreso.registrar') }}" class="menu-link">
+                                    <div>Registro</div>
+                                </a></li>
                         </ul>
                     </li>
-                    <li class="menu-item {{ Request::routeIs('finanzas.*') || Request::routeIs('finanzas.mensual.*') || Request::routeIs('finanzas.vp.*') ? 'active open' : '' }}">
+                    <li
+                        class="menu-item {{ Request::routeIs('finanzas.*') || Request::routeIs('finanzas.mensual.*') || Request::routeIs('finanzas.vp.*') ? 'active open' : '' }}">
                         <a href="javascript:void(0);" class="menu-link menu-toggle">
                             <i class="menu-icon bx bx-line-chart"></i>
                             <div data-i18n="Finanzas">Reportes financieros</div>
                         </a>
                         <ul class="menu-sub">
-                            <li class="menu-item {{ Request::routeIs('finanzas.diario') ? 'active' : '' }}"><a href="{{ route('finanzas.diario') }}" class="menu-link"><div>Diario de ganancias</div></a></li>
-                            <li class="menu-item {{ Request::routeIs('finanzas.mensual.*') ? 'active' : '' }}"><a href="{{ route('finanzas.mensual.view') }}" class="menu-link"><div>Mensual</div></a></li>
-                            <li class="menu-item {{ Request::routeIs('finanzas.vp.*') ? 'active' : '' }}"><a href="{{ route('finanzas.vp.view') }}" class="menu-link"><div>Ventas por producto</div></a></li>
+                            <li class="menu-item {{ Request::routeIs('finanzas.diario') ? 'active' : '' }}"><a
+                                    href="{{ route('finanzas.diario') }}" class="menu-link">
+                                    <div>Diario de ganancias</div>
+                                </a></li>
+                            <li class="menu-item {{ Request::routeIs('finanzas.mensual.*') ? 'active' : '' }}"><a
+                                    href="{{ route('finanzas.mensual.view') }}" class="menu-link">
+                                    <div>Mensual</div>
+                                </a></li>
+                            <li class="menu-item {{ Request::routeIs('finanzas.vp.*') ? 'active' : '' }}"><a
+                                    href="{{ route('finanzas.vp.view') }}" class="menu-link">
+                                    <div>Ventas por producto</div>
+                                </a></li>
                         </ul>
                     </li>
 
@@ -1331,8 +1388,13 @@
                             <div data-i18n="Roles &amp; Permissions">Seguridad</div>
                         </a>
                         <ul class="menu-sub">
-                            <li class="menu-item {{ Request::routeIs('rol.index') ? 'active' : '' }}"><a href="{{ route('rol.index') }}" class="menu-link"><div data-i18n="Roles">Roles</div></a></li>
-                            <li class="menu-item"><a href="javascript:void(0);" class="menu-link"><div data-i18n="Permisos">Permisos</div></a></li>
+                            <li class="menu-item {{ Request::routeIs('rol.index') ? 'active' : '' }}"><a
+                                    href="{{ route('rol.index') }}" class="menu-link">
+                                    <div data-i18n="Roles">Roles</div>
+                                </a></li>
+                            <li class="menu-item"><a href="javascript:void(0);" class="menu-link">
+                                    <div data-i18n="Permisos">Permisos</div>
+                                </a></li>
                         </ul>
                     </li>
                 </ul>
@@ -1340,40 +1402,24 @@
 
             </aside>
 
-            <div class="menu-mobile-toggler d-xl-none rounded-1">
-                <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large text-bg-secondary p-2 rounded-1">
-                    <i class="bx bx-menu icon-base"></i>
-                    <i class="bx bx-chevron-right icon-base"></i>
-                </a>
-            </div>
+
             <!-- / Menu -->
-
-
-
             <!-- Layout container -->
             <div class="layout-page">
-
-
-
-
-
                 <!-- Navbar -->
+                <nav class="layout-navbar container-xxl navbar-detached navbar navbar-expand-xl align-items-center bg-navbar-theme"
+                    id="layout-navbar">
 
-                <nav class="layout-navbar container-xxl navbar-detached navbar navbar-expand-xl align-items-center bg-navbar-theme" id="layout-navbar">
-
-
-
-
-
-                    <div class="layout-menu-toggle navbar-nav align-items-xl-center me-4 me-xl-0   d-xl-none ">
-                        <a class="nav-item nav-link px-0 me-xl-6" href="javascript:void(0)">
-                            <i class="icon-base bx bx-menu icon-md"></i>
+                    <div class="menu-mobile-toggler d-xl-none rounded-1">
+                        <a href="javascript:void(0);"
+                            class="layout-menu-toggle menu-link text-large text-bg-secondary p-2 rounded-1">
+                            <i class="bx bx-menu icon-base"></i>
+                            <i class="bx bx-chevron-right icon-base"></i>
                         </a>
                     </div>
-                    <div class="d-flex align-items-center gap-2 flex-wrap mb-3">
-                        <span class="fw-semibold">Sucursal:</span>
-                        <select id="sucursal-select" class="form-select form-select-sm" style="width: auto; min-width: 180px;">
-                        </select>
+                    <div class="navbar-nav d-flex align-items-center me-3">
+                        <span class="fw-semibold me-2">Sucursal:</span>
+                        <select id="sucursal-select" class="form-select form-select-sm"></select>
                     </div>
 
 
@@ -1382,7 +1428,8 @@
                         <!-- Trigger -->
                         <div class="navbar-nav align-items-center">
                             <div class="nav-item navbar-search-wrapper mb-0">
-                                <input type="text" class="form-control" placeholder="Search [CTRL + K]" id="searchTrigger" readonly>
+                                <input type="text" class="form-control" placeholder="Search [CTRL + K]"
+                                    id="searchTrigger" readonly>
                             </div>
                         </div>
 
@@ -1391,22 +1438,30 @@
                             <div class="aa-DetachedContainer d-flex flex-column aa-DetachedContainer--modal">
 
                                 <!-- Header con input -->
-                                <div class="aa-DetachedFormContainer d-flex align-items-center justify-content-between border-bottom">
+                                <div
+                                    class="aa-DetachedFormContainer d-flex align-items-center justify-content-between border-bottom">
                                     <form class="aa-Form d-flex align-items-center" action="" novalidate role="search">
                                         <!-- Input wrapper prefix: icono submit -->
                                         <div class="aa-InputWrapperPrefix">
                                             <label class="aa-Label" aria-label="Submit" for="commandInput">
                                                 <button class="aa-SubmitButton" type="submit" title="Buscar">
-                                                    <svg class="aa-SubmitIcon" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-                                                        <path d="M16.041 15.856c-0.034 0.026-0.067 0.055-0.099 0.087s-0.060 0.064-0.087 0.099c-1.258 1.213-2.969 1.958-4.855 1.958-1.933 0-3.682-0.782-4.95-2.050s-2.050-3.017-2.050-4.95 0.782-3.682 2.050-4.95 3.017-2.050 4.95-2.050 3.682 0.782 4.95 2.050 2.050 3.017 2.050 4.95c0 1.886-0.745 3.597-1.959 4.856zM21.707 20.293l-3.675-3.675c1.231-1.54 1.968-3.493 1.968-5.618 0-2.485-1.008-4.736-2.636-6.364s-3.879-2.636-6.364-2.636-4.736 1.008-6.364 2.636-2.636 3.879-2.636 6.364 1.008 4.736 2.636 6.364 3.879 2.636 6.364 2.636c2.125 0 4.078-0.737 5.618-1.968l3.675 3.675c0.391 0.391 1.024 0.391 1.414 0s0.391-1.024 0-1.414z" />
+                                                    <svg class="aa-SubmitIcon" viewBox="0 0 24 24" width="20"
+                                                        height="20" fill="currentColor">
+                                                        <path
+                                                            d="M16.041 15.856c-0.034 0.026-0.067 0.055-0.099 0.087s-0.060 0.064-0.087 0.099c-1.258 1.213-2.969 1.958-4.855 1.958-1.933 0-3.682-0.782-4.95-2.050s-2.050-3.017-2.050-4.95 0.782-3.682 2.050-4.95 3.017-2.050 4.95-2.050 3.682 0.782 4.95 2.050 2.050 3.017 2.050 4.95c0 1.886-0.745 3.597-1.959 4.856zM21.707 20.293l-3.675-3.675c1.231-1.54 1.968-3.493 1.968-5.618 0-2.485-1.008-4.736-2.636-6.364s-3.879-2.636-6.364-2.636-4.736 1.008-6.364 2.636-2.636 3.879-2.636 6.364 1.008 4.736 2.636 6.364 3.879 2.636 6.364 2.636c2.125 0 4.078-0.737 5.618-1.968l3.675 3.675c0.391 0.391 1.024 0.391 1.414 0s0.391-1.024 0-1.414z" />
                                                     </svg>
                                                 </button>
                                             </label>
                                             <div class="aa-LoadingIndicator" hidden>
-                                                <svg class="aa-LoadingIcon" viewBox="0 0 100 100" width="20" height="20">
-                                                    <circle cx="50" cy="50" r="35" fill="none" stroke="currentColor" stroke-dasharray="164.93361431346415 56.97787143782138" stroke-width="6">
-                                                        <animateTransform attributeName="transform" type="rotate" repeatCount="indefinite" dur="1s"
-                                                            values="0 50 50;90 50 50;180 50 50;360 50 50" keyTimes="0;0.40;0.65;1"></animateTransform>
+                                                <svg class="aa-LoadingIcon" viewBox="0 0 100 100" width="20"
+                                                    height="20">
+                                                    <circle cx="50" cy="50" r="35" fill="none" stroke="currentColor"
+                                                        stroke-dasharray="164.93361431346415 56.97787143782138"
+                                                        stroke-width="6">
+                                                        <animateTransform attributeName="transform" type="rotate"
+                                                            repeatCount="indefinite" dur="1s"
+                                                            values="0 50 50;90 50 50;180 50 50;360 50 50"
+                                                            keyTimes="0;0.40;0.65;1"></animateTransform>
                                                     </circle>
                                                 </svg>
                                             </div>
@@ -1414,24 +1469,28 @@
 
                                         <!-- Input principal -->
                                         <div class="aa-InputWrapper">
-                                            <input class="aa-Input search-control border-none"
-                                                id="commandInput"
-                                                autocomplete="off" autocorrect="off" autocapitalize="off" enterkeyhint="go" spellcheck="false"
-                                                placeholder="Buscar rutas..." maxlength="512" type="search">
+                                            <input class="aa-Input search-control border-none" id="commandInput"
+                                                autocomplete="off" autocorrect="off" autocapitalize="off"
+                                                enterkeyhint="go" spellcheck="false" placeholder="Buscar rutas..."
+                                                maxlength="512" type="search">
                                         </div>
 
                                         <!-- Input wrapper suffix: clear button -->
                                         <div class="aa-InputWrapperSuffix">
                                             <button class="aa-ClearButton d-none" type="reset" title="Clear" hidden>
-                                                <svg class="aa-ClearIcon" viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
-                                                    <path d="M5.293 6.707l5.293 5.293-5.293 5.293c-0.391 0.391-0.391 1.024 0 1.414s1.024 0.391 1.414 0l5.293-5.293 5.293 5.293c0.391 0.391 1.024 0.391 1.414 0s0.391-1.024 0-1.414l-5.293-5.293 5.293-5.293c0.391-0.391 0.391-1.024 0-1.414s-1.024-0.391-1.414 0l-5.293 5.293-5.293-5.293c-0.391-0.391-1.024-0.391-1.414 0s-0.391 1.024 0 1.414z"></path>
+                                                <svg class="aa-ClearIcon" viewBox="0 0 24 24" width="18" height="18"
+                                                    fill="currentColor">
+                                                    <path
+                                                        d="M5.293 6.707l5.293 5.293-5.293 5.293c-0.391 0.391-0.391 1.024 0 1.414s1.024 0.391 1.414 0l5.293-5.293 5.293 5.293c0.391 0.391 1.024 0.391 1.414 0s0.391-1.024 0-1.414l-5.293-5.293 5.293-5.293c0.391-0.391 0.391-1.024 0-1.414s-1.024-0.391-1.414 0l-5.293 5.293-5.293-5.293c-0.391-0.391-1.024-0.391-1.414 0s-0.391 1.024 0 1.414z">
+                                                    </path>
                                                 </svg>
                                             </button>
                                         </div>
                                     </form>
 
                                     <!-- BotÃ³n cerrar -->
-                                    <button type="button" class="aa-DetachedCancelButton btn-search-close" onclick="closePalette()">
+                                    <button type="button" class="aa-DetachedCancelButton btn-search-close"
+                                        onclick="closePalette()">
                                         <span class="text-body-secondary">[esc]</span>
                                         <span class="icon-base icon-md bx bx-x text-heading"></span>
                                     </button>
@@ -1460,24 +1519,31 @@
 
                             <!-- Style Switcher -->
                             <li class="nav-item dropdown me-2 me-xl-0">
-                                <a class="nav-link dropdown-toggle hide-arrow" id="nav-theme" href="javascript:void(0);" data-bs-toggle="dropdown" aria-label="Toggle theme (system)" aria-expanded="false">
+                                <a class="nav-link dropdown-toggle hide-arrow" id="nav-theme" href="javascript:void(0);"
+                                    data-bs-toggle="dropdown" aria-label="Toggle theme (system)" aria-expanded="false">
                                     <i class="bx-desktop icon-base bx icon-md theme-icon-active"></i>
                                     <span class="d-none ms-2" id="nav-theme-text">Toggle theme</span>
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-theme-text">
                                     <li>
-                                        <button type="button" class="dropdown-item align-items-center" data-bs-theme-value="light" aria-pressed="false">
-                                            <span><i class="icon-base bx bx-sun icon-md me-3" data-icon="sun"></i>Light</span>
+                                        <button type="button" class="dropdown-item align-items-center"
+                                            data-bs-theme-value="light" aria-pressed="false">
+                                            <span><i class="icon-base bx bx-sun icon-md me-3"
+                                                    data-icon="sun"></i>Light</span>
                                         </button>
                                     </li>
                                     <li>
-                                        <button type="button" class="dropdown-item align-items-center" data-bs-theme-value="dark" aria-pressed="false">
-                                            <span><i class="icon-base bx bx-moon icon-md me-3" data-icon="moon"></i>Dark</span>
+                                        <button type="button" class="dropdown-item align-items-center"
+                                            data-bs-theme-value="dark" aria-pressed="false">
+                                            <span><i class="icon-base bx bx-moon icon-md me-3"
+                                                    data-icon="moon"></i>Dark</span>
                                         </button>
                                     </li>
                                     <li>
-                                        <button type="button" class="dropdown-item align-items-center active" data-bs-theme-value="system" aria-pressed="true">
-                                            <span><i class="icon-base bx bx-desktop icon-md me-3" data-icon="desktop"></i>System</span>
+                                        <button type="button" class="dropdown-item align-items-center active"
+                                            data-bs-theme-value="system" aria-pressed="true">
+                                            <span><i class="icon-base bx bx-desktop icon-md me-3"
+                                                    data-icon="desktop"></i>System</span>
                                         </button>
                                     </li>
                                 </ul>
@@ -1488,10 +1554,12 @@
 
                             <!-- Notification -->
                             <li class="nav-item dropdown-notifications navbar-dropdown dropdown me-3 me-xl-2">
-                                <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                                <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);"
+                                    data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
                                     <span class="position-relative">
                                         <i class="icon-base bx bx-bell icon-md"></i>
-                                        <span class="badge rounded-pill bg-danger badge-dot badge-notifications border"></span>
+                                        <span
+                                            class="badge rounded-pill bg-danger badge-dot badge-notifications border"></span>
                                     </span>
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end p-0">
@@ -1500,171 +1568,241 @@
                                             <h6 class="mb-0 me-auto">Notification</h6>
                                             <div class="d-flex align-items-center h6 mb-0">
                                                 <span class="badge bg-label-primary me-2">8 New</span>
-                                                <a href="javascript:void(0)" class="dropdown-notifications-all p-2" data-bs-toggle="tooltip" data-bs-placement="top" aria-label="Mark all as read" data-bs-original-title="Mark all as read"><i class="icon-base bx bx-envelope-open text-heading"></i></a>
+                                                <a href="javascript:void(0)" class="dropdown-notifications-all p-2"
+                                                    data-bs-toggle="tooltip" data-bs-placement="top"
+                                                    aria-label="Mark all as read"
+                                                    data-bs-original-title="Mark all as read"><i
+                                                        class="icon-base bx bx-envelope-open text-heading"></i></a>
                                             </div>
                                         </div>
                                     </li>
                                     <li class="dropdown-notifications-list scrollable-container ps">
                                         <ul class="list-group list-group-flush">
-                                            <li class="list-group-item list-group-item-action dropdown-notifications-item">
+                                            <li
+                                                class="list-group-item list-group-item-action dropdown-notifications-item">
                                                 <div class="d-flex">
                                                     <div class="flex-shrink-0 me-3">
                                                         <div class="avatar">
-                                                            <img src="../../assets/img/avatars/1.png" alt="" class="rounded-circle">
+                                                            <img src="../../assets/img/avatars/1.png" alt=""
+                                                                class="rounded-circle">
                                                         </div>
                                                     </div>
                                                     <div class="flex-grow-1">
                                                         <h6 class="small mb-0">Congratulation Lettie ðŸŽ‰</h6>
-                                                        <small class="mb-1 d-block text-body">Won the monthly best seller gold badge</small>
+                                                        <small class="mb-1 d-block text-body">Won the monthly best
+                                                            seller gold badge</small>
                                                         <small class="text-body-secondary">1h ago</small>
                                                     </div>
                                                     <div class="flex-shrink-0 dropdown-notifications-actions">
-                                                        <a href="javascript:void(0)" class="dropdown-notifications-read"><span class="badge badge-dot"></span></a>
-                                                        <a href="javascript:void(0)" class="dropdown-notifications-archive"><span class="icon-base bx bx-x"></span></a>
+                                                        <a href="javascript:void(0)"
+                                                            class="dropdown-notifications-read"><span
+                                                                class="badge badge-dot"></span></a>
+                                                        <a href="javascript:void(0)"
+                                                            class="dropdown-notifications-archive"><span
+                                                                class="icon-base bx bx-x"></span></a>
                                                     </div>
                                                 </div>
                                             </li>
-                                            <li class="list-group-item list-group-item-action dropdown-notifications-item">
+                                            <li
+                                                class="list-group-item list-group-item-action dropdown-notifications-item">
                                                 <div class="d-flex">
                                                     <div class="flex-shrink-0 me-3">
                                                         <div class="avatar">
-                                                            <span class="avatar-initial rounded-circle bg-label-danger">CF</span>
+                                                            <span
+                                                                class="avatar-initial rounded-circle bg-label-danger">CF</span>
                                                         </div>
                                                     </div>
                                                     <div class="flex-grow-1">
                                                         <h6 class="small mb-0">Charles Franklin</h6>
-                                                        <small class="mb-1 d-block text-body">Accepted your connection</small>
+                                                        <small class="mb-1 d-block text-body">Accepted your
+                                                            connection</small>
                                                         <small class="text-body-secondary">12hr ago</small>
                                                     </div>
                                                     <div class="flex-shrink-0 dropdown-notifications-actions">
-                                                        <a href="javascript:void(0)" class="dropdown-notifications-read"><span class="badge badge-dot"></span></a>
-                                                        <a href="javascript:void(0)" class="dropdown-notifications-archive"><span class="icon-base bx bx-x"></span></a>
+                                                        <a href="javascript:void(0)"
+                                                            class="dropdown-notifications-read"><span
+                                                                class="badge badge-dot"></span></a>
+                                                        <a href="javascript:void(0)"
+                                                            class="dropdown-notifications-archive"><span
+                                                                class="icon-base bx bx-x"></span></a>
                                                     </div>
                                                 </div>
                                             </li>
-                                            <li class="list-group-item list-group-item-action dropdown-notifications-item marked-as-read">
+                                            <li
+                                                class="list-group-item list-group-item-action dropdown-notifications-item marked-as-read">
                                                 <div class="d-flex">
                                                     <div class="flex-shrink-0 me-3">
                                                         <div class="avatar">
-                                                            <img src="../../assets/img/avatars/2.png" alt="" class="rounded-circle">
+                                                            <img src="../../assets/img/avatars/2.png" alt=""
+                                                                class="rounded-circle">
                                                         </div>
                                                     </div>
                                                     <div class="flex-grow-1">
                                                         <h6 class="small mb-0">New Message âœ‰ï¸</h6>
-                                                        <small class="mb-1 d-block text-body">You have new message from Natalie</small>
+                                                        <small class="mb-1 d-block text-body">You have new message from
+                                                            Natalie</small>
                                                         <small class="text-body-secondary">1h ago</small>
                                                     </div>
                                                     <div class="flex-shrink-0 dropdown-notifications-actions">
-                                                        <a href="javascript:void(0)" class="dropdown-notifications-read"><span class="badge badge-dot"></span></a>
-                                                        <a href="javascript:void(0)" class="dropdown-notifications-archive"><span class="icon-base bx bx-x"></span></a>
+                                                        <a href="javascript:void(0)"
+                                                            class="dropdown-notifications-read"><span
+                                                                class="badge badge-dot"></span></a>
+                                                        <a href="javascript:void(0)"
+                                                            class="dropdown-notifications-archive"><span
+                                                                class="icon-base bx bx-x"></span></a>
                                                     </div>
                                                 </div>
                                             </li>
-                                            <li class="list-group-item list-group-item-action dropdown-notifications-item">
+                                            <li
+                                                class="list-group-item list-group-item-action dropdown-notifications-item">
                                                 <div class="d-flex">
                                                     <div class="flex-shrink-0 me-3">
                                                         <div class="avatar">
-                                                            <span class="avatar-initial rounded-circle bg-label-success"><i class="icon-base bx bx-cart"></i></span>
+                                                            <span
+                                                                class="avatar-initial rounded-circle bg-label-success"><i
+                                                                    class="icon-base bx bx-cart"></i></span>
                                                         </div>
                                                     </div>
                                                     <div class="flex-grow-1">
                                                         <h6 class="small mb-0">Whoo! You have new order ðŸ›’</h6>
-                                                        <small class="mb-1 d-block text-body">ACME Inc. made new order $1,154</small>
+                                                        <small class="mb-1 d-block text-body">ACME Inc. made new order
+                                                            $1,154</small>
                                                         <small class="text-body-secondary">1 day ago</small>
                                                     </div>
                                                     <div class="flex-shrink-0 dropdown-notifications-actions">
-                                                        <a href="javascript:void(0)" class="dropdown-notifications-read"><span class="badge badge-dot"></span></a>
-                                                        <a href="javascript:void(0)" class="dropdown-notifications-archive"><span class="icon-base bx bx-x"></span></a>
+                                                        <a href="javascript:void(0)"
+                                                            class="dropdown-notifications-read"><span
+                                                                class="badge badge-dot"></span></a>
+                                                        <a href="javascript:void(0)"
+                                                            class="dropdown-notifications-archive"><span
+                                                                class="icon-base bx bx-x"></span></a>
                                                     </div>
                                                 </div>
                                             </li>
-                                            <li class="list-group-item list-group-item-action dropdown-notifications-item marked-as-read">
+                                            <li
+                                                class="list-group-item list-group-item-action dropdown-notifications-item marked-as-read">
                                                 <div class="d-flex">
                                                     <div class="flex-shrink-0 me-3">
                                                         <div class="avatar">
-                                                            <img src="../../assets/img/avatars/9.png" alt="" class="rounded-circle">
+                                                            <img src="../../assets/img/avatars/9.png" alt=""
+                                                                class="rounded-circle">
                                                         </div>
                                                     </div>
                                                     <div class="flex-grow-1">
                                                         <h6 class="small mb-0">Application has been approved ðŸš€</h6>
-                                                        <small class="mb-1 d-block text-body">Your ABC project application has been approved.</small>
+                                                        <small class="mb-1 d-block text-body">Your ABC project
+                                                            application has been approved.</small>
                                                         <small class="text-body-secondary">2 days ago</small>
                                                     </div>
                                                     <div class="flex-shrink-0 dropdown-notifications-actions">
-                                                        <a href="javascript:void(0)" class="dropdown-notifications-read"><span class="badge badge-dot"></span></a>
-                                                        <a href="javascript:void(0)" class="dropdown-notifications-archive"><span class="icon-base bx bx-x"></span></a>
+                                                        <a href="javascript:void(0)"
+                                                            class="dropdown-notifications-read"><span
+                                                                class="badge badge-dot"></span></a>
+                                                        <a href="javascript:void(0)"
+                                                            class="dropdown-notifications-archive"><span
+                                                                class="icon-base bx bx-x"></span></a>
                                                     </div>
                                                 </div>
                                             </li>
-                                            <li class="list-group-item list-group-item-action dropdown-notifications-item marked-as-read">
+                                            <li
+                                                class="list-group-item list-group-item-action dropdown-notifications-item marked-as-read">
                                                 <div class="d-flex">
                                                     <div class="flex-shrink-0 me-3">
                                                         <div class="avatar">
-                                                            <span class="avatar-initial rounded-circle bg-label-success"><i class="icon-base bx bx-pie-chart-alt"></i></span>
+                                                            <span
+                                                                class="avatar-initial rounded-circle bg-label-success"><i
+                                                                    class="icon-base bx bx-pie-chart-alt"></i></span>
                                                         </div>
                                                     </div>
                                                     <div class="flex-grow-1">
                                                         <h6 class="small mb-0">Monthly report is generated</h6>
-                                                        <small class="mb-1 d-block text-body">July monthly financial report is generated </small>
+                                                        <small class="mb-1 d-block text-body">July monthly financial
+                                                            report is generated </small>
                                                         <small class="text-body-secondary">3 days ago</small>
                                                     </div>
                                                     <div class="flex-shrink-0 dropdown-notifications-actions">
-                                                        <a href="javascript:void(0)" class="dropdown-notifications-read"><span class="badge badge-dot"></span></a>
-                                                        <a href="javascript:void(0)" class="dropdown-notifications-archive"><span class="icon-base bx bx-x"></span></a>
+                                                        <a href="javascript:void(0)"
+                                                            class="dropdown-notifications-read"><span
+                                                                class="badge badge-dot"></span></a>
+                                                        <a href="javascript:void(0)"
+                                                            class="dropdown-notifications-archive"><span
+                                                                class="icon-base bx bx-x"></span></a>
                                                     </div>
                                                 </div>
                                             </li>
-                                            <li class="list-group-item list-group-item-action dropdown-notifications-item marked-as-read">
+                                            <li
+                                                class="list-group-item list-group-item-action dropdown-notifications-item marked-as-read">
                                                 <div class="d-flex">
                                                     <div class="flex-shrink-0 me-3">
                                                         <div class="avatar">
-                                                            <img src="../../assets/img/avatars/5.png" alt="" class="rounded-circle">
+                                                            <img src="../../assets/img/avatars/5.png" alt=""
+                                                                class="rounded-circle">
                                                         </div>
                                                     </div>
                                                     <div class="flex-grow-1">
                                                         <h6 class="small mb-0">Send connection request</h6>
-                                                        <small class="mb-1 d-block text-body">Peter sent you connection request</small>
+                                                        <small class="mb-1 d-block text-body">Peter sent you connection
+                                                            request</small>
                                                         <small class="text-body-secondary">4 days ago</small>
                                                     </div>
                                                     <div class="flex-shrink-0 dropdown-notifications-actions">
-                                                        <a href="javascript:void(0)" class="dropdown-notifications-read"><span class="badge badge-dot"></span></a>
-                                                        <a href="javascript:void(0)" class="dropdown-notifications-archive"><span class="icon-base bx bx-x"></span></a>
+                                                        <a href="javascript:void(0)"
+                                                            class="dropdown-notifications-read"><span
+                                                                class="badge badge-dot"></span></a>
+                                                        <a href="javascript:void(0)"
+                                                            class="dropdown-notifications-archive"><span
+                                                                class="icon-base bx bx-x"></span></a>
                                                     </div>
                                                 </div>
                                             </li>
-                                            <li class="list-group-item list-group-item-action dropdown-notifications-item">
+                                            <li
+                                                class="list-group-item list-group-item-action dropdown-notifications-item">
                                                 <div class="d-flex">
                                                     <div class="flex-shrink-0 me-3">
                                                         <div class="avatar">
-                                                            <img src="../../assets/img/avatars/6.png" alt="" class="rounded-circle">
+                                                            <img src="../../assets/img/avatars/6.png" alt=""
+                                                                class="rounded-circle">
                                                         </div>
                                                     </div>
                                                     <div class="flex-grow-1">
                                                         <h6 class="small mb-0">New message from Jane</h6>
-                                                        <small class="mb-1 d-block text-body">Your have new message from Jane</small>
+                                                        <small class="mb-1 d-block text-body">Your have new message from
+                                                            Jane</small>
                                                         <small class="text-body-secondary">5 days ago</small>
                                                     </div>
                                                     <div class="flex-shrink-0 dropdown-notifications-actions">
-                                                        <a href="javascript:void(0)" class="dropdown-notifications-read"><span class="badge badge-dot"></span></a>
-                                                        <a href="javascript:void(0)" class="dropdown-notifications-archive"><span class="icon-base bx bx-x"></span></a>
+                                                        <a href="javascript:void(0)"
+                                                            class="dropdown-notifications-read"><span
+                                                                class="badge badge-dot"></span></a>
+                                                        <a href="javascript:void(0)"
+                                                            class="dropdown-notifications-archive"><span
+                                                                class="icon-base bx bx-x"></span></a>
                                                     </div>
                                                 </div>
                                             </li>
-                                            <li class="list-group-item list-group-item-action dropdown-notifications-item marked-as-read">
+                                            <li
+                                                class="list-group-item list-group-item-action dropdown-notifications-item marked-as-read">
                                                 <div class="d-flex">
                                                     <div class="flex-shrink-0 me-3">
                                                         <div class="avatar">
-                                                            <span class="avatar-initial rounded-circle bg-label-warning"><i class="icon-base bx bx-error"></i></span>
+                                                            <span
+                                                                class="avatar-initial rounded-circle bg-label-warning"><i
+                                                                    class="icon-base bx bx-error"></i></span>
                                                         </div>
                                                     </div>
                                                     <div class="flex-grow-1">
                                                         <h6 class="small mb-0">CPU is running high</h6>
-                                                        <small class="mb-1 d-block text-body">CPU Utilization Percent is currently at 88.63%,</small>
+                                                        <small class="mb-1 d-block text-body">CPU Utilization Percent is
+                                                            currently at 88.63%,</small>
                                                         <small class="text-body-secondary">5 days ago</small>
                                                     </div>
                                                     <div class="flex-shrink-0 dropdown-notifications-actions">
-                                                        <a href="javascript:void(0)" class="dropdown-notifications-read"><span class="badge badge-dot"></span></a>
-                                                        <a href="javascript:void(0)" class="dropdown-notifications-archive"><span class="icon-base bx bx-x"></span></a>
+                                                        <a href="javascript:void(0)"
+                                                            class="dropdown-notifications-read"><span
+                                                                class="badge badge-dot"></span></a>
+                                                        <a href="javascript:void(0)"
+                                                            class="dropdown-notifications-archive"><span
+                                                                class="icon-base bx bx-x"></span></a>
                                                     </div>
                                                 </div>
                                             </li>
@@ -1688,9 +1826,11 @@
                             <!--/ Notification -->
                             <!-- User -->
                             <li class="nav-item navbar-dropdown dropdown-user dropdown">
-                                <a class="nav-link dropdown-toggle hide-arrow p-0" href="javascript:void(0);" data-bs-toggle="dropdown">
+                                <a class="nav-link dropdown-toggle hide-arrow p-0" href="javascript:void(0);"
+                                    data-bs-toggle="dropdown">
                                     <div class="avatar avatar-online">
-                                        <img src="{{ auth()->user()->foto ? asset('storage/'.auth()->user()->foto) : asset('assets/img/avatars/cat4.gif') }}" alt="" class=" rounded-circle">
+                                        <img src="{{ auth()->user()->foto ? asset('storage/' . auth()->user()->foto) : asset('assets/img/avatars/cat4.gif') }}"
+                                            alt="" class=" rounded-circle">
                                     </div>
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end">
@@ -1699,12 +1839,14 @@
                                             <div class="d-flex">
                                                 <div class="flex-shrink-0 me-3">
                                                     <div class="avatar avatar-online">
-                                                        <img src="{{ auth()->user()->foto ? asset('storage/'.auth()->user()->foto) : asset('assets/img/avatars/cat4.gif') }}" alt="" class=" w-px-40 h-auto rounded-circle">
+                                                        <img src="{{ auth()->user()->foto ? asset('storage/' . auth()->user()->foto) : asset('assets/img/avatars/cat4.gif') }}"
+                                                            alt="" class=" w-px-40 h-auto rounded-circle">
                                                     </div>
                                                 </div>
                                                 <div class="flex-grow-1">
                                                     <h6 class="mb-0">{{ auth()->user()->name }}</h6>
-                                                    <small class="text-body-secondary">@foreach(auth()->user()->roles as $role)
+                                                    <small
+                                                        class="text-body-secondary">@foreach(auth()->user()->roles as $role)
                                                         {{ $role->name }}@endforeach</small>
                                                 </div>
                                             </div>
@@ -1714,7 +1856,9 @@
                                         <div class="dropdown-divider my-1"></div>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" href="{{ route('Perfil') }}"> <i class="icon-base bx bx-user icon-md me-3"></i><span>My Profile</span> </a>
+                                        <a class="dropdown-item" href="{{ route('Perfil') }}"> <i
+                                                class="icon-base bx bx-user icon-md me-3"></i><span>My Profile</span>
+                                        </a>
                                     </li>
 
                                     <li>
@@ -1726,7 +1870,8 @@
                                             @csrf
                                             <a href="{{ route('logout') }}" class="dropdown-item"
                                                 onclick="event.preventDefault(); this.closest('form').submit();">
-                                                <i class="icon-base bx bx-power-off icon-md me-3"></i><span>Log Out</span>
+                                                <i class="icon-base bx bx-power-off icon-md me-3"></i><span>Log
+                                                    Out</span>
                                             </a>
                                         </form>
                                     </li>
@@ -1765,7 +1910,9 @@
 
 
             <!-- Drag Target Area To SlideIn Menu On Small Screens -->
-            <div class="drag-target" style="touch-action: pan-y; user-select: none; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></div>
+            <div class="drag-target"
+                style="touch-action: pan-y; user-select: none; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
+            </div>
 
         </div>
         <!-- / Layout wrapper -->
@@ -1816,10 +1963,15 @@
             <div class="p-6 m-0 lh-sm border-bottom template-customizer-header position-relative py-4">
                 <h6 class="template-customizer-t-panel_header mb-1">
                     Personalizadores de plantillas</h6>
-                <p class="template-customizer-t-panel_sub_header mb-0 small">Personaliza y previsualiza en tiempo real</p>
+                <p class="template-customizer-t-panel_sub_header mb-0 small">Personaliza y previsualiza en tiempo real
+                </p>
                 <div class="d-flex align-items-center gap-2 position-absolute end-0 top-0 mt-6 me-5">
-                    <a href="javascript:void(0)" class="template-customizer-reset-btn text-heading" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Reset Customizer"><i class="icon-base bx bx-refresh icon-24px"></i><span class="badge rounded-pill bg-danger badge-dot badge-notifications"></span></a>
-                    <a href="javascript:void(0)" class="template-customizer-close-btn fw-light text-heading" tabindex="-1">
+                    <a href="javascript:void(0)" class="template-customizer-reset-btn text-heading"
+                        data-bs-toggle="tooltip" data-bs-placement="bottom" title="Reset Customizer"><i
+                            class="icon-base bx bx-refresh icon-24px"></i><span
+                            class="badge rounded-pill bg-danger badge-dot badge-notifications"></span></a>
+                    <a href="javascript:void(0)" class="template-customizer-close-btn fw-light text-heading"
+                        tabindex="-1">
                         <i class="icon-base bx bx-x icon-lg"></i>
                     </a>
                 </div>
@@ -1840,139 +1992,207 @@
                         <div class="row template-customizer-colors-options">
                             <div class="form-check custom-option custom-option-icon mb-0">
                                 <label class="form-check-label custom-option-content p-0" for="colorRadioIconprimary">
-                                    <span class="custom-option-body mb-0 scaleX-n1-rtl" style="background-color: #0d3c94ff;"></span>
+                                    <span class="custom-option-body mb-0 scaleX-n1-rtl"
+                                        style="background-color: #0d3c94ff;"></span>
                                 </label>
-                                <input name="colorRadioIcon" class="form-check-input d-none" type="radio" value="#0d3c94ff" data-color="#0D9394" id="colorRadioIconprimary" checked="checked">
+                                <input name="colorRadioIcon" class="form-check-input d-none" type="radio"
+                                    value="#0d3c94ff" data-color="#0D9394" id="colorRadioIconprimary" checked="checked">
                             </div>
                             <div class="form-check custom-option custom-option-icon mb-0">
                                 <label class="form-check-label custom-option-content p-0" for="colorRadioIconsuccess">
-                                    <span class="custom-option-body mb-0 scaleX-n1-rtl" style="background-color: #0D9394;"></span>
+                                    <span class="custom-option-body mb-0 scaleX-n1-rtl"
+                                        style="background-color: #0D9394;"></span>
                                 </label>
-                                <input name="colorRadioIcon" class="form-check-input d-none" type="radio" value="#0D9394" data-color="#0D9394" id="colorRadioIconsuccess">
+                                <input name="colorRadioIcon" class="form-check-input d-none" type="radio"
+                                    value="#0D9394" data-color="#0D9394" id="colorRadioIconsuccess">
                             </div>
                             <div class="form-check custom-option custom-option-icon mb-0 checked">
                                 <label class="form-check-label custom-option-content p-0" for="colorRadioIconwarning">
-                                    <span class="custom-option-body mb-0 scaleX-n1-rtl" style="background-color: #FFAB1D;"></span>
+                                    <span class="custom-option-body mb-0 scaleX-n1-rtl"
+                                        style="background-color: #FFAB1D;"></span>
                                 </label>
-                                <input name="colorRadioIcon" class="form-check-input d-none" type="radio" value="#FFAB1D" data-color="#FFAB1D" id="colorRadioIconwarning">
+                                <input name="colorRadioIcon" class="form-check-input d-none" type="radio"
+                                    value="#FFAB1D" data-color="#FFAB1D" id="colorRadioIconwarning">
                             </div>
                             <div class="form-check custom-option custom-option-icon mb-0">
                                 <label class="form-check-label custom-option-content p-0" for="colorRadioIcondanger">
-                                    <span class="custom-option-body mb-0 scaleX-n1-rtl" style="background-color: #EB3D63;"></span>
+                                    <span class="custom-option-body mb-0 scaleX-n1-rtl"
+                                        style="background-color: #EB3D63;"></span>
                                 </label>
-                                <input name="colorRadioIcon" class="form-check-input d-none" type="radio" value="#EB3D63" data-color="#EB3D63" id="colorRadioIcondanger">
+                                <input name="colorRadioIcon" class="form-check-input d-none" type="radio"
+                                    value="#EB3D63" data-color="#EB3D63" id="colorRadioIcondanger">
                             </div>
                             <div class="form-check custom-option custom-option-icon mb-0">
                                 <label class="form-check-label custom-option-content p-0" for="colorRadioIconinfo">
-                                    <span class="custom-option-body mb-0 scaleX-n1-rtl" style="background-color: #2092EC;"></span>
+                                    <span class="custom-option-body mb-0 scaleX-n1-rtl"
+                                        style="background-color: #2092EC;"></span>
                                 </label>
-                                <input name="colorRadioIcon" class="form-check-input d-none" type="radio" value="#2092EC" data-color="#2092EC" id="colorRadioIconinfo">
+                                <input name="colorRadioIcon" class="form-check-input d-none" type="radio"
+                                    value="#2092EC" data-color="#2092EC" id="colorRadioIconinfo">
                             </div>
-                            <div class="form-check custom-option custom-option-icon mb-0"><label class="form-check-label custom-option-content" for="colorRadioIcon">
+                            <div class="form-check custom-option custom-option-icon mb-0"><label
+                                    class="form-check-label custom-option-content" for="colorRadioIcon">
                                     <div class="pickr">
 
-                                        <button type="button" class="pcr-button bx bxs-color-fill" role="button" aria-label="toggle color picker dialog" style="transition: none; --pcr-color: rgba(13, 147, 148, 1);"></button>
+                                        <button type="button" class="pcr-button bx bxs-color-fill" role="button"
+                                            aria-label="toggle color picker dialog"
+                                            style="transition: none; --pcr-color: rgba(13, 147, 148, 1);"></button>
 
 
                                     </div>
-                                </label><input name="colorRadioIcon" class="form-check-input picker d-none" type="radio" value="picker" id="colorRadioIcon"> </div>
+                                </label><input name="colorRadioIcon" class="form-check-input picker d-none" type="radio"
+                                    value="picker" id="colorRadioIcon"> </div>
                         </div>
                     </div>
 
                     <!-- Theme -->
                     <div class="m-0 px-6 pb-6 template-customizer-theme w-100">
-                        <label for="customizerTheme" class="form-label d-block template-customizer-t-theme_label mb-2">Tema</label>
+                        <label for="customizerTheme"
+                            class="form-label d-block template-customizer-t-theme_label mb-2">Tema</label>
                         <div class="row px-1 template-customizer-themes-options">
                             <div class="col-4 px-2">
                                 <div class="form-check custom-option custom-option-icon mb-0">
-                                    <label class="form-check-label custom-option-content p-0" for="customRadioIconlight">
-                                        <span class="custom-option-body mb-0 scaleX-n1-rtl"><i class="bx bx-sun icon-base mb-0"></i></span>
+                                    <label class="form-check-label custom-option-content p-0"
+                                        for="customRadioIconlight">
+                                        <span class="custom-option-body mb-0 scaleX-n1-rtl"><i
+                                                class="bx bx-sun icon-base mb-0"></i></span>
                                     </label>
-                                    <input name="customRadioIcon" class="form-check-input d-none" type="radio" value="light" id="customRadioIconlight">
+                                    <input name="customRadioIcon" class="form-check-input d-none" type="radio"
+                                        value="light" id="customRadioIconlight">
                                 </div>
-                                <label class="form-check-label small text-nowrap text-body" for="customRadioIconlight">Claro</label>
+                                <label class="form-check-label small text-nowrap text-body"
+                                    for="customRadioIconlight">Claro</label>
                             </div>
                             <div class="col-4 px-2">
                                 <div class="form-check custom-option custom-option-icon mb-0">
                                     <label class="form-check-label custom-option-content p-0" for="customRadioIcondark">
-                                        <span class="custom-option-body mb-0 scaleX-n1-rtl"><i class="bx bx-moon icon-base mb-0"></i></span>
+                                        <span class="custom-option-body mb-0 scaleX-n1-rtl"><i
+                                                class="bx bx-moon icon-base mb-0"></i></span>
                                     </label>
-                                    <input name="customRadioIcon" class="form-check-input d-none" type="radio" value="dark" id="customRadioIcondark">
+                                    <input name="customRadioIcon" class="form-check-input d-none" type="radio"
+                                        value="dark" id="customRadioIcondark">
                                 </div>
-                                <label class="form-check-label small text-nowrap text-body" for="customRadioIcondark">Oscuro</label>
+                                <label class="form-check-label small text-nowrap text-body"
+                                    for="customRadioIcondark">Oscuro</label>
                             </div>
                             <div class="col-4 px-2">
                                 <div class="form-check custom-option custom-option-icon mb-0 checked">
-                                    <label class="form-check-label custom-option-content p-0" for="customRadioIconsystem">
-                                        <span class="custom-option-body mb-0 scaleX-n1-rtl"><i class="bx bx-desktop icon-base mb-0"></i></span>
+                                    <label class="form-check-label custom-option-content p-0"
+                                        for="customRadioIconsystem">
+                                        <span class="custom-option-body mb-0 scaleX-n1-rtl"><i
+                                                class="bx bx-desktop icon-base mb-0"></i></span>
                                     </label>
-                                    <input name="customRadioIcon" class="form-check-input d-none" type="radio" value="system" id="customRadioIconsystem" checked="checked">
+                                    <input name="customRadioIcon" class="form-check-input d-none" type="radio"
+                                        value="system" id="customRadioIconsystem" checked="checked">
                                 </div>
-                                <label class="form-check-label small text-nowrap text-body" for="customRadioIconsystem">Sistema</label>
+                                <label class="form-check-label small text-nowrap text-body"
+                                    for="customRadioIconsystem">Sistema</label>
                             </div>
                         </div>
                     </div>
 
                     <!-- Skins -->
                     <div class="m-0 px-6 pb-6 template-customizer-skins w-100">
-                        <label for="customizerSkin" class="form-label template-customizer-t-skin_label mb-2">Apariencia</label>
+                        <label for="customizerSkin"
+                            class="form-label template-customizer-t-skin_label mb-2">Apariencia</label>
                         <div class="row px-1 template-customizer-skins-options">
                             <div class="col-4 px-2">
-                                <div class="form-check custom-option custom-option-image custom-option-image-radio mb-0 checked">
+                                <div
+                                    class="form-check custom-option custom-option-image custom-option-image-radio mb-0 checked">
                                     <label class="form-check-label custom-option-content p-0" for="skinRadiosdefault">
-                                        <span class="custom-option-body mb-0 scaleX-n1-rtl"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 104 66" height="62" width="98">
-                                                <rect fill-opacity="0.02" fill="currentColor" rx="4" height="66" width="104"></rect>
-                                                <path fill-opacity="0.08" fill="currentColor" d="M0 4C0 1.79086 1.79086 0 4 0H27.4717V66H4C1.79086 66 0 64.2091 0 62V4Z"></path>
-                                                <rect fill-opacity="0.3" fill="currentColor" rx="1.39473" height="2.78946" width="17.6604" y="23.8839" x="4.90625"></rect>
-                                                <rect fill-opacity="0.3" fill="currentColor" rx="2" height="9.70588" width="9.81132" y="5.88135" x="8.83008"></rect>
-                                                <rect fill-opacity="0.3" fill="currentColor" rx="1.39473" height="2.78946" width="17.6604" y="34.4381" x="4.90625"></rect>
-                                                <rect fill-opacity="0.3" fill="currentColor" rx="1.39473" height="2.78946" width="17.6604" y="44.9923" x="4.90625"></rect>
-                                                <rect fill-opacity="0.3" fill="currentColor" rx="1.39473" height="2.78946" width="17.6604" y="55.5462" x="4.90625"></rect>
-                                                <rect fill-opacity="0.08" fill="currentColor" rx="2" height="8.8" width="64.7547" y="4.67166" x="34.1152"></rect>
-                                                <rect fill-opacity="0.3" fill="currentColor" rx="1" height="4.4" width="3.92453" y="6.87158" x="37.0391"></rect>
-                                                <rect fill-opacity="0.3" fill="currentColor" rx="1" height="4.4" width="3.92453" y="6.87158" x="80.21"></rect>
-                                                <rect fill-opacity="0.3" fill="currentColor" rx="1" height="4.4" width="3.92453" y="6.87158" x="86.0957"></rect>
-                                                <rect fill-opacity="0.3" fill="currentColor" rx="1" height="4.4" width="3.92453" y="6.87158" x="91.9824"></rect>
-                                                <rect fill-opacity="0.08" fill="currentColor" rx="2" height="17.6" width="40.2264" y="19.6134" x="58.4844"></rect>
-                                                <rect fill-opacity="0.08" fill="currentColor" rx="2" height="17.6" width="19.0455" y="19.6134" x="34.1152"></rect>
-                                                <rect fill-opacity="0.08" fill="currentColor" rx="2" height="17.6" width="64.7547" y="42.4545" x="34.1152"></rect>
+                                        <span class="custom-option-body mb-0 scaleX-n1-rtl"><svg
+                                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 104 66"
+                                                height="62" width="98">
+                                                <rect fill-opacity="0.02" fill="currentColor" rx="4" height="66"
+                                                    width="104"></rect>
+                                                <path fill-opacity="0.08" fill="currentColor"
+                                                    d="M0 4C0 1.79086 1.79086 0 4 0H27.4717V66H4C1.79086 66 0 64.2091 0 62V4Z">
+                                                </path>
+                                                <rect fill-opacity="0.3" fill="currentColor" rx="1.39473"
+                                                    height="2.78946" width="17.6604" y="23.8839" x="4.90625"></rect>
+                                                <rect fill-opacity="0.3" fill="currentColor" rx="2" height="9.70588"
+                                                    width="9.81132" y="5.88135" x="8.83008"></rect>
+                                                <rect fill-opacity="0.3" fill="currentColor" rx="1.39473"
+                                                    height="2.78946" width="17.6604" y="34.4381" x="4.90625"></rect>
+                                                <rect fill-opacity="0.3" fill="currentColor" rx="1.39473"
+                                                    height="2.78946" width="17.6604" y="44.9923" x="4.90625"></rect>
+                                                <rect fill-opacity="0.3" fill="currentColor" rx="1.39473"
+                                                    height="2.78946" width="17.6604" y="55.5462" x="4.90625"></rect>
+                                                <rect fill-opacity="0.08" fill="currentColor" rx="2" height="8.8"
+                                                    width="64.7547" y="4.67166" x="34.1152"></rect>
+                                                <rect fill-opacity="0.3" fill="currentColor" rx="1" height="4.4"
+                                                    width="3.92453" y="6.87158" x="37.0391"></rect>
+                                                <rect fill-opacity="0.3" fill="currentColor" rx="1" height="4.4"
+                                                    width="3.92453" y="6.87158" x="80.21"></rect>
+                                                <rect fill-opacity="0.3" fill="currentColor" rx="1" height="4.4"
+                                                    width="3.92453" y="6.87158" x="86.0957"></rect>
+                                                <rect fill-opacity="0.3" fill="currentColor" rx="1" height="4.4"
+                                                    width="3.92453" y="6.87158" x="91.9824"></rect>
+                                                <rect fill-opacity="0.08" fill="currentColor" rx="2" height="17.6"
+                                                    width="40.2264" y="19.6134" x="58.4844"></rect>
+                                                <rect fill-opacity="0.08" fill="currentColor" rx="2" height="17.6"
+                                                    width="19.0455" y="19.6134" x="34.1152"></rect>
+                                                <rect fill-opacity="0.08" fill="currentColor" rx="2" height="17.6"
+                                                    width="64.7547" y="42.4545" x="34.1152"></rect>
                                             </svg>
                                         </span>
                                     </label>
-                                    <input name="skinRadios" class="form-check-input d-none" type="radio" value="default" id="skinRadiosdefault" checked="checked">
+                                    <input name="skinRadios" class="form-check-input d-none" type="radio"
+                                        value="default" id="skinRadiosdefault" checked="checked">
                                 </div>
-                                <label class="form-check-label small text-nowrap text-body" for="skinRadiosdefault">Predeterminado</label>
+                                <label class="form-check-label small text-nowrap text-body"
+                                    for="skinRadiosdefault">Predeterminado</label>
                             </div>
                             <div class="col-4 px-2">
-                                <div class="form-check custom-option custom-option-image custom-option-image-radio mb-0">
+                                <div
+                                    class="form-check custom-option custom-option-image custom-option-image-radio mb-0">
                                     <label class="form-check-label custom-option-content p-0" for="skinRadiosbordered">
-                                        <span class="custom-option-body mb-0 scaleX-n1-rtl"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 104 66" height="62" width="98">
-                                                <rect fill-opacity="0.02" fill="currentColor" rx="4" height="66" width="104"></rect>
-                                                <rect fill-opacity="0.3" fill="currentColor" rx="1.39473" height="2.78946" width="17.6604" y="23.8839" x="4.90625"></rect>
-                                                <rect fill-opacity="0.3" fill="currentColor" rx="2" height="9.70588" width="9.81132" y="5.88135" x="8.83008"></rect>
-                                                <rect fill-opacity="0.3" fill="currentColor" rx="1.39473" height="2.78946" width="17.6604" y="34.4381" x="4.90625"></rect>
-                                                <rect fill-opacity="0.3" fill="currentColor" rx="1.39473" height="2.78946" width="17.6604" y="44.9923" x="4.90625"></rect>
-                                                <rect fill-opacity="0.3" fill="currentColor" rx="1.39473" height="2.78946" width="17.6604" y="55.5462" x="4.90625"></rect>
-                                                <rect stroke-opacity="0.12" stroke="currentColor" rx="1.5" height="7.8" width="63.7547" y="5.17166" x="34.6152"></rect>
-                                                <rect fill-opacity="0.3" fill="currentColor" rx="1" height="4.4" width="3.92453" y="6.87158" x="37.0391"></rect>
-                                                <rect fill-opacity="0.3" fill="currentColor" rx="1" height="4.4" width="3.92453" y="6.87158" x="80.21"></rect>
-                                                <rect fill-opacity="0.3" fill="currentColor" rx="1" height="4.4" width="3.92453" y="6.87158" x="86.0957"></rect>
-                                                <rect fill-opacity="0.3" fill="currentColor" rx="1" height="4.4" width="3.92453" y="6.87158" x="91.002"></rect>
-                                                <rect stroke-opacity="0.12" stroke="currentColor" rx="1.5" height="16.6" width="39.2264" y="20.1134" x="58.9844"></rect>
-                                                <rect stroke-opacity="0.12" stroke="currentColor" rx="1.5" height="16.6" width="18.0455" y="20.1134" x="34.6152"></rect>
-                                                <rect stroke-opacity="0.12" stroke="currentColor" rx="1.5" height="16.6" width="63.7547" y="42.9545" x="34.6152"></rect>
+                                        <span class="custom-option-body mb-0 scaleX-n1-rtl"><svg
+                                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 104 66"
+                                                height="62" width="98">
+                                                <rect fill-opacity="0.02" fill="currentColor" rx="4" height="66"
+                                                    width="104"></rect>
+                                                <rect fill-opacity="0.3" fill="currentColor" rx="1.39473"
+                                                    height="2.78946" width="17.6604" y="23.8839" x="4.90625"></rect>
+                                                <rect fill-opacity="0.3" fill="currentColor" rx="2" height="9.70588"
+                                                    width="9.81132" y="5.88135" x="8.83008"></rect>
+                                                <rect fill-opacity="0.3" fill="currentColor" rx="1.39473"
+                                                    height="2.78946" width="17.6604" y="34.4381" x="4.90625"></rect>
+                                                <rect fill-opacity="0.3" fill="currentColor" rx="1.39473"
+                                                    height="2.78946" width="17.6604" y="44.9923" x="4.90625"></rect>
+                                                <rect fill-opacity="0.3" fill="currentColor" rx="1.39473"
+                                                    height="2.78946" width="17.6604" y="55.5462" x="4.90625"></rect>
+                                                <rect stroke-opacity="0.12" stroke="currentColor" rx="1.5" height="7.8"
+                                                    width="63.7547" y="5.17166" x="34.6152"></rect>
+                                                <rect fill-opacity="0.3" fill="currentColor" rx="1" height="4.4"
+                                                    width="3.92453" y="6.87158" x="37.0391"></rect>
+                                                <rect fill-opacity="0.3" fill="currentColor" rx="1" height="4.4"
+                                                    width="3.92453" y="6.87158" x="80.21"></rect>
+                                                <rect fill-opacity="0.3" fill="currentColor" rx="1" height="4.4"
+                                                    width="3.92453" y="6.87158" x="86.0957"></rect>
+                                                <rect fill-opacity="0.3" fill="currentColor" rx="1" height="4.4"
+                                                    width="3.92453" y="6.87158" x="91.002"></rect>
+                                                <rect stroke-opacity="0.12" stroke="currentColor" rx="1.5" height="16.6"
+                                                    width="39.2264" y="20.1134" x="58.9844"></rect>
+                                                <rect stroke-opacity="0.12" stroke="currentColor" rx="1.5" height="16.6"
+                                                    width="18.0455" y="20.1134" x="34.6152"></rect>
+                                                <rect stroke-opacity="0.12" stroke="currentColor" rx="1.5" height="16.6"
+                                                    width="63.7547" y="42.9545" x="34.6152"></rect>
                                             </svg>
                                         </span>
                                     </label>
-                                    <input name="skinRadios" class="form-check-input d-none" type="radio" value="bordered" id="skinRadiosbordered">
+                                    <input name="skinRadios" class="form-check-input d-none" type="radio"
+                                        value="bordered" id="skinRadiosbordered">
                                 </div>
-                                <label class="form-check-label small text-nowrap text-body" for="skinRadiosbordered">Bordeado</label>
+                                <label class="form-check-label small text-nowrap text-body"
+                                    for="skinRadiosbordered">Bordeado</label>
                             </div>
                         </div>
                     </div>
 
                     <!-- Semi Dark -->
-                    <div class="m-0 px-6 template-customizer-semiDark w-100 d-flex justify-content-between pe-12 d-none">
+                    <div
+                        class="m-0 px-6 template-customizer-semiDark w-100 d-flex justify-content-between pe-12 d-none">
                         <span class="form-label template-customizer-t-semiDark_label">Semi Oscuro</span>
                         <label class="switch template-customizer-t-semiDark_label">
                             <input type="checkbox" class="template-customizer-semi-dark-switch switch-input">
@@ -1989,64 +2209,111 @@
                 <!-- Layout -->
                 <div class="template-customizer-layout">
                     <h5 class="m-0 px-6 pb-6">
-                        <span class="template-customizer-t-layout_header bg-label-primary rounded-2 py-1 px-3 small">DiseÃ±o</span>
+                        <span
+                            class="template-customizer-t-layout_header bg-label-primary rounded-2 py-1 px-3 small">DiseÃ±o</span>
                     </h5>
 
                     <!-- Layout(Menu) -->
                     <div class="m-0 px-6 pb-6 d-block template-customizer-layouts">
-                        <label for="customizerStyle" class="form-label d-block template-customizer-t-layout_label mb-2">Menu (NavegaciÃ³n)</label>
+                        <label for="customizerStyle"
+                            class="form-label d-block template-customizer-t-layout_label mb-2">Menu
+                            (NavegaciÃ³n)</label>
                         <div class="row px-1 template-customizer-layouts-options">
                             <div class="col-4 px-2">
-                                <div class="form-check custom-option custom-option-image custom-option-image-radio mb-0 checked">
-                                    <label class="form-check-label custom-option-content p-0" for="layoutsRadiosexpanded">
-                                        <span class="custom-option-body mb-0 scaleX-n1-rtl"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 104 66" height="62" width="98">
-                                                <rect fill-opacity="0.02" fill="currentColor" rx="4" height="66" width="104"></rect>
-                                                <path fill-opacity="0.08" fill="currentColor" d="M0 4C0 1.79086 1.79086 0 4 0H27.4717V66H4C1.79086 66 0 64.2091 0 62V4Z"></path>
-                                                <rect fill-opacity="0.3" fill="currentColor" rx="1.39473" height="2.78946" width="17.6604" y="23.8839" x="4.90625"></rect>
-                                                <rect fill-opacity="0.3" fill="currentColor" rx="2" height="9.70588" width="9.81132" y="5.88135" x="8.83008"></rect>
-                                                <rect fill-opacity="0.3" fill="currentColor" rx="1.39473" height="2.78946" width="17.6604" y="34.4381" x="4.90625"></rect>
-                                                <rect fill-opacity="0.3" fill="currentColor" rx="1.39473" height="2.78946" width="17.6604" y="44.9923" x="4.90625"></rect>
-                                                <rect fill-opacity="0.3" fill="currentColor" rx="1.39473" height="2.78946" width="17.6604" y="55.5462" x="4.90625"></rect>
-                                                <rect fill-opacity="0.08" fill="currentColor" rx="2" height="8.8" width="64.7547" y="4.67166" x="34.1152"></rect>
-                                                <rect fill-opacity="0.3" fill="currentColor" rx="1" height="4.4" width="3.92453" y="6.87158" x="37.0391"></rect>
-                                                <rect fill-opacity="0.3" fill="currentColor" rx="1" height="4.4" width="3.92453" y="6.87158" x="80.21"></rect>
-                                                <rect fill-opacity="0.3" fill="currentColor" rx="1" height="4.4" width="3.92453" y="6.87158" x="86.0957"></rect>
-                                                <rect fill-opacity="0.3" fill="currentColor" rx="1" height="4.4" width="3.92453" y="6.87158" x="91.9824"></rect>
-                                                <rect fill-opacity="0.08" fill="currentColor" rx="2" height="17.6" width="40.2264" y="19.6134" x="58.4844"></rect>
-                                                <rect fill-opacity="0.08" fill="currentColor" rx="2" height="17.6" width="19.0455" y="19.6134" x="34.1152"></rect>
-                                                <rect fill-opacity="0.08" fill="currentColor" rx="2" height="17.6" width="64.7547" y="42.4545" x="34.1152"></rect>
+                                <div
+                                    class="form-check custom-option custom-option-image custom-option-image-radio mb-0 checked">
+                                    <label class="form-check-label custom-option-content p-0"
+                                        for="layoutsRadiosexpanded">
+                                        <span class="custom-option-body mb-0 scaleX-n1-rtl"><svg
+                                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 104 66"
+                                                height="62" width="98">
+                                                <rect fill-opacity="0.02" fill="currentColor" rx="4" height="66"
+                                                    width="104"></rect>
+                                                <path fill-opacity="0.08" fill="currentColor"
+                                                    d="M0 4C0 1.79086 1.79086 0 4 0H27.4717V66H4C1.79086 66 0 64.2091 0 62V4Z">
+                                                </path>
+                                                <rect fill-opacity="0.3" fill="currentColor" rx="1.39473"
+                                                    height="2.78946" width="17.6604" y="23.8839" x="4.90625"></rect>
+                                                <rect fill-opacity="0.3" fill="currentColor" rx="2" height="9.70588"
+                                                    width="9.81132" y="5.88135" x="8.83008"></rect>
+                                                <rect fill-opacity="0.3" fill="currentColor" rx="1.39473"
+                                                    height="2.78946" width="17.6604" y="34.4381" x="4.90625"></rect>
+                                                <rect fill-opacity="0.3" fill="currentColor" rx="1.39473"
+                                                    height="2.78946" width="17.6604" y="44.9923" x="4.90625"></rect>
+                                                <rect fill-opacity="0.3" fill="currentColor" rx="1.39473"
+                                                    height="2.78946" width="17.6604" y="55.5462" x="4.90625"></rect>
+                                                <rect fill-opacity="0.08" fill="currentColor" rx="2" height="8.8"
+                                                    width="64.7547" y="4.67166" x="34.1152"></rect>
+                                                <rect fill-opacity="0.3" fill="currentColor" rx="1" height="4.4"
+                                                    width="3.92453" y="6.87158" x="37.0391"></rect>
+                                                <rect fill-opacity="0.3" fill="currentColor" rx="1" height="4.4"
+                                                    width="3.92453" y="6.87158" x="80.21"></rect>
+                                                <rect fill-opacity="0.3" fill="currentColor" rx="1" height="4.4"
+                                                    width="3.92453" y="6.87158" x="86.0957"></rect>
+                                                <rect fill-opacity="0.3" fill="currentColor" rx="1" height="4.4"
+                                                    width="3.92453" y="6.87158" x="91.9824"></rect>
+                                                <rect fill-opacity="0.08" fill="currentColor" rx="2" height="17.6"
+                                                    width="40.2264" y="19.6134" x="58.4844"></rect>
+                                                <rect fill-opacity="0.08" fill="currentColor" rx="2" height="17.6"
+                                                    width="19.0455" y="19.6134" x="34.1152"></rect>
+                                                <rect fill-opacity="0.08" fill="currentColor" rx="2" height="17.6"
+                                                    width="64.7547" y="42.4545" x="34.1152"></rect>
                                             </svg>
                                         </span>
                                     </label>
-                                    <input name="layoutsRadios" class="form-check-input d-none" type="radio" value="expanded" id="layoutsRadiosexpanded" checked="checked">
+                                    <input name="layoutsRadios" class="form-check-input d-none" type="radio"
+                                        value="expanded" id="layoutsRadiosexpanded" checked="checked">
                                 </div>
-                                <label class="form-check-label small text-nowrap text-body" for="layoutsRadiosexpanded">Expandido</label>
+                                <label class="form-check-label small text-nowrap text-body"
+                                    for="layoutsRadiosexpanded">Expandido</label>
                             </div>
                             <div class="col-4 px-2">
-                                <div class="form-check custom-option custom-option-image custom-option-image-radio mb-0">
-                                    <label class="form-check-label custom-option-content p-0" for="layoutsRadioscollapsed">
-                                        <span class="custom-option-body mb-0 scaleX-n1-rtl"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 104 66" height="62" width="98">
-                                                <rect fill-opacity="0.02" fill="currentColor" rx="4" height="66" width="104"></rect>
-                                                <path fill-opacity="0.04" fill="currentColor" d="M0 4C0 1.79086 1.79086 0 4 0H13.7359V66H4C1.79086 66 0 64.2091 0 62V4Z"></path>
-                                                <rect fill-opacity="0.3" fill="currentColor" rx="1.39473" height="2.78946" width="7.84906" y="23.8839" x="2.94336"></rect>
-                                                <rect fill-opacity="0.3" fill="currentColor" rx="2" height="6.79412" width="6.86793" y="5.88135" x="3.43359"></rect>
-                                                <rect fill-opacity="0.3" fill="currentColor" rx="1.39473" height="2.78946" width="7.84906" y="34.4382" x="2.94336"></rect>
-                                                <rect fill-opacity="0.3" fill="currentColor" rx="1.39473" height="2.78946" width="7.84906" y="44.9923" x="2.94336"></rect>
-                                                <rect fill-opacity="0.3" fill="currentColor" rx="1.39473" height="2.78946" width="7.84906" y="55.5463" x="2.94336"></rect>
-                                                <rect fill-opacity="0.08" fill="currentColor" rx="2" height="8.8" width="75.437" y="4.67169" x="21.4717"></rect>
-                                                <rect fill-opacity="0.3" fill="currentColor" rx="1" height="4.4" width="3.92453" y="6.87158" x="25.6172"></rect>
-                                                <rect fill-opacity="0.3" fill="currentColor" rx="1" height="4.4" width="3.92453" y="6.87158" x="78.248"></rect>
-                                                <rect fill-opacity="0.3" fill="currentColor" rx="1" height="4.4" width="3.92453" y="6.87158" x="84.1348"></rect>
-                                                <rect fill-opacity="0.3" fill="currentColor" rx="1" height="4.4" width="3.92453" y="6.87158" x="90.0215"></rect>
-                                                <rect fill-opacity="0.08" fill="currentColor" rx="2" height="17.6" width="46.8212" y="19.6134" x="50.4912"></rect>
-                                                <rect fill-opacity="0.08" fill="currentColor" rx="2" height="17.6" width="22.1679" y="19.6134" x="21.4717"></rect>
-                                                <rect fill-opacity="0.08" fill="currentColor" rx="2" height="17.6" width="75.8413" y="42.4545" x="21.4717"></rect>
+                                <div
+                                    class="form-check custom-option custom-option-image custom-option-image-radio mb-0">
+                                    <label class="form-check-label custom-option-content p-0"
+                                        for="layoutsRadioscollapsed">
+                                        <span class="custom-option-body mb-0 scaleX-n1-rtl"><svg
+                                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 104 66"
+                                                height="62" width="98">
+                                                <rect fill-opacity="0.02" fill="currentColor" rx="4" height="66"
+                                                    width="104"></rect>
+                                                <path fill-opacity="0.04" fill="currentColor"
+                                                    d="M0 4C0 1.79086 1.79086 0 4 0H13.7359V66H4C1.79086 66 0 64.2091 0 62V4Z">
+                                                </path>
+                                                <rect fill-opacity="0.3" fill="currentColor" rx="1.39473"
+                                                    height="2.78946" width="7.84906" y="23.8839" x="2.94336"></rect>
+                                                <rect fill-opacity="0.3" fill="currentColor" rx="2" height="6.79412"
+                                                    width="6.86793" y="5.88135" x="3.43359"></rect>
+                                                <rect fill-opacity="0.3" fill="currentColor" rx="1.39473"
+                                                    height="2.78946" width="7.84906" y="34.4382" x="2.94336"></rect>
+                                                <rect fill-opacity="0.3" fill="currentColor" rx="1.39473"
+                                                    height="2.78946" width="7.84906" y="44.9923" x="2.94336"></rect>
+                                                <rect fill-opacity="0.3" fill="currentColor" rx="1.39473"
+                                                    height="2.78946" width="7.84906" y="55.5463" x="2.94336"></rect>
+                                                <rect fill-opacity="0.08" fill="currentColor" rx="2" height="8.8"
+                                                    width="75.437" y="4.67169" x="21.4717"></rect>
+                                                <rect fill-opacity="0.3" fill="currentColor" rx="1" height="4.4"
+                                                    width="3.92453" y="6.87158" x="25.6172"></rect>
+                                                <rect fill-opacity="0.3" fill="currentColor" rx="1" height="4.4"
+                                                    width="3.92453" y="6.87158" x="78.248"></rect>
+                                                <rect fill-opacity="0.3" fill="currentColor" rx="1" height="4.4"
+                                                    width="3.92453" y="6.87158" x="84.1348"></rect>
+                                                <rect fill-opacity="0.3" fill="currentColor" rx="1" height="4.4"
+                                                    width="3.92453" y="6.87158" x="90.0215"></rect>
+                                                <rect fill-opacity="0.08" fill="currentColor" rx="2" height="17.6"
+                                                    width="46.8212" y="19.6134" x="50.4912"></rect>
+                                                <rect fill-opacity="0.08" fill="currentColor" rx="2" height="17.6"
+                                                    width="22.1679" y="19.6134" x="21.4717"></rect>
+                                                <rect fill-opacity="0.08" fill="currentColor" rx="2" height="17.6"
+                                                    width="75.8413" y="42.4545" x="21.4717"></rect>
                                             </svg>
                                         </span>
                                     </label>
-                                    <input name="layoutsRadios" class="form-check-input d-none" type="radio" value="collapsed" id="layoutsRadioscollapsed">
+                                    <input name="layoutsRadios" class="form-check-input d-none" type="radio"
+                                        value="collapsed" id="layoutsRadioscollapsed">
                                 </div>
-                                <label class="form-check-label small text-nowrap text-body" for="layoutsRadioscollapsed">Colapsado</label>
+                                <label class="form-check-label small text-nowrap text-body"
+                                    for="layoutsRadioscollapsed">Colapsado</label>
                             </div>
                         </div>
                     </div>
@@ -2056,127 +2323,220 @@
 
                     <!-- Fixed navbar -->
                     <div class="m-0 px-6 pb-6 template-customizer-layoutNavbarOptions w-100">
-                        <label for="customizerNavbar" class="form-label template-customizer-t-layout_navbar_label mb-2">Tipo de Barra de NavegaciÃ³n</label>
+                        <label for="customizerNavbar"
+                            class="form-label template-customizer-t-layout_navbar_label mb-2">Tipo de Barra de
+                            NavegaciÃ³n</label>
                         <div class="row px-1 template-customizer-navbar-options">
                             <div class="col-4 px-2">
-                                <div class="form-check custom-option custom-option-image custom-option-image-radio mb-0 checked">
-                                    <label class="form-check-label custom-option-content p-0" for="navbarOptionRadiossticky">
-                                        <span class="custom-option-body mb-0 scaleX-n1-rtl"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 104 66" height="62" width="98">
-                                                <rect fill-opacity="0.02" fill="currentColor" rx="4" height="66" width="104"></rect>
-                                                <path fill-opacity="0.08" fill="currentColor" d="M0 4C0 1.79086 1.79086 0 4 0H27.4717V66H4C1.79086 66 0 64.2091 0 62V4Z"></path>
-                                                <rect fill-opacity="0.3" fill="currentColor" rx="1.39473" height="2.78946" width="17.6604" y="23.8839" x="4.90625"></rect>
-                                                <rect fill-opacity="0.3" fill="currentColor" rx="2" height="9.70588" width="9.81132" y="5.88135" x="8.83008"></rect>
-                                                <rect fill-opacity="0.3" fill="currentColor" rx="1.39473" height="2.78946" width="17.6604" y="34.4382" x="4.90625"></rect>
-                                                <rect fill-opacity="0.3" fill="currentColor" rx="1.39473" height="2.78946" width="17.6604" y="44.9923" x="4.90625"></rect>
-                                                <rect fill-opacity="0.3" fill="currentColor" rx="1.39473" height="2.78946" width="17.6604" y="55.5463" x="4.90625"></rect>
-                                                <rect fill-opacity="0.08" fill="currentColor" rx="2" height="8.8" width="64.7547" y="4.67169" x="32.1523"></rect>
-                                                <rect fill-opacity="0.3" fill="currentColor" rx="1" height="4.4" width="3.92453" y="6.87158" x="35.0781"></rect>
-                                                <rect fill-opacity="0.3" fill="currentColor" rx="1" height="4.4" width="3.92453" y="6.87158" x="78.248"></rect>
-                                                <rect fill-opacity="0.3" fill="currentColor" rx="1" height="4.4" width="3.92453" y="6.87158" x="84.1348"></rect>
-                                                <rect fill-opacity="0.3" fill="currentColor" rx="1" height="4.4" width="3.92453" y="6.87158" x="90.0215"></rect>
-                                                <rect fill-opacity="0.08" fill="currentColor" rx="2" height="17.6" width="40.2264" y="19.6134" x="57.0859"></rect>
-                                                <rect fill-opacity="0.08" fill="currentColor" rx="2" height="17.6" width="19.0455" y="19.6134" x="32.1523"></rect>
-                                                <rect fill-opacity="0.08" fill="currentColor" rx="2" height="17.6" width="65.1591" y="42.4545" x="32.1523"></rect>
+                                <div
+                                    class="form-check custom-option custom-option-image custom-option-image-radio mb-0 checked">
+                                    <label class="form-check-label custom-option-content p-0"
+                                        for="navbarOptionRadiossticky">
+                                        <span class="custom-option-body mb-0 scaleX-n1-rtl"><svg
+                                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 104 66"
+                                                height="62" width="98">
+                                                <rect fill-opacity="0.02" fill="currentColor" rx="4" height="66"
+                                                    width="104"></rect>
+                                                <path fill-opacity="0.08" fill="currentColor"
+                                                    d="M0 4C0 1.79086 1.79086 0 4 0H27.4717V66H4C1.79086 66 0 64.2091 0 62V4Z">
+                                                </path>
+                                                <rect fill-opacity="0.3" fill="currentColor" rx="1.39473"
+                                                    height="2.78946" width="17.6604" y="23.8839" x="4.90625"></rect>
+                                                <rect fill-opacity="0.3" fill="currentColor" rx="2" height="9.70588"
+                                                    width="9.81132" y="5.88135" x="8.83008"></rect>
+                                                <rect fill-opacity="0.3" fill="currentColor" rx="1.39473"
+                                                    height="2.78946" width="17.6604" y="34.4382" x="4.90625"></rect>
+                                                <rect fill-opacity="0.3" fill="currentColor" rx="1.39473"
+                                                    height="2.78946" width="17.6604" y="44.9923" x="4.90625"></rect>
+                                                <rect fill-opacity="0.3" fill="currentColor" rx="1.39473"
+                                                    height="2.78946" width="17.6604" y="55.5463" x="4.90625"></rect>
+                                                <rect fill-opacity="0.08" fill="currentColor" rx="2" height="8.8"
+                                                    width="64.7547" y="4.67169" x="32.1523"></rect>
+                                                <rect fill-opacity="0.3" fill="currentColor" rx="1" height="4.4"
+                                                    width="3.92453" y="6.87158" x="35.0781"></rect>
+                                                <rect fill-opacity="0.3" fill="currentColor" rx="1" height="4.4"
+                                                    width="3.92453" y="6.87158" x="78.248"></rect>
+                                                <rect fill-opacity="0.3" fill="currentColor" rx="1" height="4.4"
+                                                    width="3.92453" y="6.87158" x="84.1348"></rect>
+                                                <rect fill-opacity="0.3" fill="currentColor" rx="1" height="4.4"
+                                                    width="3.92453" y="6.87158" x="90.0215"></rect>
+                                                <rect fill-opacity="0.08" fill="currentColor" rx="2" height="17.6"
+                                                    width="40.2264" y="19.6134" x="57.0859"></rect>
+                                                <rect fill-opacity="0.08" fill="currentColor" rx="2" height="17.6"
+                                                    width="19.0455" y="19.6134" x="32.1523"></rect>
+                                                <rect fill-opacity="0.08" fill="currentColor" rx="2" height="17.6"
+                                                    width="65.1591" y="42.4545" x="32.1523"></rect>
                                             </svg>
                                         </span>
                                     </label>
-                                    <input name="navbarOptionRadios" class="form-check-input d-none" type="radio" value="sticky" id="navbarOptionRadiossticky" checked="checked">
+                                    <input name="navbarOptionRadios" class="form-check-input d-none" type="radio"
+                                        value="sticky" id="navbarOptionRadiossticky" checked="checked">
                                 </div>
-                                <label class="form-check-label small text-nowrap text-body" for="navbarOptionRadiossticky">Fijo</label>
+                                <label class="form-check-label small text-nowrap text-body"
+                                    for="navbarOptionRadiossticky">Fijo</label>
                             </div>
                             <div class="col-4 px-2">
-                                <div class="form-check custom-option custom-option-image custom-option-image-radio mb-0">
-                                    <label class="form-check-label custom-option-content p-0" for="navbarOptionRadiosstatic">
-                                        <span class="custom-option-body mb-0 scaleX-n1-rtl"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 104 66" height="62" width="98">
-                                                <rect fill-opacity="0.02" fill="currentColor" rx="4" height="66" width="104"></rect>
-                                                <path fill-opacity="0.06" fill="currentColor" d="M0 4C0 1.79086 1.79086 0 4 0H13.7359V66H4C1.79086 66 0 64.2091 0 62V4Z"></path>
-                                                <rect fill-opacity="0.3" fill="currentColor" rx="1.39473" height="2.78946" width="7.84906" y="23.8839" x="2.94336"></rect>
-                                                <rect fill-opacity="0.3" fill="currentColor" rx="2" height="6.79412" width="6.86793" y="5.88135" x="3.43359"></rect>
-                                                <rect fill-opacity="0.3" fill="currentColor" rx="1.39473" height="2.78946" width="7.84906" y="34.4382" x="2.94336"></rect>
-                                                <rect fill-opacity="0.3" fill="currentColor" rx="1.39473" height="2.78946" width="7.84906" y="44.9923" x="2.94336"></rect>
-                                                <rect fill-opacity="0.3" fill="currentColor" rx="1.39473" height="2.78946" width="7.84906" y="55.5463" x="2.94336"></rect>
-                                                <rect fill-opacity="0.08" fill="currentColor" rx="2" height="8.8" width="75.437" y="4.67169" x="21.4717"></rect>
-                                                <rect fill-opacity="0.3" fill="currentColor" rx="1" height="4.4" width="3.92453" y="6.87158" x="25.6172"></rect>
-                                                <rect fill-opacity="0.3" fill="currentColor" rx="1" height="4.4" width="3.92453" y="6.87158" x="78.248"></rect>
-                                                <rect fill-opacity="0.3" fill="currentColor" rx="1" height="4.4" width="3.92453" y="6.87158" x="84.1348"></rect>
-                                                <rect fill-opacity="0.3" fill="currentColor" rx="1" height="4.4" width="3.92453" y="6.87158" x="90.0215"></rect>
-                                                <rect fill-opacity="0.08" fill="currentColor" rx="2" height="17.6" width="46.8212" y="19.6134" x="50.4912"></rect>
-                                                <rect fill-opacity="0.08" fill="currentColor" rx="2" height="17.6" width="22.1679" y="19.6134" x="21.4717"></rect>
-                                                <rect fill-opacity="0.08" fill="currentColor" rx="2" height="17.6" width="75.8413" y="42.4545" x="21.4717"></rect>
+                                <div
+                                    class="form-check custom-option custom-option-image custom-option-image-radio mb-0">
+                                    <label class="form-check-label custom-option-content p-0"
+                                        for="navbarOptionRadiosstatic">
+                                        <span class="custom-option-body mb-0 scaleX-n1-rtl"><svg
+                                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 104 66"
+                                                height="62" width="98">
+                                                <rect fill-opacity="0.02" fill="currentColor" rx="4" height="66"
+                                                    width="104"></rect>
+                                                <path fill-opacity="0.06" fill="currentColor"
+                                                    d="M0 4C0 1.79086 1.79086 0 4 0H13.7359V66H4C1.79086 66 0 64.2091 0 62V4Z">
+                                                </path>
+                                                <rect fill-opacity="0.3" fill="currentColor" rx="1.39473"
+                                                    height="2.78946" width="7.84906" y="23.8839" x="2.94336"></rect>
+                                                <rect fill-opacity="0.3" fill="currentColor" rx="2" height="6.79412"
+                                                    width="6.86793" y="5.88135" x="3.43359"></rect>
+                                                <rect fill-opacity="0.3" fill="currentColor" rx="1.39473"
+                                                    height="2.78946" width="7.84906" y="34.4382" x="2.94336"></rect>
+                                                <rect fill-opacity="0.3" fill="currentColor" rx="1.39473"
+                                                    height="2.78946" width="7.84906" y="44.9923" x="2.94336"></rect>
+                                                <rect fill-opacity="0.3" fill="currentColor" rx="1.39473"
+                                                    height="2.78946" width="7.84906" y="55.5463" x="2.94336"></rect>
+                                                <rect fill-opacity="0.08" fill="currentColor" rx="2" height="8.8"
+                                                    width="75.437" y="4.67169" x="21.4717"></rect>
+                                                <rect fill-opacity="0.3" fill="currentColor" rx="1" height="4.4"
+                                                    width="3.92453" y="6.87158" x="25.6172"></rect>
+                                                <rect fill-opacity="0.3" fill="currentColor" rx="1" height="4.4"
+                                                    width="3.92453" y="6.87158" x="78.248"></rect>
+                                                <rect fill-opacity="0.3" fill="currentColor" rx="1" height="4.4"
+                                                    width="3.92453" y="6.87158" x="84.1348"></rect>
+                                                <rect fill-opacity="0.3" fill="currentColor" rx="1" height="4.4"
+                                                    width="3.92453" y="6.87158" x="90.0215"></rect>
+                                                <rect fill-opacity="0.08" fill="currentColor" rx="2" height="17.6"
+                                                    width="46.8212" y="19.6134" x="50.4912"></rect>
+                                                <rect fill-opacity="0.08" fill="currentColor" rx="2" height="17.6"
+                                                    width="22.1679" y="19.6134" x="21.4717"></rect>
+                                                <rect fill-opacity="0.08" fill="currentColor" rx="2" height="17.6"
+                                                    width="75.8413" y="42.4545" x="21.4717"></rect>
                                             </svg>
                                         </span>
                                     </label>
-                                    <input name="navbarOptionRadios" class="form-check-input d-none" type="radio" value="static" id="navbarOptionRadiosstatic">
+                                    <input name="navbarOptionRadios" class="form-check-input d-none" type="radio"
+                                        value="static" id="navbarOptionRadiosstatic">
                                 </div>
-                                <label class="form-check-label small text-nowrap text-body" for="navbarOptionRadiosstatic">EstÃ¡tico</label>
+                                <label class="form-check-label small text-nowrap text-body"
+                                    for="navbarOptionRadiosstatic">EstÃ¡tico</label>
                             </div>
                             <div class="col-4 px-2">
-                                <div class="form-check custom-option custom-option-image custom-option-image-radio mb-0">
-                                    <label class="form-check-label custom-option-content p-0" for="navbarOptionRadioshidden">
-                                        <span class="custom-option-body mb-0 scaleX-n1-rtl"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 104 66" height="62" width="98">
-                                                <rect fill-opacity="0.02" fill="currentColor" rx="4" height="66" width="104"></rect>
-                                                <rect fill-opacity="0.08" fill="currentColor" rx="2" height="17.6" width="46.8212" y="19.6136" x="44.0068"></rect>
-                                                <rect fill-opacity="0.08" fill="currentColor" rx="2" height="17.6" width="22.1679" y="19.6136" x="14.9854"></rect>
-                                                <rect fill-opacity="0.08" fill="currentColor" rx="2" height="17.6" width="75.8413" y="42.4547" x="14.9854"></rect>
-                                                <rect fill-opacity="0.08" fill="currentColor" rx="2" height="9.00999" width="74.1506" y="4.68896" x="14.9248"></rect>
-                                                <rect fill-opacity="0.3" fill="currentColor" rx="1" height="5.38019" width="6.00327" y="6.50403" x="20.0264"></rect>
-                                                <rect fill-opacity="0.3" fill="currentColor" rx="1.23064" height="2.46129" width="6.6372" y="7.96356" x="33.877"></rect>
-                                                <rect fill-opacity="0.3" fill="currentColor" rx="1.23064" height="2.46129" width="6.6372" y="7.96356" x="48.3652"></rect>
-                                                <rect fill-opacity="0.3" fill="currentColor" rx="1.23064" height="2.46129" width="6.6372" y="7.96356" x="62.8506"></rect>
-                                                <rect fill-opacity="0.3" fill="currentColor" rx="1.23064" height="2.46129" width="6.6372" y="7.96356" x="77.3379"></rect>
+                                <div
+                                    class="form-check custom-option custom-option-image custom-option-image-radio mb-0">
+                                    <label class="form-check-label custom-option-content p-0"
+                                        for="navbarOptionRadioshidden">
+                                        <span class="custom-option-body mb-0 scaleX-n1-rtl"><svg
+                                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 104 66"
+                                                height="62" width="98">
+                                                <rect fill-opacity="0.02" fill="currentColor" rx="4" height="66"
+                                                    width="104"></rect>
+                                                <rect fill-opacity="0.08" fill="currentColor" rx="2" height="17.6"
+                                                    width="46.8212" y="19.6136" x="44.0068"></rect>
+                                                <rect fill-opacity="0.08" fill="currentColor" rx="2" height="17.6"
+                                                    width="22.1679" y="19.6136" x="14.9854"></rect>
+                                                <rect fill-opacity="0.08" fill="currentColor" rx="2" height="17.6"
+                                                    width="75.8413" y="42.4547" x="14.9854"></rect>
+                                                <rect fill-opacity="0.08" fill="currentColor" rx="2" height="9.00999"
+                                                    width="74.1506" y="4.68896" x="14.9248"></rect>
+                                                <rect fill-opacity="0.3" fill="currentColor" rx="1" height="5.38019"
+                                                    width="6.00327" y="6.50403" x="20.0264"></rect>
+                                                <rect fill-opacity="0.3" fill="currentColor" rx="1.23064"
+                                                    height="2.46129" width="6.6372" y="7.96356" x="33.877"></rect>
+                                                <rect fill-opacity="0.3" fill="currentColor" rx="1.23064"
+                                                    height="2.46129" width="6.6372" y="7.96356" x="48.3652"></rect>
+                                                <rect fill-opacity="0.3" fill="currentColor" rx="1.23064"
+                                                    height="2.46129" width="6.6372" y="7.96356" x="62.8506"></rect>
+                                                <rect fill-opacity="0.3" fill="currentColor" rx="1.23064"
+                                                    height="2.46129" width="6.6372" y="7.96356" x="77.3379"></rect>
                                             </svg>
                                         </span>
                                     </label>
-                                    <input name="navbarOptionRadios" class="form-check-input d-none" type="radio" value="hidden" id="navbarOptionRadioshidden">
+                                    <input name="navbarOptionRadios" class="form-check-input d-none" type="radio"
+                                        value="hidden" id="navbarOptionRadioshidden">
                                 </div>
-                                <label class="form-check-label small text-nowrap text-body" for="navbarOptionRadioshidden">Oculto</label>
+                                <label class="form-check-label small text-nowrap text-body"
+                                    for="navbarOptionRadioshidden">Oculto</label>
                             </div>
                         </div>
                     </div>
 
                     <!-- Content -->
                     <div class="m-0 px-6 pb-6 template-customizer-content w-100">
-                        <label for="customizerContent" class="form-label template-customizer-t-content_label mb-2">Contenido</label>
+                        <label for="customizerContent"
+                            class="form-label template-customizer-t-content_label mb-2">Contenido</label>
                         <div class="row px-1 template-customizer-content-options">
                             <div class="col-4 px-2">
-                                <div class="form-check custom-option custom-option-image custom-option-image-radio mb-0 checked">
-                                    <label class="form-check-label custom-option-content p-0" for="contentRadioIconcompact">
-                                        <span class="custom-option-body mb-0 scaleX-n1-rtl"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 104 66" height="62" width="98">
-                                                <rect fill-opacity="0.02" fill="currentColor" rx="4" height="66" width="104"></rect>
-                                                <rect fill-opacity="0.08" fill="currentColor" rx="2" height="8.8" width="64.7547" y="4.67169" x="19.4209"></rect>
-                                                <rect fill-opacity="0.3" fill="currentColor" rx="1" height="4.4" width="3.92453" y="6.87164" x="22.3447"></rect>
-                                                <rect fill-opacity="0.3" fill="currentColor" rx="1" height="4.4" width="3.92453" y="6.87164" x="65.5146"></rect>
-                                                <rect fill-opacity="0.3" fill="currentColor" rx="1" height="4.4" width="3.92453" y="6.87164" x="71.4014"></rect>
-                                                <rect fill-opacity="0.3" fill="currentColor" rx="1" height="4.4" width="3.92453" y="6.87164" x="77.2881"></rect>
-                                                <rect fill-opacity="0.08" fill="currentColor" rx="2" height="17.6" width="40.2264" y="19.6135" x="44.3525"></rect>
-                                                <rect fill-opacity="0.08" fill="currentColor" rx="2" height="17.6" width="19.0455" y="19.6135" x="19.4209"></rect>
-                                                <rect fill-opacity="0.08" fill="currentColor" rx="2" height="17.6" width="65.1591" y="42.4545" x="19.4209"></rect>
+                                <div
+                                    class="form-check custom-option custom-option-image custom-option-image-radio mb-0 checked">
+                                    <label class="form-check-label custom-option-content p-0"
+                                        for="contentRadioIconcompact">
+                                        <span class="custom-option-body mb-0 scaleX-n1-rtl"><svg
+                                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 104 66"
+                                                height="62" width="98">
+                                                <rect fill-opacity="0.02" fill="currentColor" rx="4" height="66"
+                                                    width="104"></rect>
+                                                <rect fill-opacity="0.08" fill="currentColor" rx="2" height="8.8"
+                                                    width="64.7547" y="4.67169" x="19.4209"></rect>
+                                                <rect fill-opacity="0.3" fill="currentColor" rx="1" height="4.4"
+                                                    width="3.92453" y="6.87164" x="22.3447"></rect>
+                                                <rect fill-opacity="0.3" fill="currentColor" rx="1" height="4.4"
+                                                    width="3.92453" y="6.87164" x="65.5146"></rect>
+                                                <rect fill-opacity="0.3" fill="currentColor" rx="1" height="4.4"
+                                                    width="3.92453" y="6.87164" x="71.4014"></rect>
+                                                <rect fill-opacity="0.3" fill="currentColor" rx="1" height="4.4"
+                                                    width="3.92453" y="6.87164" x="77.2881"></rect>
+                                                <rect fill-opacity="0.08" fill="currentColor" rx="2" height="17.6"
+                                                    width="40.2264" y="19.6135" x="44.3525"></rect>
+                                                <rect fill-opacity="0.08" fill="currentColor" rx="2" height="17.6"
+                                                    width="19.0455" y="19.6135" x="19.4209"></rect>
+                                                <rect fill-opacity="0.08" fill="currentColor" rx="2" height="17.6"
+                                                    width="65.1591" y="42.4545" x="19.4209"></rect>
                                             </svg>
                                         </span>
                                     </label>
-                                    <input name="contentRadioIcon" class="form-check-input d-none" type="radio" value="compact" id="contentRadioIconcompact" checked="checked">
+                                    <input name="contentRadioIcon" class="form-check-input d-none" type="radio"
+                                        value="compact" id="contentRadioIconcompact" checked="checked">
                                 </div>
-                                <label class="form-check-label small text-nowrap text-body" for="contentRadioIconcompact">Compacto</label>
+                                <label class="form-check-label small text-nowrap text-body"
+                                    for="contentRadioIconcompact">Compacto</label>
                             </div>
                             <div class="col-4 px-2">
-                                <div class="form-check custom-option custom-option-image custom-option-image-radio mb-0">
-                                    <label class="form-check-label custom-option-content p-0" for="contentRadioIconwide">
-                                        <span class="custom-option-body mb-0 scaleX-n1-rtl"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 104 66" height="62" width="98">
-                                                <rect fill-opacity="0.02" fill="currentColor" rx="4" height="66" width="104"></rect>
-                                                <rect fill-opacity="0.08" fill="currentColor" rx="2" height="8.8" width="90.6244" y="4.67169" x="6.6875"></rect>
-                                                <rect fill-opacity="0.3" fill="currentColor" rx="1" height="4.4" width="4.90566" y="6.87164" x="10.165"></rect>
-                                                <rect fill-opacity="0.3" fill="currentColor" rx="1" height="4.4" width="4.90566" y="6.87164" x="75.2002"></rect>
-                                                <rect fill-opacity="0.3" fill="currentColor" rx="1" height="4.4" width="4.90566" y="6.87164" x="82.0674"></rect>
-                                                <rect fill-opacity="0.3" fill="currentColor" rx="1" height="4.4" width="4.90566" y="6.87164" x="88.9346"></rect>
-                                                <rect fill-opacity="0.08" fill="currentColor" rx="2" height="17.6" width="55.9476" y="19.6135" x="41.3652"></rect>
-                                                <rect fill-opacity="0.08" fill="currentColor" rx="2" height="17.6" width="26.4888" y="19.6135" x="6.6875"></rect>
-                                                <rect fill-opacity="0.08" fill="currentColor" rx="2" height="17.6" width="90.6244" y="42.4545" x="6.6875"></rect>
+                                <div
+                                    class="form-check custom-option custom-option-image custom-option-image-radio mb-0">
+                                    <label class="form-check-label custom-option-content p-0"
+                                        for="contentRadioIconwide">
+                                        <span class="custom-option-body mb-0 scaleX-n1-rtl"><svg
+                                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 104 66"
+                                                height="62" width="98">
+                                                <rect fill-opacity="0.02" fill="currentColor" rx="4" height="66"
+                                                    width="104"></rect>
+                                                <rect fill-opacity="0.08" fill="currentColor" rx="2" height="8.8"
+                                                    width="90.6244" y="4.67169" x="6.6875"></rect>
+                                                <rect fill-opacity="0.3" fill="currentColor" rx="1" height="4.4"
+                                                    width="4.90566" y="6.87164" x="10.165"></rect>
+                                                <rect fill-opacity="0.3" fill="currentColor" rx="1" height="4.4"
+                                                    width="4.90566" y="6.87164" x="75.2002"></rect>
+                                                <rect fill-opacity="0.3" fill="currentColor" rx="1" height="4.4"
+                                                    width="4.90566" y="6.87164" x="82.0674"></rect>
+                                                <rect fill-opacity="0.3" fill="currentColor" rx="1" height="4.4"
+                                                    width="4.90566" y="6.87164" x="88.9346"></rect>
+                                                <rect fill-opacity="0.08" fill="currentColor" rx="2" height="17.6"
+                                                    width="55.9476" y="19.6135" x="41.3652"></rect>
+                                                <rect fill-opacity="0.08" fill="currentColor" rx="2" height="17.6"
+                                                    width="26.4888" y="19.6135" x="6.6875"></rect>
+                                                <rect fill-opacity="0.08" fill="currentColor" rx="2" height="17.6"
+                                                    width="90.6244" y="42.4545" x="6.6875"></rect>
                                             </svg>
                                         </span>
                                     </label>
-                                    <input name="contentRadioIcon" class="form-check-input d-none" type="radio" value="wide" id="contentRadioIconwide">
+                                    <input name="contentRadioIcon" class="form-check-input d-none" type="radio"
+                                        value="wide" id="contentRadioIconwide">
                                 </div>
-                                <label class="form-check-label small text-nowrap text-body" for="contentRadioIconwide">Amplio</label>
+                                <label class="form-check-label small text-nowrap text-body"
+                                    for="contentRadioIconwide">Amplio</label>
                             </div>
                         </div>
                     </div>
@@ -2185,20 +2545,27 @@
                 <!--/ Layout -->
             </div>
         </div>
-        <div class="pcr-app " data-theme="nano" aria-label="color picker dialog" role="window" style="top: 372.734px; left: 853.125px;">
+        <div class="pcr-app " data-theme="nano" aria-label="color picker dialog" role="window"
+            style="top: 372.734px; left: 853.125px;">
             <div class="pcr-selection">
                 <div class="pcr-color-preview">
-                    <button type="button" class="pcr-last-color" aria-label="use previous color" style="transition: none; --pcr-color: rgba(13, 147, 148, 1);"></button>
+                    <button type="button" class="pcr-last-color" aria-label="use previous color"
+                        style="transition: none; --pcr-color: rgba(13, 147, 148, 1);"></button>
                     <div class="pcr-current-color" style="--pcr-color: rgba(13, 147, 148, 1);"></div>
                 </div>
 
                 <div class="pcr-color-palette">
-                    <div class="pcr-picker" style="left: calc(91.2162% - 9px); top: calc(41.9608% - 9px); background: rgb(13, 147, 148);"></div>
-                    <div class="pcr-palette" tabindex="0" aria-label="color selection area" role="listbox" style="background: linear-gradient(to top, rgb(0, 0, 0), transparent), linear-gradient(to left, rgb(0, 253, 255), rgb(255, 255, 255));"></div>
+                    <div class="pcr-picker"
+                        style="left: calc(91.2162% - 9px); top: calc(41.9608% - 9px); background: rgb(13, 147, 148);">
+                    </div>
+                    <div class="pcr-palette" tabindex="0" aria-label="color selection area" role="listbox"
+                        style="background: linear-gradient(to top, rgb(0, 0, 0), transparent), linear-gradient(to left, rgb(0, 253, 255), rgb(255, 255, 255));">
+                    </div>
                 </div>
 
                 <div class="pcr-color-chooser">
-                    <div class="pcr-picker" style="left: calc(50.1235% - 9px); background-color: rgb(0, 253, 255);"></div>
+                    <div class="pcr-picker" style="left: calc(50.1235% - 9px); background-color: rgb(0, 253, 255);">
+                    </div>
                     <div class="pcr-hue pcr-slider" tabindex="0" aria-label="hue selection slider" role="slider"></div>
                 </div>
 
@@ -2213,19 +2580,24 @@
             <div class="pcr-interaction">
                 <input class="pcr-result" type="text" spellcheck="false" aria-label="color input field">
 
-                <input class="pcr-type active" data-type="HEXA" value="HEXA" type="button" style="display:none" hidden="">
+                <input class="pcr-type active" data-type="HEXA" value="HEXA" type="button" style="display:none"
+                    hidden="">
                 <input class="pcr-type" data-type="RGBA" value="RGBA" type="button" style="display:none" hidden="">
                 <input class="pcr-type" data-type="HSLA" value="HSLA" type="button" style="display:none" hidden="">
                 <input class="pcr-type" data-type="HSVA" value="HSVA" type="button" style="display:none" hidden="">
                 <input class="pcr-type" data-type="CMYK" value="CMYK" type="button" style="display:none" hidden="">
 
-                <input class="pcr-save" value="Save" type="button" style="display:none" hidden="" aria-label="save and close">
-                <input class="pcr-cancel" value="Cancel" type="button" style="display:none" hidden="" aria-label="cancel and close">
-                <input class="pcr-clear" value="Clear" type="button" style="display:none" hidden="" aria-label="clear and close">
+                <input class="pcr-save" value="Save" type="button" style="display:none" hidden=""
+                    aria-label="save and close">
+                <input class="pcr-cancel" value="Cancel" type="button" style="display:none" hidden=""
+                    aria-label="cancel and close">
+                <input class="pcr-clear" value="Clear" type="button" style="display:none" hidden=""
+                    aria-label="clear and close">
             </div>
         </div>
         <script src="{{asset('assets/js/ui-toasts.js')}}"></script>
-        <div id="liveToast" class="bs-toast toast toast-placement-ex m-2 fade bg-primary top-0 end-0 hide" role="alert" aria-live="assertive" aria-atomic="true" data-delay="2000">
+        <div id="liveToast" class="bs-toast toast toast-placement-ex m-2 fade bg-primary top-0 end-0 hide" role="alert"
+            aria-live="assertive" aria-atomic="true" data-delay="2000">
             <div class="toast-header">
                 <i class="bx bx-bell me-2"></i>
                 <div class="me-auto fw-semibold">TUXON</div>
@@ -2234,13 +2606,13 @@
             </div>
             <div class="toast-body"></div>
         </div>
-        
+
 
         <link rel="stylesheet" href="{{asset('assets/vendor/libs/select2/select2.css')}}">
         <script src="{{asset('assets/vendor/libs/select2/select2.js')}}"></script>
         <script>
             //colores picker
-            document.addEventListener("DOMContentLoaded", function() {
+            document.addEventListener("DOMContentLoaded", function () {
                 const radios = document.querySelectorAll('input[name="colorRadioIcon"]');
                 const root = document.documentElement;
 
@@ -2308,7 +2680,7 @@
 
                 // --- Detectar cambio en radios
                 radios.forEach(radio => {
-                    radio.addEventListener("change", function() {
+                    radio.addEventListener("change", function () {
                         if (this.value !== "picker") {
                             aplicarColor(this.value);
                             marcarChecked(this);
@@ -2349,7 +2721,7 @@
             });
         </script>
         <script>
-            document.addEventListener("DOMContentLoaded", function() {
+            document.addEventListener("DOMContentLoaded", function () {
                 const radiosTheme = document.querySelectorAll('input[name="customRadioIcon"]'); // Customizer
                 const navbarButtons = document.querySelectorAll('[data-bs-theme-value]'); // Botones dropdown
                 const semiDarkDiv = document.querySelector('.template-customizer-semiDark');
@@ -2404,14 +2776,14 @@
 
                 // --- Detectar cambios en customizer
                 radiosTheme.forEach(radio => {
-                    radio.addEventListener('change', function() {
+                    radio.addEventListener('change', function () {
                         aplicarTema(this.value);
                     });
                 });
 
                 // --- Detectar cambios en navbar
                 navbarButtons.forEach(btn => {
-                    btn.addEventListener('click', function() {
+                    btn.addEventListener('click', function () {
                         const value = this.getAttribute('data-bs-theme-value');
                         aplicarTema(value);
                     });
@@ -2429,7 +2801,7 @@
 
         <script>
             //skins dafault borderd
-            document.addEventListener("DOMContentLoaded", function() {
+            document.addEventListener("DOMContentLoaded", function () {
                 const root = document.documentElement;
                 const skinOptions = document.querySelectorAll(".template-customizer-skins .custom-option");
                 const skinRadios = document.querySelectorAll('input[name="skinRadios"]');
@@ -2458,7 +2830,7 @@
 
                 // --- Click en toda la opciÃ³n (div, label, svg)
                 skinOptions.forEach(option => {
-                    option.addEventListener("click", function() {
+                    option.addEventListener("click", function () {
                         const radio = option.querySelector('input[name="skinRadios"]');
                         if (radio) aplicarSkin(radio.value);
                     });
@@ -2466,7 +2838,7 @@
 
                 // --- Cambio directo en radios (accesibilidad)
                 skinRadios.forEach(radio => {
-                    radio.addEventListener("change", function() {
+                    radio.addEventListener("change", function () {
                         aplicarSkin(this.value);
                     });
                 });
@@ -2474,7 +2846,7 @@
         </script>
 
         <script>
-            document.addEventListener("DOMContentLoaded", function() {
+            document.addEventListener("DOMContentLoaded", function () {
                 const DEFAULTS = {
                     primaryColor: "#696cff",
                     menuColor: "#0d3c94ff",
@@ -2580,7 +2952,7 @@
                 })();
 
                 // ---------- Listeners UI ----------
-                colorRadios.forEach(radio => radio.addEventListener("change", function() {
+                colorRadios.forEach(radio => radio.addEventListener("change", function () {
                     if (this.value === "picker") {
                         mostrarNotificacion();
                         return;
@@ -2590,12 +2962,12 @@
                 }));
 
                 if (semiDarkSwitch) {
-                    semiDarkSwitch.addEventListener("change", function() {
+                    semiDarkSwitch.addEventListener("change", function () {
                         aplicarSemiDark(this.checked, true, true);
                     });
                 }
 
-                themeRadios.forEach(radio => radio.addEventListener("change", function() {
+                themeRadios.forEach(radio => radio.addEventListener("change", function () {
                     aplicarTheme(this.value, true, true);
                     if (this.value === "dark") aplicarSemiDark(false, true, true);
                 }));
@@ -2610,11 +2982,11 @@
                             actualizarVisibilitySemiDark(newTh);
                         }
                     });
-                } catch (ignored) {}
+                } catch (ignored) { }
 
                 // ---------- RESET ----------
                 if (resetBtn) {
-                    resetBtn.addEventListener("click", function(ev) {
+                    resetBtn.addEventListener("click", function (ev) {
                         ev.preventDefault();
 
                         // Limpiar localStorage completamente
@@ -2629,7 +3001,7 @@
 
         <script>
             //menu navehation
-            document.addEventListener("DOMContentLoaded", function() {
+            document.addEventListener("DOMContentLoaded", function () {
                 const layoutMenu = document.getElementById('layout-menu');
                 const layoutRadios = document.querySelectorAll('input[name="layoutsRadios"]');
                 const htmlTag = document.documentElement;
@@ -2662,12 +3034,12 @@
 
                 // --- Escuchar cambios desde el customizer
                 layoutRadios.forEach(radio => {
-                    radio.addEventListener('change', function() {
+                    radio.addEventListener('change', function () {
                         aplicarLayout(this.value);
                     });
 
                     // Capturar clic en label/SVG
-                    radio.closest('.custom-option')?.addEventListener('click', function() {
+                    radio.closest('.custom-option')?.addEventListener('click', function () {
                         aplicarLayout(radio.value);
                     });
                 });
@@ -2675,7 +3047,7 @@
         </script>
         <script>
             //navbar type
-            document.addEventListener("DOMContentLoaded", function() {
+            document.addEventListener("DOMContentLoaded", function () {
                 const navbarRadios = document.querySelectorAll('input[name="navbarOptionRadios"]');
                 const htmlTag = document.documentElement;
 
@@ -2711,12 +3083,12 @@
 
                 // --- Escuchar cambios en el customizer
                 navbarRadios.forEach(radio => {
-                    radio.addEventListener('change', function() {
+                    radio.addEventListener('change', function () {
                         aplicarNavbar(this.value);
                     });
 
                     // Capturar clic en label/SVG
-                    radio.closest('.custom-option')?.addEventListener('click', function() {
+                    radio.closest('.custom-option')?.addEventListener('click', function () {
                         aplicarNavbar(radio.value);
                     });
                 });
@@ -2725,7 +3097,7 @@
 
         <script>
             //content compact wide
-            document.addEventListener("DOMContentLoaded", function() {
+            document.addEventListener("DOMContentLoaded", function () {
                 const contentRadios = document.querySelectorAll('input[name="contentRadioIcon"]');
                 const htmlTag = document.documentElement;
 
@@ -2772,11 +3144,11 @@
 
                 // --- Escuchar cambios
                 contentRadios.forEach(radio => {
-                    radio.addEventListener('change', function() {
+                    radio.addEventListener('change', function () {
                         aplicarContent(this.value);
                     });
                     // Clic en la opciÃ³n completa
-                    radio.closest('.custom-option')?.addEventListener('click', function() {
+                    radio.closest('.custom-option')?.addEventListener('click', function () {
                         aplicarContent(radio.value);
                     });
                 });
@@ -3022,16 +3394,16 @@
                 }
 
                 @if(session('success'))
-                showToast("{{ session('success') }}", 'success');
+                    showToast("{{ session('success') }}", 'success');
                 @endif
 
-                @if($errors -> any())
-                let errorMsg = '';
-                @foreach($errors -> all() as $error)
-                errorMsg += "{{ $error }}\n";
-                @endforeach
-                showToast(errorMsg.trim(), 'danger');
-                @endif
+                    @if($errors->any())
+                        let errorMsg = '';
+                        @foreach($errors->all() as $error)
+                            errorMsg += "{{ $error }}\n";
+                        @endforeach
+                        showToast(errorMsg.trim(), 'danger');
+                    @endif
             });
         </script>
 

@@ -62,6 +62,86 @@ class CajaController extends Controller
             'updated_at' => now(),
         ]);
 
-        return response()->json(['success' => true, 'message' => 'Caja cerrada correctamente']);
+        // 🔹 Retornar URL para abrir en otra pestaña
+        $urlComprobante = route('caja.comprobante', ['id' => $caja->id]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Caja cerrada correctamente',
+            'url_comprobante' => $urlComprobante
+        ]);
     }
+
+    public function verComprobante($id)
+    {
+        $caja = Caja::with([
+            'usuario',
+            'sucursal',
+            'empresa',
+            'detalleCaja'
+        ])->findOrFail($id);
+
+        /*
+        |--------------------------------------------------------------------------
+        | VENTAS
+        |--------------------------------------------------------------------------
+        | Por ahora solo efectivo
+        */
+        $ventasEfectivo = $caja->detalleCaja
+            ->where('movimiento', 'VENTA')
+            ->sum('monto');
+
+        $ventasNoEfectivo = 0;
+
+        $totalVentas = $ventasEfectivo + $ventasNoEfectivo;
+
+        /*
+        |--------------------------------------------------------------------------
+        | INGRESOS VARIOS (NO ventas)
+        |--------------------------------------------------------------------------
+        */
+        $ingresosVarios = $caja->detalleCaja
+            ->where('movimiento', 'INGRESO')
+            ->sum('monto');
+
+        /*
+        |--------------------------------------------------------------------------
+        | EGRESOS
+        |--------------------------------------------------------------------------
+        */
+        $egresos = $caja->detalleCaja
+            ->where('movimiento', 'EGRESO')
+            ->sum('monto');
+
+        /*
+        |--------------------------------------------------------------------------
+        | EFECTIVO ESPERADO
+        |--------------------------------------------------------------------------
+        */
+        $efectivoEsperado =
+            $caja->monto_inicial
+            + $ventasEfectivo
+            + $ingresosVarios
+            - $egresos;
+
+        /*
+        |--------------------------------------------------------------------------
+        | DIFERENCIA
+        |--------------------------------------------------------------------------
+        */
+        $diferencia = $caja->monto_final - $efectivoEsperado;
+
+        return view('caja.comprobante', compact(
+            'caja',
+            'ventasEfectivo',
+            'ventasNoEfectivo',
+            'totalVentas',
+            'ingresosVarios',
+            'egresos',
+            'efectivoEsperado',
+            'diferencia'
+        ));
+    }
+
+
 }

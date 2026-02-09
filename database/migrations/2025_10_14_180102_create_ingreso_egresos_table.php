@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('usuario_id')->constrained('users');
             $table->string('descripcion');
             $table->dateTime('fecha');
+            $table->foreignId('id_forma_pago')->constrained('forma_pago')->default(1);
             $table->string('motivo');
             $table->foreignId('tipo_ingreso_egreso_id')->constrained('tipo_ingreso_egreso');
             $table->decimal('monto', 15, 2);

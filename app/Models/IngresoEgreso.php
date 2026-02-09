@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class IngresoEgreso extends Model
 {
     protected $table = 'ingreso_egreso';
-    protected $fillable = ['usuario_id', 'descripcion', 'fecha', 'motivo', 'tipo_ingreso_egreso_id', 'monto'];
+    protected $fillable = ['usuario_id', 'descripcion', 'fecha', 'motivo', 'id_forma_pago', 'tipo_ingreso_egreso_id', 'monto'];
 
     public function tipoIngresoEgreso()
     {

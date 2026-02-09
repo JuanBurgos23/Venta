@@ -11,6 +11,7 @@ class DetalleCaja extends Model
     protected $fillable = [
         'caja_id',
         'id_tipo_movimiento',
+        'id_forma_pago',
         'movimiento',
         'id_movimiento',
         'fecha_movimiento',

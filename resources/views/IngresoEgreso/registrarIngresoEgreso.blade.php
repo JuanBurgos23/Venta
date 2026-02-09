@@ -10,7 +10,7 @@
                     <div class="card-header d-flex flex-wrap justify-content-between align-items-center">
                         <h5 class="mb-0">Registro de Ingresos y Egresos</h5>
                         <div class="d-flex gap-2 flex-wrap">
-                            <button id="btnCaja" class="btn btn-outline-secondary btn-sm">
+                            <button id="btnCaja" class="btn btn-secondary btn-sm">
                                 <i class="bx bx-lock-open-alt"></i> Abrir/Cerrar Caja
                             </button>
                             <button id="btnNuevo" class="btn btn-primary btn-sm">
@@ -86,10 +86,11 @@
 
                         <div class="mb-3">
                             <label for="tipo_ingreso_egreso_id" class="form-label">Tipo</label>
-                            <select id="tipo_ingreso_egreso_id" name="tipo_ingreso_egreso_id" class="form-select" required>
+                            <select id="tipo_ingreso_egreso_id" name="tipo_ingreso_egreso_id" class="form-select"
+                                required>
                                 <option value="">Seleccione...</option>
                                 @foreach ($tipos as $tipo)
-                                <option value="{{ $tipo->id }}">{{ $tipo->nombre }}</option>
+                                    <option value="{{ $tipo->id }}">{{ $tipo->nombre }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -129,16 +130,18 @@
                     <form id="formAperturaCaja">
                         <div class="mb-3">
                             <label for="fecha_apertura" class="form-label">Fecha y hora de apertura</label>
-                            <input type="datetime-local" id="fecha_apertura" name="fecha_apertura" class="form-control" required>
+                            <input type="datetime-local" id="fecha_apertura" name="fecha_apertura" class="form-control"
+                                required>
                         </div>
 
                         <div class="mb-3">
                             <label for="monto_inicial" class="form-label">Monto de apertura</label>
-                            <input type="number" step="0.01" id="monto_inicial" name="monto_inicial" class="form-control" required>
+                            <input type="number" step="0.01" id="monto_inicial" name="monto_inicial"
+                                class="form-control" required>
                         </div>
                         <select name="sucursal_id" class="form-select">
                             @foreach($sucursales as $sucursal)
-                            <option value="{{ $sucursal->id }}">{{ $sucursal->nombre }}</option>
+                                <option value="{{ $sucursal->id }}">{{ $sucursal->nombre }}</option>
                             @endforeach
                         </select>
                     </form>
@@ -171,17 +174,20 @@
 
                         <div class="mb-3">
                             <label for="fecha_cierre" class="form-label">Fecha y hora de cierre</label>
-                            <input type="datetime-local" id="fecha_cierre" name="fecha_cierre" class="form-control" required>
+                            <input type="datetime-local" id="fecha_cierre" name="fecha_cierre" class="form-control"
+                                required>
                         </div>
 
                         <div class="mb-3">
                             <label for="monto_final" class="form-label">Monto de cierre</label>
-                            <input type="number" id="monto_final" name="monto_final" class="form-control" step="0.01" required>
+                            <input type="number" id="monto_final" name="monto_final" class="form-control" step="0.01"
+                                required>
                         </div>
 
                         <div class="mb-3">
                             <label for="observacion" class="form-label">Observaciones</label>
-                            <textarea id="observacion" name="observacion" rows="3" class="form-control" placeholder="Observaciones sobre el cierre..."></textarea>
+                            <textarea id="observacion" name="observacion" rows="3" class="form-control"
+                                placeholder="Observaciones sobre el cierre..."></textarea>
                         </div>
                     </form>
                 </div>
@@ -241,7 +247,7 @@
                     showToast('No se pudo verificar el estado de la caja.', 'danger');
                 }
             });
-            
+
             // ✅ Verificar caja abierta desde el backend
             async function verificarCaja() {
                 try {
@@ -342,12 +348,19 @@
                     });
 
                     const data = await res.json();
+
                     if (data.success) {
                         showToast('Caja cerrada correctamente', 'success');
                         modalCierreCaja.hide();
                         cajaAbierta = false;
                         btnCaja.textContent = 'Abrir Caja';
                         btnNuevo.disabled = true;
+
+                        // 🔹 Abrir comprobante de movimientos en otra pestaña
+                        if (data.url_comprobante) {
+                            window.open(data.url_comprobante, '_blank');
+                        }
+
                     } else {
                         showToast(data.message || 'Error al cerrar caja', 'danger');
                     }
@@ -383,11 +396,11 @@
                     <td>${parseFloat(r.monto).toFixed(2)}</td>
                     <td>${r.usuario?.name ?? ''}</td>
                     <td class="text-end">
-                       <button class="btn btn-sm btn-outline-primary me-1 btn-editar" data-id="${r.id}">
+                       <button class="btn btn-sm btn-primary me-1 btn-editar" data-id="${r.id}">
                         <i class="bx bx-edit"></i>
                         </button>
-                        <button class="btn btn-sm btn-outline-danger me-1"><i class="bx bx-x-circle"></i></button>
-                        <button class="btn btn-sm btn-outline-secondary"><i class="bx bx-printer"></i></button>
+                        <button class="btn btn-sm btn-danger me-1"><i class="bx bx-x-circle"></i></button>
+                        <button class="btn btn-sm btn-secondary"><i class="bx bx-printer"></i></button>
                     </td>
                 `;
                     tableBody.appendChild(tr);
