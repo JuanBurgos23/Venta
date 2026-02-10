@@ -30,4 +30,8 @@ class Caja extends Model
     {
         return $this->belongsTo(Empresa::class, 'empresa_id');
     }
+    public function detalleCaja()
+    {
+        return $this->hasMany(DetalleCaja::class, 'caja_id');
+    }
 }

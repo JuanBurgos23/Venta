@@ -1973,7 +1973,7 @@
                     <!-- Laravel Blade Directives - Esto será procesado por Laravel -->
                     @if (Route::has('login'))
                         @auth
-                            <a href="{{ url('/dashboard') }}" class="dashboard">
+                            <a href="{{ url('/inicio') }}" class="dashboard">
                                 <i class="fas fa-tachometer-alt"></i> Dashboard
                             </a>
                         @else
@@ -2033,7 +2033,7 @@
                 <!-- Laravel Blade Directives - Esto será procesado por Laravel -->
                 @if (Route::has('login'))
                     @auth
-                        <a href="{{ url('/dashboard') }}" class="dashboard">
+                        <a href="{{ url('/inicio') }}" class="dashboard">
                             <i class="fas fa-tachometer-alt"></i> Dashboard
                         </a>
                     @else

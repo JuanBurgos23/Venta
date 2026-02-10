@@ -41,7 +41,8 @@ class CajaService
         $idTipoIngreso = DB::table('tipo_movimiento')
             ->where('nombre', 'INGRESO')
             ->value('id');
-        if (!$idTipoIngreso) return;
+        if (!$idTipoIngreso)
+            return;
 
         $caja = DB::table('caja')
             ->where('empresa_id', $empresaId)
@@ -51,7 +52,8 @@ class CajaService
             ->orderByDesc('fecha_apertura')
             ->first();
 
-        if (!$caja) return;
+        if (!$caja)
+            return;
 
         $existe = DB::table('detalle_caja')
             ->where('caja_id', $caja->id)
@@ -59,18 +61,19 @@ class CajaService
             ->where('id_movimiento', $ventaId)
             ->exists();
 
-        if ($existe) return;
+        if ($existe)
+            return;
 
         DB::table('detalle_caja')->insert([
-            'caja_id'          => $caja->id,
+            'caja_id' => $caja->id,
             'id_tipo_movimiento' => $idTipoIngreso,
-            'movimiento'       => 'VENTA',
-            'id_movimiento'    => $ventaId,
+            'movimiento' => 'VENTA',
+            'id_movimiento' => $ventaId,
             'fecha_movimiento' => $fechaVenta,
-            'monto'            => $monto,
-            'estado'           => 1,
-            'created_at'       => now(),
-            'updated_at'       => now(),
+            'monto' => $monto,
+            'estado' => 1,
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
     }
     public static function syncComprasCajaAbierta(int $empresaId, int $sucursalId, int $usuarioId): void
@@ -79,12 +82,47 @@ class CajaService
             ->where('nombre', 'EGRESO')
             ->value('id');
 
-        if (!$idTipoEgreso) return;
+        if (!$idTipoEgreso)
+            return;
 
         DB::statement('CALL sp_sync_detalle_caja_compras_abierta(?, ?, ?, ?)', [
-            $empresaId, $sucursalId, $usuarioId, $idTipoEgreso
+            $empresaId,
+            $sucursalId,
+            $usuarioId,
+            $idTipoEgreso
         ]);
     }
 
+    public static function syncIngresoEgresoCajaAbierta(
+        int $empresaId,
+        int $sucursalId,
+        int $usuarioId
+    ): void {
+        // 🔹 Buscar ID de INGRESO
+        $idIngreso = DB::table('tipo_movimiento')
+            ->where('nombre', 'INGRESO')
+            ->value('id');
+
+        // 🔹 Buscar ID de EGRESO
+        $idEgreso = DB::table('tipo_movimiento')
+            ->where('nombre', 'EGRESO')
+            ->value('id');
+
+        // 🔹 Ejecutar SP para INGRESOS
+        if ($idIngreso) {
+            DB::statement(
+                'CALL sp_sync_detalle_caja_ingreso_egreso_abierta(?, ?, ?, ?)',
+                [$empresaId, $sucursalId, $usuarioId, $idIngreso]
+            );
+        }
+
+        // 🔹 Ejecutar SP para EGRESOS
+        if ($idEgreso) {
+            DB::statement(
+                'CALL sp_sync_detalle_caja_ingreso_egreso_abierta(?, ?, ?, ?)',
+                [$empresaId, $sucursalId, $usuarioId, $idEgreso]
+            );
+        }
+    }
 
 }
