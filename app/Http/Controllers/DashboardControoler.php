@@ -7,168 +7,300 @@ use Illuminate\Support\Facades\DB;
 
 class DashboardControoler extends Controller
 {
-    public function index(){
-        $user = auth()->user();
-        $empresaId = $user->id_empresa ?? null;
-        $dashboardData = [];
+    // === MAPEA A TU BD REAL (ajusta si tu esquema difiere) ===
+    private string $VENTA_TABLE = 'venta';
+    private string $VENTA_ID    = 'ID';
+    private string $VENTA_EMP   = 'ID_EMPRESA';
+    private string $VENTA_FECHA = 'fecha_venta';     // date
+    private string $VENTA_FREG  = 'FECHA_REGISTRO';   // datetime (para horas)
+    private string $VENTA_TOTAL = 'total';
+    private string $VENTA_ALM   = 'id_almacen';
+    private string $VENTA_USER  = 'ID_USUARIO';      // o id_vendedor si lo usas
+    private string $VENTA_EST   = 'ESTADO';          // 1 activo
 
-        if ($empresaId) {
-            $now = now();
+    public function index()
+    {
+        return view('dashboard.dashboard');
+    }
 
-            $startDay = $now->copy()->subDays(6)->startOfDay();
-            $endDay = $now->copy()->endOfDay();
+    public function diario(Request $request)
+    {
+        $fecha = ($request->date('fecha')?->toDateString()) ?? now()->toDateString();
+        $empresaId = $request->integer('empresa_id') ?: (auth()->user()->id_empresa ?? null);
+        if (!$empresaId) return response()->json(['ok'=>false,'msg'=>'empresa_id requerido'], 422);
 
-            $dailyRows = DB::table('venta')
-                ->selectRaw('DATE(fecha) as day, COUNT(*) as cantidad, SUM(total) as total')
-                ->where('empresa_id', $empresaId)
-                ->whereBetween('fecha', [$startDay, $endDay])
-                ->groupBy('day')
-                ->get()
-                ->keyBy('day');
+        $almacenId = $request->integer('almacen_id');
+        $usuarioId = $request->integer('usuario_id');
 
-            $dayLabels = [];
-            $orderSeries = [];
-            $revenueSeries = [];
+        // Ventas del día (resumen)
+        $ventasQ = DB::table($this->VENTA_TABLE)
+            ->whereDate($this->VENTA_FECHA, $fecha)
+            ->where($this->VENTA_EMP, $empresaId)
+            ->where($this->VENTA_EST, 1);
 
-            foreach (range(6, 0) as $i) {
-                $day = $now->copy()->subDays($i);
-                $key = $day->format('Y-m-d');
-                $row = $dailyRows->get($key);
-                $orderSeries[] = (int) ($row->cantidad ?? 0);
-                $revenueSeries[] = (float) ($row->total ?? 0);
-                $dayLabels[] = $day->format('D');
-            }
+        if ($almacenId) $ventasQ->where($this->VENTA_ALM, $almacenId);
+        if ($usuarioId) $ventasQ->where($this->VENTA_USER, $usuarioId);
 
-            $startMonth = $now->copy()->subMonths(6)->startOfMonth();
-            $endMonth = $now->copy()->endOfMonth();
+        $ventas = $ventasQ->get();
 
-            $ventasMonthly = DB::table('venta')
-                ->selectRaw('DATE_FORMAT(fecha, "%Y-%m") as ym, SUM(total) as total')
-                ->where('empresa_id', $empresaId)
-                ->whereBetween('fecha', [$startMonth, $endMonth])
-                ->groupBy('ym')
-                ->pluck('total', 'ym');
+        $ventasBrutas = (float) $ventas->sum($this->VENTA_TOTAL);
+        $descuentos   = 0; // si tienes campo descuento, súmalo aquí
+        $ventasNetas  = $ventasBrutas - $descuentos;
 
-            $comprasMonthly = DB::table('compra')
-                ->selectRaw('DATE_FORMAT(fecha_ingreso, "%Y-%m") as ym, SUM(total) as total')
-                ->where('id_empresa', $empresaId)
-                ->whereBetween('fecha_ingreso', [$startMonth, $endMonth])
-                ->groupBy('ym')
-                ->pluck('total', 'ym');
+        // COGS (si tus tablas existen)
+        $cogs = 0.0;
+        if (Schema::hasTable('detalle_venta_lote')) {
+            $cogsQ = DB::table('detalle_venta_lote as dvl')
+                ->join('detalle_venta as dv', 'dv.id', '=', 'dvl.detalle_venta_id')
+                ->join($this->VENTA_TABLE.' as v', 'v.'.$this->VENTA_ID, '=', 'dv.venta_id')
+                ->whereDate('v.'.$this->VENTA_FECHA, $fecha)
+                ->where('v.'.$this->VENTA_EMP, $empresaId)
+                ->where('v.'.$this->VENTA_EST, 1);
 
-            $monthLabels = [];
-            $ventasSeries = [];
-            $comprasSeries = [];
+            if ($almacenId) $cogsQ->where('v.'.$this->VENTA_ALM, $almacenId);
+            if ($usuarioId) $cogsQ->where('v.'.$this->VENTA_USER, $usuarioId);
 
-            foreach (range(6, 0) as $i) {
-                $month = $now->copy()->subMonths($i)->startOfMonth();
-                $key = $month->format('Y-m');
-                $monthLabels[] = $month->format('M');
-                $ventasSeries[] = (float) ($ventasMonthly[$key] ?? 0);
-                $comprasSeries[] = (float) ($comprasMonthly[$key] ?? 0);
-            }
-
-            $monthStart = $now->copy()->startOfMonth();
-            $monthEnd = $now->copy()->endOfMonth();
-
-            $currentMonthTotal = (float) DB::table('venta')
-                ->where('empresa_id', $empresaId)
-                ->whereBetween('fecha', [$monthStart, $monthEnd])
-                ->sum('total');
-
-            $prevMonthStart = $now->copy()->subMonth()->startOfMonth();
-            $prevMonthEnd = $now->copy()->subMonth()->endOfMonth();
-            $prevMonthTotal = (float) DB::table('venta')
-                ->where('empresa_id', $empresaId)
-                ->whereBetween('fecha', [$prevMonthStart, $prevMonthEnd])
-                ->sum('total');
-
-            $growthPercent = $prevMonthTotal > 0
-                ? round(($currentMonthTotal / $prevMonthTotal) * 100)
-                : ($currentMonthTotal > 0 ? 100 : 0);
-            $growthPercent = max(0, min(100, $growthPercent));
-
-            $profileSeries = [];
-            foreach (range(5, 0) as $i) {
-                $month = $now->copy()->subMonths($i)->startOfMonth();
-                $key = $month->format('Y-m');
-                $profileSeries[] = (float) ($ventasMonthly[$key] ?? 0);
-            }
-
-            $topCategories = DB::table('detalle_venta as dv')
-                ->join('venta as v', 'v.id', '=', 'dv.venta_id')
-                ->join('producto as p', 'p.id', '=', 'dv.producto_id')
-                ->leftJoin('categoria as c', 'c.id', '=', 'p.categoria_id')
-                ->where('v.empresa_id', $empresaId)
-                ->whereBetween('v.fecha', [$monthStart, $monthEnd])
-                ->groupBy('c.id', 'c.nombre')
-                ->selectRaw('COALESCE(c.nombre, "Sin categoria") as nombre, SUM(dv.subtotal) as total')
-                ->orderByDesc('total')
-                ->limit(4)
-                ->get();
-
-            $categoryLabels = $topCategories->pluck('nombre')->map(function ($name) {
-                return $name ?: 'Sin categoria';
-            })->all();
-            $categorySeries = $topCategories->pluck('total')->map(function ($total) {
-                return (float) $total;
-            })->all();
-
-            if (empty($categoryLabels)) {
-                $categoryLabels = ['Sin datos'];
-                $categorySeries = [1];
-            }
-
-            $comprasWeekTotal = (float) DB::table('compra')
-                ->where('id_empresa', $empresaId)
-                ->whereBetween('fecha_ingreso', [$startDay, $endDay])
-                ->sum('total');
-
-            $dashboardData = [
-                'orderChart' => [
-                    'series' => [
-                        ['data' => $orderSeries],
-                    ],
-                ],
-                'totalRevenueChart' => [
-                    'series' => [
-                        ['name' => 'Ventas', 'data' => $ventasSeries],
-                        ['name' => 'Compras', 'data' => $comprasSeries],
-                    ],
-                    'categories' => $monthLabels,
-                ],
-                'growthChart' => [
-                    'series' => [$growthPercent],
-                ],
-                'revenueChart' => [
-                    'series' => [
-                        ['data' => $revenueSeries],
-                    ],
-                    'categories' => $dayLabels,
-                ],
-                'profileReportChart' => [
-                    'series' => [
-                        ['data' => $profileSeries],
-                    ],
-                ],
-                'orderStatisticsChart' => [
-                    'labels' => $categoryLabels,
-                    'series' => $categorySeries,
-                ],
-                'incomeChart' => [
-                    'series' => [
-                        ['data' => $revenueSeries],
-                    ],
-                    'categories' => $dayLabels,
-                ],
-                'expensesOfWeek' => [
-                    'series' => [$comprasWeekTotal],
-                ],
-            ];
+            $cogs = (float) $cogsQ->sum('dvl.costo_total');
         }
 
-        return view('dashboard.dashboard', [
-            'dashboardData' => $dashboardData,
+        $utilidadBruta  = $ventasNetas - $cogs;
+        $tickets        = $ventas->count();
+        $ticketPromedio = $tickets ? $ventasNetas / $tickets : 0;
+
+        // ✅ SERIE POR HORA (para tu gananciasChart que usa horas)
+        // usa FECHA_REGISTRO para agrupar
+        $horaRows = DB::table($this->VENTA_TABLE)
+            ->selectRaw('HOUR('.$this->VENTA_FREG.') as h, SUM('.$this->VENTA_TOTAL.') as total, COUNT(*) as cantidad')
+            ->whereDate($this->VENTA_FECHA, $fecha)
+            ->where($this->VENTA_EMP, $empresaId)
+            ->where($this->VENTA_EST, 1)
+            ->when($almacenId, fn($q)=>$q->where($this->VENTA_ALM, $almacenId))
+            ->when($usuarioId, fn($q)=>$q->where($this->VENTA_USER, $usuarioId))
+            ->groupBy('h')
+            ->orderBy('h')
+            ->get()
+            ->keyBy('h');
+
+        $hourLabels = [];
+        $hourSeries = [];
+        // si quieres: 6,9,12,15,18,21,24 como tu mock
+        foreach ([6,9,12,15,18,21,23] as $h) {
+            $hourLabels[] = sprintf('%02d:00', $h);
+            $row = $horaRows->get($h);
+            $hourSeries[] = (float) ($row->total ?? 0);
+        }
+
+        // Top productos (ya lo tenías)
+        $topProductos = DB::table('detalle_venta as dv')
+            ->join($this->VENTA_TABLE.' as v', 'v.'.$this->VENTA_ID, '=', 'dv.venta_id')
+            ->join('producto as p', 'p.id', '=', 'dv.producto_id')
+            ->whereDate('v.'.$this->VENTA_FECHA, $fecha)
+            ->where('v.'.$this->VENTA_EMP, $empresaId)
+            ->where('v.'.$this->VENTA_EST, 1)
+            ->when($almacenId, fn($q)=>$q->where('v.'.$this->VENTA_ALM, $almacenId))
+            ->when($usuarioId, fn($q)=>$q->where('v.'.$this->VENTA_USER, $usuarioId))
+            ->groupBy('p.id','p.nombre')
+            ->selectRaw('p.id, p.nombre, SUM(dv.cantidad) as cantidad, SUM(dv.subtotal) as ventas')
+            ->orderByDesc('ventas')
+            ->limit(10)
+            ->get();
+
+        return response()->json([
+            'ok' => true,
+            'fecha' => $fecha,
+            'resumen' => [
+                'ventas_brutas'   => round($ventasBrutas, 2),
+                'descuentos'      => round($descuentos, 2),
+                'ventas_netas'    => round($ventasNetas, 2),
+                'cogs'            => round($cogs, 2),
+                'utilidad_bruta'  => round($utilidadBruta, 2),
+                'tickets'         => $tickets,
+                'ticket_promedio' => round($ticketPromedio, 2),
+            ],
+            'serie_horas' => [
+                'labels' => $hourLabels,
+                'data'   => $hourSeries,
+            ],
+            'top_productos' => $topProductos,
         ]);
+    }
+
+    public function mensual(Request $request)
+    {
+        $empresaId = $request->integer('empresa_id') ?: (auth()->user()->id_empresa ?? null);
+        if (!$empresaId) return response()->json(['ok'=>false,'msg'=>'empresa_id requerido'], 422);
+
+        $ym = $request->input('mes', now()->format('Y-m'));
+        if (!preg_match('/^\d{4}\-\d{2}$/', $ym)) {
+            return response()->json(['ok'=>false,'msg'=>'Parámetro mes inválido (YYYY-MM)'], 422);
+        }
+
+        [$year, $month] = explode('-', $ym);
+        $start = sprintf('%04d-%02d-01', (int)$year, (int)$month);
+        $end   = date('Y-m-t', strtotime($start));
+
+        $almacenId = $request->integer('almacen_id');
+        $usuarioId = $request->integer('usuario_id');
+
+        $ventasQ = DB::table($this->VENTA_TABLE)
+            ->whereBetween($this->VENTA_FECHA, [$start, $end])
+            ->where($this->VENTA_EMP, $empresaId)
+            ->where($this->VENTA_EST, 1);
+
+        if ($almacenId) $ventasQ->where($this->VENTA_ALM, $almacenId);
+        if ($usuarioId) $ventasQ->where($this->VENTA_USER, $usuarioId);
+
+        $ventas = $ventasQ->get();
+
+        $ventasBrutas = (float) $ventas->sum($this->VENTA_TOTAL);
+        $descuentos   = 0;
+        $ventasNetas  = $ventasBrutas - $descuentos;
+
+        $cogs = 0.0;
+        if (Schema::hasTable('detalle_venta_lote')) {
+            $cogsQ = DB::table('detalle_venta_lote as dvl')
+                ->join('detalle_venta as dv', 'dv.id', '=', 'dvl.detalle_venta_id')
+                ->join($this->VENTA_TABLE.' as v', 'v.'.$this->VENTA_ID, '=', 'dv.venta_id')
+                ->whereBetween('v.'.$this->VENTA_FECHA, [$start, $end])
+                ->where('v.'.$this->VENTA_EMP, $empresaId)
+                ->where('v.'.$this->VENTA_EST, 1);
+
+            if ($almacenId) $cogsQ->where('v.'.$this->VENTA_ALM, $almacenId);
+            if ($usuarioId) $cogsQ->where('v.'.$this->VENTA_USER, $usuarioId);
+
+            $cogs = (float) $cogsQ->sum('dvl.costo_total');
+        }
+
+        $utilidadBruta  = $ventasNetas - $cogs;
+        $tickets        = $ventas->count();
+        $ticketPromedio = $tickets ? ($ventasNetas / $tickets) : 0;
+
+        // Serie por día
+        $serie = DB::table($this->VENTA_TABLE.' as v')
+            ->leftJoin('detalle_venta as dv', 'dv.venta_id', '=', 'v.'.$this->VENTA_ID)
+            ->leftJoin('detalle_venta_lote as dvl', 'dvl.detalle_venta_id', '=', 'dv.id')
+            ->whereBetween('v.'.$this->VENTA_FECHA, [$start, $end])
+            ->where('v.'.$this->VENTA_EMP, $empresaId)
+            ->where('v.'.$this->VENTA_EST, 1)
+            ->when($almacenId, fn($q)=>$q->where('v.'.$this->VENTA_ALM, $almacenId))
+            ->when($usuarioId, fn($q)=>$q->where('v.'.$this->VENTA_USER, $usuarioId))
+            ->groupBy('fecha')
+            ->orderBy('fecha')
+            ->selectRaw('DATE(v.'.$this->VENTA_FECHA.') as fecha, SUM(v.'.$this->VENTA_TOTAL.') as ventas, COALESCE(SUM(dvl.costo_total),0) as cogs')
+            ->get()
+            ->map(function($r){
+                $r->ventas   = (float)$r->ventas;
+                $r->cogs     = (float)$r->cogs;
+                $r->utilidad = $r->ventas - $r->cogs;
+                return $r;
+            });
+
+        return response()->json([
+            'ok' => true,
+            'periodo' => ['mes'=>$ym,'inicio'=>$start,'fin'=>$end],
+            'resumen' => [
+                'ventas_brutas'   => round($ventasBrutas, 2),
+                'descuentos'      => round($descuentos, 2),
+                'ventas_netas'    => round($ventasNetas, 2),
+                'cogs'            => round($cogs, 2),
+                'utilidad_bruta'  => round($utilidadBruta, 2),
+                'tickets'         => $tickets,
+                'ticket_promedio' => round($ticketPromedio, 2),
+            ],
+            'serie_dias' => $serie,
+        ]);
+    }
+
+    public function categoriasMensual(Request $request)
+    {
+        $empresaId = $request->integer('empresa_id') ?: (auth()->user()->id_empresa ?? null);
+        if (!$empresaId) return response()->json(['ok'=>false,'msg'=>'empresa_id requerido'], 422);
+
+        $ym = $request->input('mes', now()->format('Y-m'));
+        [$year, $month] = explode('-', $ym);
+        $start = sprintf('%04d-%02d-01', (int)$year, (int)$month);
+        $end   = date('Y-m-t', strtotime($start));
+
+        $rows = DB::table('detalle_venta as dv')
+            ->join($this->VENTA_TABLE.' as v', 'v.'.$this->VENTA_ID, '=', 'dv.venta_id')
+            ->join('producto as p', 'p.id', '=', 'dv.producto_id')
+            ->leftJoin('categoria as c', 'c.id', '=', 'p.categoria_id')
+            ->whereBetween('v.'.$this->VENTA_FECHA, [$start, $end])
+            ->where('v.'.$this->VENTA_EMP, $empresaId)
+            ->where('v.'.$this->VENTA_EST, 1)
+            ->groupBy('c.id','c.nombre')
+            ->selectRaw('COALESCE(c.nombre, "Sin categoría") as categoria, SUM(dv.subtotal) as total')
+            ->orderByDesc('total')
+            ->limit(8)
+            ->get();
+
+        $labels = $rows->pluck('categoria')->toArray();
+        $data   = $rows->pluck('total')->map(fn($x)=>(float)$x)->toArray();
+
+        if (!$labels) { $labels = ['Sin datos']; $data = [1]; }
+
+        return response()->json(['ok'=>true,'labels'=>$labels,'data'=>$data]);
+    }
+
+    public function historico12Meses(Request $request)
+    {
+        $empresaId = $request->integer('empresa_id') ?: (auth()->user()->id_empresa ?? null);
+        if (!$empresaId) return response()->json(['ok'=>false,'msg'=>'empresa_id requerido'], 422);
+
+        $to = now()->startOfMonth();
+        $from = $to->copy()->subMonths(11);
+
+        $rows = DB::table($this->VENTA_TABLE)
+            ->selectRaw('DATE_FORMAT('.$this->VENTA_FECHA.', "%Y-%m") as ym, SUM('.$this->VENTA_TOTAL.') as total')
+            ->whereBetween($this->VENTA_FECHA, [$from->toDateString(), $to->copy()->endOfMonth()->toDateString()])
+            ->where($this->VENTA_EMP, $empresaId)
+            ->where($this->VENTA_EST, 1)
+            ->groupBy('ym')
+            ->pluck('total', 'ym');
+
+        $labels = [];
+        $data = [];
+
+        for ($i=11; $i>=0; $i--) {
+            $m = now()->copy()->subMonths($i)->startOfMonth();
+            $key = $m->format('Y-m');
+            $labels[] = $m->format('M');
+            $data[] = (float) ($rows[$key] ?? 0);
+        }
+
+        return response()->json(['ok'=>true,'labels'=>$labels,'data'=>$data]);
+    }
+
+    public function topVendedoresMensual(Request $request)
+    {
+        $empresaId = $request->integer('empresa_id') ?: (auth()->user()->id_empresa ?? null);
+        if (!$empresaId) return response()->json(['ok'=>false,'msg'=>'empresa_id requerido'], 422);
+
+        $ym = $request->input('mes', now()->format('Y-m'));
+        [$year, $month] = explode('-', $ym);
+        $start = sprintf('%04d-%02d-01', (int)$year, (int)$month);
+        $end   = date('Y-m-t', strtotime($start));
+
+        // Ajusta tabla/fields de usuarios a tu sistema (users / usuario / etc.)
+        // Si no tienes tabla usuarios, igual sirve devolviendo solo ID.
+        $rows = DB::table($this->VENTA_TABLE.' as v')
+            ->leftJoin('users as u', 'u.id', '=', 'v.'.$this->VENTA_USER) // cambia si tu tabla es otra
+            ->whereBetween('v.'.$this->VENTA_FECHA, [$start, $end])
+            ->where('v.'.$this->VENTA_EMP, $empresaId)
+            ->where('v.'.$this->VENTA_EST, 1)
+            ->groupBy('v.'.$this->VENTA_USER, 'u.name')
+            ->selectRaw('v.'.$this->VENTA_USER.' as id, COALESCE(u.name, CONCAT("Vendedor #", v.'.$this->VENTA_USER.')) as nombre, SUM(v.'.$this->VENTA_TOTAL.') as ventas, COUNT(*) as tickets')
+            ->orderByDesc('ventas')
+            ->limit(5)
+            ->get()
+            ->map(function($r){
+                $r->ventas = (float)$r->ventas;
+                return $r;
+            });
+
+        // meta ejemplo: promedio del top o fijo
+        $meta = $request->float('meta') ?: 100000;
+
+        return response()->json(['ok'=>true,'meta'=>$meta,'data'=>$rows]);
     }
 }

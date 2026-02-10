@@ -160,7 +160,7 @@ class EmpresaController extends Controller
         ]);
 
         Cliente::create([
-            'nombre'     => 'Cliente General',
+            'nombres'    => 'Cliente General',
             'id_empresa' => $empresa->id,
         ]);
 

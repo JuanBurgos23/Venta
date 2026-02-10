@@ -25,6 +25,7 @@ use App\Http\Controllers\IngresoEgresoController;
 use App\Http\Controllers\ImportProductosController;
 use App\Http\Controllers\ProductoAlmacenController;
 use App\Http\Controllers\InventarioReporteController;
+use App\Http\Controllers\PermisosPantallasController;
 use App\Http\Controllers\SuscripcionStatusController;
 use App\Http\Controllers\EmpresaSuscripcionController;
 
@@ -93,6 +94,14 @@ Route::middleware('auth')->get('/routes-list', function () {
 
 //dashboard
 Route::get('/inicio', [DashboardControoler::class, 'index'])->name('Inicio')->middleware(['auth', 'verified']);
+Route::middleware(['auth'])->group(function () {
+    Route::get('/dashboard/diario', [DashboardControoler::class, 'diario']);
+    Route::get('/dashboard/mensual', [DashboardControoler::class, 'mensual']);
+    Route::get('/dashboard/categorias-mensual', [DashboardControoler::class, 'categoriasMensual']);
+    Route::get('/dashboard/historico-12m', [DashboardControoler::class, 'historico12Meses']);
+    Route::get('/dashboard/top-vendedores-mensual', [DashboardControoler::class, 'topVendedoresMensual']);
+});
+
 
 // admin dashboard (auth + verified)
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -119,10 +128,11 @@ Route::middleware('auth')->get('/api/empresa/suscripcion/status',[SuscripcionSta
 
 Route::middleware(['auth', 'suscripcion.vigente'])->group(function () {
     //cliente
-    Route::get('/cliente', [ClienteController::class, 'index'])->name('Cliente');
+    
     
 
 });
+Route::get('/cliente', [ClienteController::class, 'index'])->name('Cliente');
 Route::get('clientes/fetch', [ClienteController::class, 'fetch'])->name('clientes.fetch');
     Route::post('/clientes/store', [ClienteController::class, 'store'])->name('clientes.store');
     Route::put('clientes/{id}', [ClienteController::class, 'update'])->name('clientes.update');
@@ -159,6 +169,12 @@ Route::get('clientes/fetch', [ClienteController::class, 'fetch'])->name('cliente
     Route::post('/roles', [RolController::class, 'store'])->name('roles.store');
     Route::put('/roles/{role}', [RolController::class, 'update'])->name('roles.update');
     Route::delete('/roles/{role}', [RolController::class, 'destroy'])->name('roles.destroy');
+
+        //Crear Rol y Permisos
+    Route::get('/permisos', [RolController::class, 'indexpermisos'])->name('permisos.index');
+    Route::post('/permisos', [RolController::class, 'store'])->name('permisos.store');
+    Route::put('/permisos/{permiso}', [RolController::class, 'update'])->name('permisos.update');
+    Route::delete('/permisos/{permiso}', [RolController::class, 'destroy'])->name('permisos.destroy');
     
 
     //sucursal
@@ -286,8 +302,14 @@ Route::get('clientes/fetch', [ClienteController::class, 'fetch'])->name('cliente
     ->name('ventas.anular')
     ->middleware('permission:venta.anular');
 
+    Route::get('/ventas/reporte', [VentaController::class, 'indexReporte'])->name('ventas.reporte_ventas');
+    Route::get('/ventas/reporte/data', [VentaController::class, 'reporte'])->name('ventas.reporte.data');
 
-    //caja
+    // si quieres el resumen/export separado:
+    Route::get('/ventas/reporte/resumen', [VentaController::class, 'generarReporte'])->name('ventas.reporte.resumen');
+
+    Route::get('/api/almacenes', [AlmacenController::class, 'listarParaFiltro']);
+        //caja
     Route::get('/caja/verificar', [CajaController::class, 'verificarCajaActiva']);
     Route::post('/caja/abrir', [CajaController::class, 'abrirCaja']);
     Route::post('/caja/cerrar', [CajaController::class, 'cerrarCaja']);
@@ -318,6 +340,7 @@ Route::get('clientes/fetch', [ClienteController::class, 'fetch'])->name('cliente
     Route::get('/finanzas/diario', function () {
         return view('finanzas.diario');
     })->name('finanzas.diario.view');
+
     Route::get('/finanzas/diario/data', [FinanzasController::class, 'diario'])
         ->name('finanzas.diario');
 
@@ -334,5 +357,23 @@ Route::get('clientes/fetch', [ClienteController::class, 'fetch'])->name('cliente
 
     Route::get('/finanzas/ventas-producto/data', [FinanzasController::class, 'ventasPorProducto'])
         ->name('finanzas.vp.data');
+
+    Route::get('/permisos-pantallas', [PermisosPantallasController::class, 'index'])
+    ->name('permisos.pantallas');
+
+    Route::post('/permisos-pantallas/guardar', [PermisosPantallasController::class, 'guardarCambios'])
+        ->name('permisos.pantallas.guardar');
+
+    Route::post('/permisos-pantallas/sync', [PermisosPantallasController::class, 'syncPantallas'])
+        ->name('permisos.pantallas.sync');
+
+    Route::get('/permisos-pantallas/pantalla/{pantalla}', [PermisosPantallasController::class, 'detallePantalla'])
+        ->name('permisos.pantallas.detalle');
+
+    Route::get('/permisos-pantallas/rol/{role}/resumen', [PermisosPantallasController::class, 'resumenRol'])
+        ->name('permisos.pantallas.resumenRol');
+
+
+
 
     require __DIR__ . '/auth.php';

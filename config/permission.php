@@ -74,11 +74,12 @@ return [
     'column_names' => [
         'role_pivot_key' => null,
         'permission_pivot_key' => null,
-
         'model_morph_key' => 'model_id',
 
-        'team_foreign_key' => 'empresa_id',
+        // Si NO usas teams, esto queda pero no se usa:
+        'team_foreign_key' => 'team_id',
     ],
+
 
     /*
      * When set to true, the method for checking permissions will be registered on the gate.
@@ -115,7 +116,7 @@ return [
      * (view the latest version of this package's migration file)
      */
 
-    'teams' => true,
+    'teams' => false,
 
     /*
      * The class to use to resolve the permissions team id

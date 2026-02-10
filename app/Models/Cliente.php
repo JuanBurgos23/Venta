@@ -20,8 +20,4 @@ class Cliente extends Model
     {
         return $this->belongsTo(Empresa::class, 'id_empresa');
     }
-    public function getNombreCompletoAttribute()
-    {
-        return "{$this->nombre} {$this->paterno} {$this->materno}";
-    }
 }

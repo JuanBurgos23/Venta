@@ -11,8 +11,6 @@ use Illuminate\View\View;
 use App\Models\Suscripcion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
 use App\Models\EmpresaSuscripcion;
 use Illuminate\Support\Facades\Auth;
@@ -70,7 +68,7 @@ class RegisteredUserController extends Controller
             ]);
 
             Cliente::create([
-                'nombre'     => 'Cliente General',
+                'nombres'    => 'Cliente General',
                 'id_empresa' => $empresa->id,
             ]);
 
@@ -110,13 +108,13 @@ class RegisteredUserController extends Controller
                 'estado'          => 1,
             ]);
 
-            // 2.5 Sembrar roles/permisos base para la nueva empresa y obtener rol admin
-            $adminRole = $this->seedRolesAndPermissions($empresa->id);
+            // 2.5 Crear roles base y asignar rol admin al usuario en esta empresa
+            $adminRoleId = $this->seedRolesAndPermissions($empresa->id);
 
-            // Asignar el rol de administrador al usuario con pivot empresa_id
-            $user->roles()->syncWithoutDetaching([
-                $adminRole->id => ['empresa_id' => $empresa->id],
-            ]);
+            DB::table('user_role')->updateOrInsert(
+                ['empresa_id' => $empresa->id, 'user_id' => $user->id, 'role_id' => $adminRoleId],
+                ['empresa_id' => $empresa->id, 'user_id' => $user->id, 'role_id' => $adminRoleId]
+            );
 
             DB::commit();
 
@@ -134,60 +132,34 @@ class RegisteredUserController extends Controller
         }
     }
 
-    private function seedRolesAndPermissions(int $empresaId): Role
+    private function seedRolesAndPermissions(int $empresaId): int
     {
-        $permissions = [
-            // Ventas
-            ['name' => 'ventas.ver', 'descripcion' => 'Permite ver las ventas'],
-            ['name' => 'ventas.crear', 'descripcion' => 'Permite crear una venta'],
-            ['name' => 'ventas.editar', 'descripcion' => 'Permite editar una venta'],
-            ['name' => 'ventas.eliminar', 'descripcion' => 'Permite eliminar una venta'],
-            // Compras
-            ['name' => 'compras.ver', 'descripcion' => 'Permite ver las compras'],
-            ['name' => 'compras.crear', 'descripcion' => 'Permite crear una compra'],
-            ['name' => 'compras.editar', 'descripcion' => 'Permite editar una compra'],
-            ['name' => 'compras.eliminar', 'descripcion' => 'Permite eliminar una compra'],
-            // Inventario
-            ['name' => 'inventario.ver', 'descripcion' => 'Permite ver el inventario'],
-            ['name' => 'inventario.crear', 'descripcion' => 'Permite crear un producto en el inventario'],
-            ['name' => 'inventario.editar', 'descripcion' => 'Permite editar un producto en el inventario'],
-            ['name' => 'inventario.eliminar', 'descripcion' => 'Permite eliminar un producto en el inventario'],
-            // Usuarios
-            ['name' => 'usuarios.ver', 'descripcion' => 'Permite ver los usuarios'],
-            ['name' => 'usuarios.crear', 'descripcion' => 'Permite crear un usuario'],
-            ['name' => 'usuarios.editar', 'descripcion' => 'Permite editar un usuario'],
-            ['name' => 'usuarios.eliminar', 'descripcion' => 'Permite eliminar un usuario'],
-            // Clientes
-            ['name' => 'Cliente', 'descripcion' => 'Permite gestionar clientes'],
-            ['name' => 'clientes.store', 'descripcion' => 'Permite registrar clientes'],
-            ['name' => 'clientes.update', 'descripcion' => 'Permite actualizar clientes'],
-            ['name' => 'clientes.borrar', 'descripcion' => 'Permite eliminar clientes'],
-        ];
+        $adminId = DB::table('roles')->updateOrInsert(
+            ['empresa_id' => $empresaId, 'nombre' => 'Administrador'],
+            ['empresa_id' => $empresaId, 'nombre' => 'Administrador', 'estado' => 1, 'updated_at' => now(), 'created_at' => now()]
+        );
 
-        $permModels = collect($permissions)->map(function ($perm) use ($empresaId) {
-            return Permission::firstOrCreate(
-                ['empresa_id' => $empresaId, 'name' => $perm['name'], 'guard_name' => 'web'],
-                ['descripcion' => $perm['descripcion']]
+        DB::table('roles')->updateOrInsert(
+            ['empresa_id' => $empresaId, 'nombre' => 'Recepcionista'],
+            ['empresa_id' => $empresaId, 'nombre' => 'Recepcionista', 'estado' => 1, 'updated_at' => now(), 'created_at' => now()]
+        );
+
+        $adminRoleId = DB::table('roles')
+            ->where('empresa_id', $empresaId)
+            ->where('nombre', 'Administrador')
+            ->value('id');
+
+        $pantallas = DB::table('app_pantallas')
+            ->where('estado', 1)
+            ->pluck('id');
+
+        foreach ($pantallas as $pantallaId) {
+            DB::table('role_pantalla')->updateOrInsert(
+                ['empresa_id' => $empresaId, 'role_id' => $adminRoleId, 'pantalla_id' => $pantallaId],
+                ['empresa_id' => $empresaId, 'role_id' => $adminRoleId, 'pantalla_id' => $pantallaId]
             );
-        });
+        }
 
-        $admin = Role::firstOrCreate(
-            ['empresa_id' => $empresaId, 'name' => 'Administrador', 'guard_name' => 'web']
-        );
-        $recepcionista = Role::firstOrCreate(
-            ['empresa_id' => $empresaId, 'name' => 'Recepcionista', 'guard_name' => 'web']
-        );
-
-        // Admin con todos los permisos, recepcionista con los mismos por defecto (ajusta si necesitas menos)
-        $admin->permissions()->syncWithPivotValues(
-            $permModels->pluck('id')->all(),
-            ['empresa_id' => $empresaId]
-        );
-        $recepcionista->permissions()->syncWithPivotValues(
-            $permModels->pluck('id')->all(),
-            ['empresa_id' => $empresaId]
-        );
-
-        return $admin;
+        return (int) $adminRoleId;
     }
 }

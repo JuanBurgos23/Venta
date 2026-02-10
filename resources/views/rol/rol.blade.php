@@ -30,7 +30,7 @@
                                 </div>
                                 <div class="d-flex justify-content-between align-items-end">
                                     <div class="role-heading">
-                                        <h5 class="mb-1">{{ $role->name }}</h5>
+                                        <h5 class="mb-1">{{ $role->nombre }}</h5>
                                         <a href="javascript:;" data-bs-toggle="modal" data-bs-target="#editRoleModal{{ $role->id }}" class="role-edit-modal"><span>Editar Rol</span></a>
                                     </div>
                                     <a href="javascript:void(0);"><i class="icon-base bx bx-copy icon-md text-body-secondary"></i></a>
@@ -56,7 +56,7 @@
 
                                         <div class="col-12">
                                             <label class="form-label">Nombre del Rol</label>
-                                            <input type="text" name="name" class="form-control" value="{{ $role->name }}" required>
+                                            <input type="text" name="name" class="form-control" value="{{ $role->nombre }}" required>
                                         </div>
 
                                         <div class="col-12">
@@ -64,13 +64,18 @@
                                             <div class="table-responsive">
                                                 <table class="table table-flush-spacing mb-0 border-top">
                                                     <tbody>
-                                                        @foreach($permissions as $permiso)
+                                                        @php
+                                                            $asignadas = $rolePantallas[$role->id] ?? collect();
+                                                        @endphp
+                                                        @foreach($pantallas as $pantalla)
                                                         <tr>
-                                                            <td>{{ $permiso->descripcion }}</td>
+                                                            <td>
+                                                                {{ $pantalla->modulo_nombre ? $pantalla->modulo_nombre . ' - ' : '' }}{{ $pantalla->nombre }}
+                                                            </td>
                                                             <td>
                                                                 <div class="form-check d-flex justify-content-end">
-                                                                    <input class="form-check-input" type="checkbox" name="permissions[]" value="{{ $permiso->name }}"
-                                                                        {{ $role->permissions->contains('name', $permiso->name) ? 'checked' : '' }}>
+                                                                    <input class="form-check-input" type="checkbox" name="pantallas[]" value="{{ $pantalla->id }}"
+                                                                        {{ $asignadas->contains($pantalla->id) ? 'checked' : '' }}>
                                                                 </div>
                                                             </td>
                                                         </tr>
@@ -139,12 +144,14 @@
                                     <div class="table-responsive">
                                         <table class="table table-flush-spacing mb-0 border-top">
                                             <tbody>
-                                                @foreach($permissions as $permiso)
+                                                @foreach($pantallas as $pantalla)
                                                 <tr>
-                                                    <td>{{ $permiso->descripcion }}</td>
+                                                    <td>
+                                                        {{ $pantalla->modulo_nombre ? $pantalla->modulo_nombre . ' - ' : '' }}{{ $pantalla->nombre }}
+                                                    </td>
                                                     <td>
                                                         <div class="form-check d-flex justify-content-end">
-                                                            <input class="form-check-input" type="checkbox" name="permissions[]" value="{{ $permiso->name }}">
+                                                            <input class="form-check-input" type="checkbox" name="pantallas[]" value="{{ $pantalla->id }}">
                                                         </div>
                                                     </td>
                                                 </tr>

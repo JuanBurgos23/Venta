@@ -166,8 +166,8 @@ class VentaController extends Controller
     {
         $empresaId = auth()->user()->id_empresa;
         $clientes = Cliente::where('id_empresa', $empresaId)
-            ->select('id', 'nombre', 'ci', 'telefono', 'paterno')
-            ->orderBy('nombre')
+            ->select('id', 'nombres', 'ci', 'telefono')
+            ->orderBy('nombres')
             ->get();
 
         return response()->json($clientes);
@@ -220,17 +220,17 @@ class VentaController extends Controller
     {
         $request->validate([
             'nombre'   => 'required|string|max:255',
-            'paterno'  => 'nullable|string|max:255',
-            'materno'  => 'nullable|string|max:255',
             'telefono' => 'nullable|string|max:50',
             'ci'       => 'nullable|string|max:50',
             'correo'   => 'nullable|email|max:255',
         ]);
 
+        $nombres = trim(collect([
+            $request->nombre,
+        ])->filter()->join(' '));
+
         $cliente = Cliente::create([
-            'nombre'     => $request->nombre,
-            'paterno'    => $request->paterno,
-            'materno'    => $request->materno,
+            'nombres'    => $nombres,
             'telefono'   => $request->telefono,
             'ci'         => $request->ci,
             'correo'     => $request->correo,
@@ -453,8 +453,7 @@ class VentaController extends Controller
                     ->orWhere('estado', 'like', "%{$search}%")
                     ->orWhere('total', 'like', "%{$search}%")
                     ->orWhereHas('cliente', fn($qc) =>
-                    $qc->where('nombre', 'like', "%{$search}%")
-                        ->orWhere('paterno', 'like', "%{$search}%")
+                    $qc->where('nombres', 'like', "%{$search}%")
                         ->orWhere('ci', 'like', "%{$search}%"))
                     ->orWhereHas('usuario', fn($qu) =>
                     $qu->where('name', 'like', "%{$search}%"))
@@ -495,7 +494,7 @@ class VentaController extends Controller
     public function anular(Request $request, Venta $venta)
     {
         // 1) permiso (aunque ya lo controla el middleware, esto es “seguro por si acaso”)
-        if (! $request->user()->can('venta.anular')) {
+        if (! $request->user()->can('ventas.eliminar')) {
             abort(403, 'No tienes permiso para anular ventas');
         }
 
@@ -511,6 +510,95 @@ class VentaController extends Controller
 
         return response()->json(['success' => true, 'message' => 'Venta anulada']);
     }
+    public function indexReporte()
+    {
+        return view('venta.reporte_ventas');
+    }
+    function reporte(Request $request)
+    {
+        $empresaId = auth()->user()->id_empresa;
+                $user = auth()->user();
+
+
+                $query = Venta::with([
+                    'cliente',
+                    'usuario',
+                    'almacen',
+                    'detalles.producto',
+                    'detalles.unidadMedida'
+                ])->whereHas('almacen.sucursal', function ($q) use ($empresaId) {
+                    $q->where('empresa_id', $empresaId);
+                });
+
+                // 📅 Filtro fechas
+                if ($request->filled('from') && $request->filled('to')) {
+                    $from = Carbon::parse($request->from)->startOfDay();
+                    $to = Carbon::parse($request->to)->endOfDay();
+                    $query->whereBetween('fecha', [$from, $to]);
+                }
+
+                // 🔍 Buscador general
+                if ($request->filled('q')) {
+                    $search = $request->q;
+                    $query->where(function ($q) use ($search) {
+                        $q->where('codigo', 'like', "%{$search}%")
+                            ->orWhere('forma_pago', 'like', "%{$search}%")
+                            ->orWhere('estado', 'like', "%{$search}%")
+                            ->orWhere('total', 'like', "%{$search}%")
+                            ->orWhereHas('cliente', fn($qc) =>
+                            $qc->where('nombres', 'like', "%{$search}%")
+                                ->orWhere('ci', 'like', "%{$search}%"))
+                            ->orWhereHas('usuario', fn($qu) =>
+                            $qu->where('name', 'like', "%{$search}%"))
+                            ->orWhereHas('almacen', fn($qa) =>
+                            $qa->where('nombre', 'like', "%{$search}%"));
+                    });
+                }
+
+                // 📌 Filtro estado (opcional)
+                if ($request->filled('status') && $request->status !== 'Todos') {
+                    $query->where('estado', $request->status);
+                }
+
+                // 📄 Paginación
+                $perPage = $request->get('per_page', 10);
+                $ventas = $query->orderBy('fecha', 'desc')->paginate($perPage);
+
+                return response()->json($ventas);
+    }
+    public function generarReporte(Request $request)
+    {
+        $empresaId = auth()->user()->id_empresa;
+
+        $query = Venta::with(['cliente', 'almacen', 'usuario', 'detalles'])
+            ->whereHas('almacen.sucursal', function ($q) use ($empresaId) {
+                $q->where('empresa_id', $empresaId);
+            })
+            ->when($request->from && $request->to, fn($q) =>
+                $q->whereBetween('fecha', [$request->from, $request->to])
+            )
+            ->when($request->status, fn($q) => $q->where('estado', $request->status))
+            ->when($request->payment, fn($q) => $q->where('forma_pago', $request->payment))
+            ->when($request->warehouse, fn($q) => $q->where('almacen_id', $request->warehouse));
+
+        $ventas = $query->get();
+
+        $subtotal = $ventas->sum(fn($v) => $v->detalles->sum('subtotal'));
+        $descuento = $ventas->sum('descuento');
+        $total = $ventas->sum('total');
+
+        return response()->json([
+            'ventas' => $ventas,
+            'totales' => [
+                'subtotal'  => round((float)$subtotal, 2),
+                'descuento' => round((float)$descuento, 2),
+                'iva'       => 0, // si no lo manejas aún
+                'total'     => round((float)$total, 2),
+            ]
+        ]);
+    }
+
+
     
 
 }

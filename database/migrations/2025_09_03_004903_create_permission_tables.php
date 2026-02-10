@@ -6,139 +6,96 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
-        $teams = config('permission.teams');
-        $tableNames = config('permission.table_names');
-        $columnNames = config('permission.column_names');
-        $pivotRole = $columnNames['role_pivot_key'] ?? 'role_id';
-        $pivotPermission = $columnNames['permission_pivot_key'] ?? 'permission_id';
+        // =========================
+        // 1) CATÁLOGO GLOBAL
+        // =========================
+        Schema::create('app_modulos', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('nombre', 80)->unique();
+            $table->string('icono', 80)->nullable();
+            $table->integer('orden')->default(0);
+            $table->tinyInteger('estado')->default(1);
+            $table->timestamps();
+        });
 
-        throw_if(empty($tableNames), new Exception('Error: config/permission.php not loaded. Run [php artisan config:clear] and try again.'));
-        throw_if($teams && empty($columnNames['team_foreign_key'] ?? null), new Exception('Error: team_foreign_key on config/permission.php not loaded. Run [php artisan config:clear] and try again.'));
+        Schema::create('app_pantallas', function (Blueprint $table) {
+            $table->bigIncrements('id');
 
-        Schema::create($tableNames['permissions'], static function (Blueprint $table) {
-            // $table->engine('InnoDB');
-            $table->bigIncrements('id'); // permission id
-            $table->foreignId('empresa_id')->constrained('empresa')->cascadeOnDelete();
-            $table->string('name');       // For MyISAM use string('name', 225); // (or 166 for InnoDB with Redundant/Compact row format)
-            $table->string('descripcion'); // For MyISAM use string('description', 225); // (or 166 for InnoDB with Redundant/Compact row format)
-            $table->string('guard_name'); // For MyISAM use string('guard_name', 25);
+            $table->unsignedBigInteger('modulo_id')->nullable();
+            $table->foreign('modulo_id')->references('id')->on('app_modulos')->onDelete('set null');
+
+            $table->string('nombre', 120);
+            $table->string('route_name', 190)->unique(); // ej: ventas.index
+            $table->string('uri', 190)->nullable();      // ej: /venta
+            $table->integer('orden')->default(0);
+            $table->tinyInteger('estado')->default(1);
             $table->timestamps();
 
-            $table->unique(['empresa_id', 'name', 'guard_name']);
+            $table->index(['modulo_id', 'estado']);
         });
 
-        Schema::create($tableNames['roles'], static function (Blueprint $table) use ($teams, $columnNames) {
-            // $table->engine('InnoDB');
-            $table->bigIncrements('id'); // role id
-            $table->foreignId('empresa_id')->constrained('empresa')->cascadeOnDelete();
-            if ($teams || config('permission.testing')) { // permission.testing is a fix for sqlite testing
-                $table->unsignedBigInteger($columnNames['team_foreign_key'])->nullable();
-                $table->index($columnNames['team_foreign_key'], 'roles_team_foreign_key_index');
-            }
-            $table->string('name');       // For MyISAM use string('name', 225); // (or 166 for InnoDB with Redundant/Compact row format)
-            $table->string('guard_name'); // For MyISAM use string('guard_name', 25);
+        // (Opcional) si vas a controlar acciones por pantalla:
+        Schema::create('app_acciones', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('codigo', 40)->unique(); // view/create/edit/delete...
+            $table->string('nombre', 80);
+            $table->tinyInteger('estado')->default(1);
             $table->timestamps();
-            if ($teams || config('permission.testing')) {
-                $table->unique([$columnNames['team_foreign_key'], 'empresa_id', 'name', 'guard_name']);
-            } else {
-                $table->unique(['empresa_id', 'name', 'guard_name']);
-            }
         });
 
-        Schema::create($tableNames['model_has_permissions'], static function (Blueprint $table) use ($tableNames, $columnNames, $pivotPermission, $teams) {
-            $table->unsignedBigInteger($pivotPermission);
+        Schema::create('app_pantalla_accion', function (Blueprint $table) {
+            $table->unsignedBigInteger('pantalla_id');
+            $table->unsignedBigInteger('accion_id');
+
+            $table->foreign('pantalla_id')->references('id')->on('app_pantallas')->onDelete('cascade');
+            $table->foreign('accion_id')->references('id')->on('app_acciones')->onDelete('cascade');
+
+            $table->primary(['pantalla_id', 'accion_id']);
+        });
+
+        // =========================
+        // 2) SEGURIDAD MULTIEMPRESA (RBAC propio)
+        // =========================
+        Schema::create('roles', function (Blueprint $table) {
+            $table->bigIncrements('id');
             $table->foreignId('empresa_id')->constrained('empresa')->cascadeOnDelete();
+            $table->string('nombre', 80);
+            $table->tinyInteger('estado')->default(1);
+            $table->timestamps();
 
-            $table->string('model_type');
-            $table->unsignedBigInteger($columnNames['model_morph_key']);
-            $table->index([$columnNames['model_morph_key'], 'model_type'], 'model_has_permissions_model_id_model_type_index');
-            $table->index('empresa_id', 'model_has_permissions_empresa_index');
-
-            $table->foreign($pivotPermission)
-                ->references('id') // permission id
-                ->on($tableNames['permissions'])
-                ->onDelete('cascade');
-            if ($teams) {
-                $table->unsignedBigInteger($columnNames['team_foreign_key']);
-                $table->index($columnNames['team_foreign_key'], 'model_has_permissions_team_foreign_key_index');
-
-                $table->primary([$columnNames['team_foreign_key'], 'empresa_id', $pivotPermission, $columnNames['model_morph_key'], 'model_type'],
-                    'model_has_permissions_permission_model_type_primary');
-            } else {
-                $table->primary(['empresa_id', $pivotPermission, $columnNames['model_morph_key'], 'model_type'],
-                    'model_has_permissions_permission_model_type_primary');
-            }
-
+            $table->unique(['empresa_id','nombre']);
         });
 
-        Schema::create($tableNames['model_has_roles'], static function (Blueprint $table) use ($tableNames, $columnNames, $pivotRole, $teams) {
-            $table->unsignedBigInteger($pivotRole);
+        Schema::create('user_role', function (Blueprint $table) {
             $table->foreignId('empresa_id')->constrained('empresa')->cascadeOnDelete();
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('role_id')->constrained('roles')->cascadeOnDelete();
 
-            $table->string('model_type');
-            $table->unsignedBigInteger($columnNames['model_morph_key']);
-            $table->index([$columnNames['model_morph_key'], 'model_type'], 'model_has_roles_model_id_model_type_index');
-            $table->index('empresa_id', 'model_has_roles_empresa_index');
-
-            $table->foreign($pivotRole)
-                ->references('id') // role id
-                ->on($tableNames['roles'])
-                ->onDelete('cascade');
-            if ($teams) {
-                $table->unsignedBigInteger($columnNames['team_foreign_key']);
-                $table->index($columnNames['team_foreign_key'], 'model_has_roles_team_foreign_key_index');
-
-                $table->primary([$columnNames['team_foreign_key'], 'empresa_id', $pivotRole, $columnNames['model_morph_key'], 'model_type'],
-                    'model_has_roles_role_model_type_primary');
-            } else {
-                $table->primary(['empresa_id', $pivotRole, $columnNames['model_morph_key'], 'model_type'],
-                    'model_has_roles_role_model_type_primary');
-            }
+            $table->primary(['empresa_id','user_id','role_id']);
         });
 
-        Schema::create($tableNames['role_has_permissions'], static function (Blueprint $table) use ($tableNames, $pivotRole, $pivotPermission) {
-            $table->unsignedBigInteger($pivotPermission);
-            $table->unsignedBigInteger($pivotRole);
+        Schema::create('role_pantalla', function (Blueprint $table) {
             $table->foreignId('empresa_id')->constrained('empresa')->cascadeOnDelete();
+            $table->foreignId('role_id')->constrained('roles')->cascadeOnDelete();
+            $table->foreignId('pantalla_id')->constrained('app_pantallas')->cascadeOnDelete();
 
-            $table->foreign($pivotPermission)
-                ->references('id') // permission id
-                ->on($tableNames['permissions'])
-                ->onDelete('cascade');
-
-            $table->foreign($pivotRole)
-                ->references('id') // role id
-                ->on($tableNames['roles'])
-                ->onDelete('cascade');
-
-            $table->primary(['empresa_id', $pivotPermission, $pivotRole], 'role_has_permissions_permission_id_role_id_primary');
+            $table->primary(['empresa_id','role_id','pantalla_id']);
         });
-
-        app('cache')
-            ->store(config('permission.cache.store') != 'default' ? config('permission.cache.store') : null)
-            ->forget(config('permission.cache.key'));
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        $tableNames = config('permission.table_names');
+        // 1) Seguridad
+        Schema::dropIfExists('role_pantalla');
+        Schema::dropIfExists('user_role');
+        Schema::dropIfExists('roles');
 
-        if (empty($tableNames)) {
-            throw new \Exception('Error: config/permission.php not found and defaults could not be merged. Please publish the package configuration before proceeding, or drop the tables manually.');
-        }
-
-        Schema::drop($tableNames['role_has_permissions']);
-        Schema::drop($tableNames['model_has_roles']);
-        Schema::drop($tableNames['model_has_permissions']);
-        Schema::drop($tableNames['roles']);
-        Schema::drop($tableNames['permissions']);
+        // 2) Catálogo
+        Schema::dropIfExists('app_pantalla_accion');
+        Schema::dropIfExists('app_acciones');
+        Schema::dropIfExists('app_pantallas');
+        Schema::dropIfExists('app_modulos');
     }
 };

@@ -19,7 +19,7 @@
                                 <select id="filterRole" class="form-select">
                                     <option value="">-- Filtrar por rol --</option>
                                     @foreach ($roles as $rol)
-                                    <option value="{{ $rol->name }}">{{ $rol->name }}</option>
+                                    <option value="{{ $rol->nombre }}">{{ $rol->nombre }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -70,7 +70,7 @@
                                 <label>Rol</label>
                                 <select name="role" class="form-select">
                                     @foreach ($roles as $rol)
-                                    <option value="{{ $rol->name }}">{{ $rol->name }}</option>
+                                    <option value="{{ $rol->nombre }}">{{ $rol->nombre }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -110,7 +110,7 @@
                                 <label>Rol</label>
                                 <select name="role" id="edit_role" class="form-select">
                                     @foreach ($roles as $rol)
-                                    <option value="{{ $rol->name }}">{{ $rol->name }}</option>
+                                    <option value="{{ $rol->nombre }}">{{ $rol->nombre }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -149,7 +149,7 @@
                     .then(data => {
                         tbody.innerHTML = '';
                         data.forEach(user => {
-                            const roles = (user.roles || []).map(r => r.name).join(', ');
+                            const roles = (user.roles || []).map(r => r.nombre).join(', ');
                             const tr = document.createElement('tr');
                             tr.setAttribute('data-id', user.id);
                             tr.innerHTML = `

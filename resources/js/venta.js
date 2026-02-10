@@ -30,6 +30,24 @@
 
             const defaultImage = '/assets/img/illustrations/man-with-laptop-light.png';
             const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
+            const loaderEl = document.getElementById('venta-loader');
+            const loaderTextEl = document.getElementById('venta-loader-text');
+            let loaderCount = 0;
+
+            const showLoader = (text = 'Cargando...') => {
+                loaderCount += 1;
+                if (loaderTextEl) loaderTextEl.textContent = text;
+                loaderEl?.classList.add('is-active');
+                loaderEl?.setAttribute('aria-hidden', 'false');
+            };
+
+            const hideLoader = () => {
+                loaderCount = Math.max(0, loaderCount - 1);
+                if (loaderCount === 0) {
+                    loaderEl?.classList.remove('is-active');
+                    loaderEl?.setAttribute('aria-hidden', 'true');
+                }
+            };
             let cart = [];
             let products = [];
             let filteredProducts = [];
@@ -143,9 +161,11 @@
 
                 // Función para obtener caja activa
                 async function verificarCaja() {
+                    showLoader('Verificando caja...');
                     const res = await fetch('/caja/verificar');
                     const data = await res.json();
                     cajaActiva = data.activa ? data.caja : null;
+                    hideLoader();
                     return data;
                 }
 
@@ -176,6 +196,7 @@
                     e.preventDefault();
                     const formData = new FormData(e.target);
 
+                    showLoader('Abriendo caja...');
                     const res = await fetch('/caja/abrir', {
                         method: 'POST',
                         headers: {
@@ -184,6 +205,7 @@
                         body: formData
                     });
                     const data = await res.json();
+                    hideLoader();
 
                     if (data.success) {
                         Swal.fire({
@@ -207,6 +229,7 @@
                     e.preventDefault();
                     const formData = new FormData(e.target);
 
+                    showLoader('Cerrando caja...');
                     const res = await fetch('/caja/cerrar', {
                         method: 'POST',
                         headers: {
@@ -215,6 +238,7 @@
                         body: formData
                     });
                     const data = await res.json();
+                    hideLoader();
 
                     if (data.success) {
                         Swal.fire({
@@ -412,6 +436,7 @@
             async function loadSucursales() {
                 if (!sucursalSelect) return;
                 try {
+                    showLoader('Cargando sucursales...');
                     let data = [];
                     const cache = localStorage.getItem('sucursalesEmpresa');
                     if (cache) {
@@ -431,7 +456,9 @@
                         opt.textContent = s.nombre || `Sucursal ${s.id}`;
                         sucursalSelect.appendChild(opt);
                     });
+                    hideLoader();
                 } catch (err) {
+                    hideLoader();
                     console.error(err);
                 }
             }
@@ -453,18 +480,22 @@
 
             async function loadCategories() {
                 try {
+                    showLoader('Cargando categorias...');
                     const res = await fetch('/categorias/fetch-json');
                     if (!res.ok) return;
                     const data = await res.json();
                     categoriesMap = {};
                     data.forEach(c => { categoriesMap[c.id] = c.name; });
+                    hideLoader();
                 } catch (e) {
+                    hideLoader();
                     console.error(e);
                 }
             }
 
             async function loadAlmacenes() {
                 try {
+                    showLoader('Cargando almacenes...');
                     const res = await fetch('/venta/almacenes');
                     if (!res.ok) throw new Error('No se pudieron cargar los almacenes');
                     const data = await res.json();
@@ -479,7 +510,9 @@
                         almacenSelect.value = data[0].id;
                         await loadProducts();
                     }
+                    hideLoader();
                 } catch (err) {
+                    hideLoader();
                     console.error(err);
                     showMessage(err.message || 'Error cargando almacenes', 'error');
                 }
@@ -489,12 +522,14 @@
                 const almacenId = almacenSelect.value;
                 if (!almacenId) return;
                 try {
+                    showLoader('Cargando productos...');
                     showProductLoaders(newProductsContainer);
                     showProductLoaders(bestProductsContainer);
                     const res = await fetch(`/producto/venta?almacen_id=${almacenId}`);
                     if (res.status === 403) {
                         const data = await res.json();
                         showMessage(data.message || 'Debes abrir una caja activa.', 'warning');
+                        hideLoader();
                         return;
                     }
                     if (!res.ok) throw new Error('No se pudieron cargar los productos');
@@ -527,7 +562,9 @@
                     itemsToShowNew = 8;
                     itemsToShowBest = 8;
                     renderAllProducts();
+                    hideLoader();
                 } catch (err) {
+                    hideLoader();
                     console.error(err);
                     showMessage(err.message || 'Error cargando productos', 'error');
                 }
@@ -535,6 +572,7 @@
 
             async function loadClients() {
                 try {
+                    showLoader('Cargando clientes...');
                     const res = await fetch('/clientes/fetch-json');
                     if (!res.ok) throw new Error('No se pudieron cargar los clientes');
                     const data = await res.json();
@@ -542,26 +580,28 @@
                     data.forEach(c => {
                         const opt = document.createElement('option');
                         opt.value = c.id;
-                        opt.textContent = c.nombre || `Cliente ${c.id}`;
+                        opt.textContent = c.nombres || `Cliente ${c.id}`;
                         opt.dataset.client = JSON.stringify(c);
                         clientSelect.appendChild(opt);
                     });
                     if (data.length) {
-                        const general = data.find(c => (c.nombre || '').toLowerCase().includes('general')) || data[0];
+                        const general = data.find(c => (c.nombres || '').toLowerCase().includes('general')) || data[0];
                         clientSelect.value = general.id;
                         updateClientInfo({ target: clientSelect });
                         // precargar quick card
-                        if (qcNombre) qcNombre.value = general.nombre || '';
+                        if (qcNombre) qcNombre.value = general.nombres || '';
                         if (qcCi) qcCi.value = general.ci || '';
                         if (qcTelefono) qcTelefono.value = general.telefono || '';
                         quickInitial = {
-                            nombre: qcNombre?.value || '',
+                            nombres: qcNombre?.value || '',
                             ci: qcCi?.value || '',
                             telefono: qcTelefono?.value || ''
                         };
                         toggleQuickSave(false);
                     }
+                    hideLoader();
                 } catch (err) {
+                    hideLoader();
                     console.error(err);
                     showMessage(err.message || 'Error cargando clientes', 'error');
                 }
@@ -700,6 +740,7 @@
                 };
 
                 try {
+                    showLoader('Guardando venta...');
                     const res = await fetch('/venta/store', {
                         method: 'POST',
                         headers: {
@@ -720,7 +761,9 @@
                         toggleCreditFields('contado');
                     }
                     await loadProducts();
+                    hideLoader();
                 } catch (err) {
+                    hideLoader();
                     console.error(err);
                     showMessage(err.message || 'Error al registrar la venta', 'error');
                 }
@@ -741,7 +784,7 @@
                 }
                 const selectedId = clientSelect?.value;
                 const payload = new FormData();
-                payload.append('nombre', nombre);
+                payload.append('nombres', nombre);
                 payload.append('ci', ci || '');
                 payload.append('telefono', telefono || '');
                 payload.append('correo', '');
@@ -752,6 +795,7 @@
                 }
 
                 try {
+                    showLoader('Guardando cliente...');
                     const url = isUpdate ? `/clientes/${selectedId}` : '/clientes/store';
                     const res = await fetch(url, {
                         method: 'POST',
@@ -770,7 +814,9 @@
                     showMessage('Cliente guardado y seleccionado', 'success');
                     quickInitial = { nombre, ci: ci || '', telefono: telefono || '' };
                     toggleQuickSave(false);
+                    hideLoader();
                 } catch (err) {
+                    hideLoader();
                     console.error(err);
                     showMessage(err.message || 'Error guardando cliente', 'error');
                 }
@@ -807,10 +853,12 @@
 
             // Inicializar datos
             (async () => {
+                showLoader('Cargando venta...');
                 await loadCategories();
                 await loadSucursales();
                 await loadAlmacenes();
                 await loadClients();
                 refreshCartUI();
+                hideLoader();
             })();
         });

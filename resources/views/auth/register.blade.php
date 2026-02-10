@@ -124,6 +124,18 @@
             color: var(--secondary);
             font-size: 14px;
         }
+        .form-error {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+            padding: 12px 14px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        .form-error ul {
+            margin: 8px 0 0 18px;
+        }
 
         .form-step-indicator {
             display: flex;
@@ -435,6 +447,17 @@
                 <h2 class="form-title">Crear Cuenta</h2>
                 <p class="form-subtitle">Completa la información para registrar tu empresa</p>
             </div>
+            
+            @if ($errors->any())
+                <div class="form-error">
+                    <strong>Hubo un problema al registrar:</strong>
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
             
             <div class="form-step-indicator">
                 <div class="step active" data-step="1">
