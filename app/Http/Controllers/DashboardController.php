@@ -4,19 +4,39 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
-class DashboardControoler extends Controller
+class DashboardController extends Controller
 {
     // === MAPEA A TU BD REAL (ajusta si tu esquema difiere) ===
     private string $VENTA_TABLE = 'venta';
-    private string $VENTA_ID    = 'ID';
-    private string $VENTA_EMP   = 'ID_EMPRESA';
-    private string $VENTA_FECHA = 'fecha_venta';     // date
-    private string $VENTA_FREG  = 'FECHA_REGISTRO';   // datetime (para horas)
+    private string $VENTA_ID    = 'id';
+    private string $VENTA_EMP   = 'empresa_id';
+    private string $VENTA_FECHA = 'fecha';
+    private string $VENTA_FREG  = 'created_at'; // si tienes campo fecha_registro o similar, úsalo para análisis por hora
     private string $VENTA_TOTAL = 'total';
-    private string $VENTA_ALM   = 'id_almacen';
-    private string $VENTA_USER  = 'ID_USUARIO';      // o id_vendedor si lo usas
-    private string $VENTA_EST   = 'ESTADO';          // 1 activo
+    private string $VENTA_ALM   = 'almacen_id';
+    private string $VENTA_USER  = 'usuario_id';
+    private string $VENTA_EST   = 'estado';
+    private array $VENTA_ESTADOS_ACTIVOS = ['Registrado', 'Pagado', 'Pendiente'];
+
+
+    private function applyEstado($q, ?string $alias = null)
+    {
+        if (Schema::hasColumn($this->VENTA_TABLE, $this->VENTA_EST)) {
+            $col = $alias ? ($alias.'.'.$this->VENTA_EST) : $this->VENTA_EST;
+            $q->whereIn($col, $this->VENTA_ESTADOS_ACTIVOS);
+        }
+        return $q;
+    }
+
+    private function fechaHoraColumn(): string
+    {
+        if (Schema::hasColumn($this->VENTA_TABLE, $this->VENTA_FREG)) {
+            return $this->VENTA_FREG;
+        }
+        return $this->VENTA_FECHA;
+    }
 
     public function index()
     {
@@ -35,11 +55,11 @@ class DashboardControoler extends Controller
         // Ventas del día (resumen)
         $ventasQ = DB::table($this->VENTA_TABLE)
             ->whereDate($this->VENTA_FECHA, $fecha)
-            ->where($this->VENTA_EMP, $empresaId)
-            ->where($this->VENTA_EST, 1);
+            ->where($this->VENTA_EMP, $empresaId);
 
         if ($almacenId) $ventasQ->where($this->VENTA_ALM, $almacenId);
         if ($usuarioId) $ventasQ->where($this->VENTA_USER, $usuarioId);
+        $this->applyEstado($ventasQ);
 
         $ventas = $ventasQ->get();
 
@@ -54,11 +74,11 @@ class DashboardControoler extends Controller
                 ->join('detalle_venta as dv', 'dv.id', '=', 'dvl.detalle_venta_id')
                 ->join($this->VENTA_TABLE.' as v', 'v.'.$this->VENTA_ID, '=', 'dv.venta_id')
                 ->whereDate('v.'.$this->VENTA_FECHA, $fecha)
-                ->where('v.'.$this->VENTA_EMP, $empresaId)
-                ->where('v.'.$this->VENTA_EST, 1);
+                ->where('v.'.$this->VENTA_EMP, $empresaId);
 
             if ($almacenId) $cogsQ->where('v.'.$this->VENTA_ALM, $almacenId);
             if ($usuarioId) $cogsQ->where('v.'.$this->VENTA_USER, $usuarioId);
+            $this->applyEstado($cogsQ, 'v');
 
             $cogs = (float) $cogsQ->sum('dvl.costo_total');
         }
@@ -69,17 +89,17 @@ class DashboardControoler extends Controller
 
         // ✅ SERIE POR HORA (para tu gananciasChart que usa horas)
         // usa FECHA_REGISTRO para agrupar
-        $horaRows = DB::table($this->VENTA_TABLE)
-            ->selectRaw('HOUR('.$this->VENTA_FREG.') as h, SUM('.$this->VENTA_TOTAL.') as total, COUNT(*) as cantidad')
+        $fechaHoraCol = $this->fechaHoraColumn();
+        $horaQ = DB::table($this->VENTA_TABLE)
+            ->selectRaw('HOUR('.$fechaHoraCol.') as h, SUM('.$this->VENTA_TOTAL.') as total, COUNT(*) as cantidad')
             ->whereDate($this->VENTA_FECHA, $fecha)
             ->where($this->VENTA_EMP, $empresaId)
-            ->where($this->VENTA_EST, 1)
             ->when($almacenId, fn($q)=>$q->where($this->VENTA_ALM, $almacenId))
             ->when($usuarioId, fn($q)=>$q->where($this->VENTA_USER, $usuarioId))
             ->groupBy('h')
-            ->orderBy('h')
-            ->get()
-            ->keyBy('h');
+            ->orderBy('h');
+        $this->applyEstado($horaQ);
+        $horaRows = $horaQ->get()->keyBy('h');
 
         $hourLabels = [];
         $hourSeries = [];
@@ -91,19 +111,19 @@ class DashboardControoler extends Controller
         }
 
         // Top productos (ya lo tenías)
-        $topProductos = DB::table('detalle_venta as dv')
+        $topProductosQ = DB::table('detalle_venta as dv')
             ->join($this->VENTA_TABLE.' as v', 'v.'.$this->VENTA_ID, '=', 'dv.venta_id')
             ->join('producto as p', 'p.id', '=', 'dv.producto_id')
             ->whereDate('v.'.$this->VENTA_FECHA, $fecha)
             ->where('v.'.$this->VENTA_EMP, $empresaId)
-            ->where('v.'.$this->VENTA_EST, 1)
             ->when($almacenId, fn($q)=>$q->where('v.'.$this->VENTA_ALM, $almacenId))
             ->when($usuarioId, fn($q)=>$q->where('v.'.$this->VENTA_USER, $usuarioId))
             ->groupBy('p.id','p.nombre')
             ->selectRaw('p.id, p.nombre, SUM(dv.cantidad) as cantidad, SUM(dv.subtotal) as ventas')
             ->orderByDesc('ventas')
-            ->limit(10)
-            ->get();
+            ->limit(10);
+        $this->applyEstado($topProductosQ, 'v');
+        $topProductos = $topProductosQ->get();
 
         return response()->json([
             'ok' => true,
@@ -144,11 +164,11 @@ class DashboardControoler extends Controller
 
         $ventasQ = DB::table($this->VENTA_TABLE)
             ->whereBetween($this->VENTA_FECHA, [$start, $end])
-            ->where($this->VENTA_EMP, $empresaId)
-            ->where($this->VENTA_EST, 1);
+            ->where($this->VENTA_EMP, $empresaId);
 
         if ($almacenId) $ventasQ->where($this->VENTA_ALM, $almacenId);
         if ($usuarioId) $ventasQ->where($this->VENTA_USER, $usuarioId);
+        $this->applyEstado($ventasQ);
 
         $ventas = $ventasQ->get();
 
@@ -162,11 +182,11 @@ class DashboardControoler extends Controller
                 ->join('detalle_venta as dv', 'dv.id', '=', 'dvl.detalle_venta_id')
                 ->join($this->VENTA_TABLE.' as v', 'v.'.$this->VENTA_ID, '=', 'dv.venta_id')
                 ->whereBetween('v.'.$this->VENTA_FECHA, [$start, $end])
-                ->where('v.'.$this->VENTA_EMP, $empresaId)
-                ->where('v.'.$this->VENTA_EST, 1);
+                ->where('v.'.$this->VENTA_EMP, $empresaId);
 
             if ($almacenId) $cogsQ->where('v.'.$this->VENTA_ALM, $almacenId);
             if ($usuarioId) $cogsQ->where('v.'.$this->VENTA_USER, $usuarioId);
+            $this->applyEstado($cogsQ, 'v');
 
             $cogs = (float) $cogsQ->sum('dvl.costo_total');
         }
@@ -176,18 +196,18 @@ class DashboardControoler extends Controller
         $ticketPromedio = $tickets ? ($ventasNetas / $tickets) : 0;
 
         // Serie por día
-        $serie = DB::table($this->VENTA_TABLE.' as v')
+        $serieQ = DB::table($this->VENTA_TABLE.' as v')
             ->leftJoin('detalle_venta as dv', 'dv.venta_id', '=', 'v.'.$this->VENTA_ID)
             ->leftJoin('detalle_venta_lote as dvl', 'dvl.detalle_venta_id', '=', 'dv.id')
             ->whereBetween('v.'.$this->VENTA_FECHA, [$start, $end])
             ->where('v.'.$this->VENTA_EMP, $empresaId)
-            ->where('v.'.$this->VENTA_EST, 1)
             ->when($almacenId, fn($q)=>$q->where('v.'.$this->VENTA_ALM, $almacenId))
             ->when($usuarioId, fn($q)=>$q->where('v.'.$this->VENTA_USER, $usuarioId))
             ->groupBy('fecha')
             ->orderBy('fecha')
-            ->selectRaw('DATE(v.'.$this->VENTA_FECHA.') as fecha, SUM(v.'.$this->VENTA_TOTAL.') as ventas, COALESCE(SUM(dvl.costo_total),0) as cogs')
-            ->get()
+            ->selectRaw('DATE(v.'.$this->VENTA_FECHA.') as fecha, SUM(v.'.$this->VENTA_TOTAL.') as ventas, COALESCE(SUM(dvl.costo_total),0) as cogs');
+        $this->applyEstado($serieQ, 'v');
+        $serie = $serieQ->get()
             ->map(function($r){
                 $r->ventas   = (float)$r->ventas;
                 $r->cogs     = (float)$r->cogs;
@@ -221,18 +241,18 @@ class DashboardControoler extends Controller
         $start = sprintf('%04d-%02d-01', (int)$year, (int)$month);
         $end   = date('Y-m-t', strtotime($start));
 
-        $rows = DB::table('detalle_venta as dv')
+        $rowsQ = DB::table('detalle_venta as dv')
             ->join($this->VENTA_TABLE.' as v', 'v.'.$this->VENTA_ID, '=', 'dv.venta_id')
             ->join('producto as p', 'p.id', '=', 'dv.producto_id')
             ->leftJoin('categoria as c', 'c.id', '=', 'p.categoria_id')
             ->whereBetween('v.'.$this->VENTA_FECHA, [$start, $end])
             ->where('v.'.$this->VENTA_EMP, $empresaId)
-            ->where('v.'.$this->VENTA_EST, 1)
             ->groupBy('c.id','c.nombre')
             ->selectRaw('COALESCE(c.nombre, "Sin categoría") as categoria, SUM(dv.subtotal) as total')
             ->orderByDesc('total')
-            ->limit(8)
-            ->get();
+            ->limit(8);
+        $this->applyEstado($rowsQ, 'v');
+        $rows = $rowsQ->get();
 
         $labels = $rows->pluck('categoria')->toArray();
         $data   = $rows->pluck('total')->map(fn($x)=>(float)$x)->toArray();
@@ -250,13 +270,14 @@ class DashboardControoler extends Controller
         $to = now()->startOfMonth();
         $from = $to->copy()->subMonths(11);
 
-        $rows = DB::table($this->VENTA_TABLE)
+        $rowsQ = DB::table($this->VENTA_TABLE)
             ->selectRaw('DATE_FORMAT('.$this->VENTA_FECHA.', "%Y-%m") as ym, SUM('.$this->VENTA_TOTAL.') as total')
             ->whereBetween($this->VENTA_FECHA, [$from->toDateString(), $to->copy()->endOfMonth()->toDateString()])
             ->where($this->VENTA_EMP, $empresaId)
-            ->where($this->VENTA_EST, 1)
             ->groupBy('ym')
-            ->pluck('total', 'ym');
+            ;
+        $this->applyEstado($rowsQ);
+        $rows = $rowsQ->pluck('total', 'ym');
 
         $labels = [];
         $data = [];
@@ -283,16 +304,16 @@ class DashboardControoler extends Controller
 
         // Ajusta tabla/fields de usuarios a tu sistema (users / usuario / etc.)
         // Si no tienes tabla usuarios, igual sirve devolviendo solo ID.
-        $rows = DB::table($this->VENTA_TABLE.' as v')
+        $rowsQ = DB::table($this->VENTA_TABLE.' as v')
             ->leftJoin('users as u', 'u.id', '=', 'v.'.$this->VENTA_USER) // cambia si tu tabla es otra
             ->whereBetween('v.'.$this->VENTA_FECHA, [$start, $end])
             ->where('v.'.$this->VENTA_EMP, $empresaId)
-            ->where('v.'.$this->VENTA_EST, 1)
             ->groupBy('v.'.$this->VENTA_USER, 'u.name')
             ->selectRaw('v.'.$this->VENTA_USER.' as id, COALESCE(u.name, CONCAT("Vendedor #", v.'.$this->VENTA_USER.')) as nombre, SUM(v.'.$this->VENTA_TOTAL.') as ventas, COUNT(*) as tickets')
             ->orderByDesc('ventas')
-            ->limit(5)
-            ->get()
+            ->limit(5);
+        $this->applyEstado($rowsQ, 'v');
+        $rows = $rowsQ->get()
             ->map(function($r){
                 $r->ventas = (float)$r->ventas;
                 return $r;

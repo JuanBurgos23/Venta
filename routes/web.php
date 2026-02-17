@@ -1,33 +1,33 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\RolController;
-use App\Http\Controllers\CajaController;
-use App\Http\Controllers\VentaController;
-use App\Http\Controllers\CompraController;
-use App\Http\Controllers\PerfilController;
 use App\Http\Controllers\AlmacenController;
-use App\Http\Controllers\ClienteController;
-use App\Http\Controllers\EmpresaController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\UsuarioController;
-use App\Http\Controllers\FinanzasController;
-use App\Http\Controllers\ProductoController;
-use App\Http\Controllers\SucursalController;
+use App\Http\Controllers\CajaController;
 use App\Http\Controllers\CategoriaController;
-use App\Http\Controllers\DashboardControoler;
-use App\Http\Controllers\ProveedorController;
-use App\Http\Controllers\SuscripcionController;
-use App\Http\Controllers\SubcategoriaController;
-use App\Http\Controllers\UnidadMedidaController;
+use App\Http\Controllers\ClienteController;
+use App\Http\Controllers\CompraController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EmpresaConfigController;
-use App\Http\Controllers\IngresoEgresoController;
-use App\Http\Controllers\ImportProductosController;
-use App\Http\Controllers\ProductoAlmacenController;
-use App\Http\Controllers\InventarioReporteController;
-use App\Http\Controllers\PermisosPantallasController;
-use App\Http\Controllers\SuscripcionStatusController;
+use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\EmpresaSuscripcionController;
+use App\Http\Controllers\FinanzasController;
+use App\Http\Controllers\ImportProductosController;
+use App\Http\Controllers\IngresoEgresoController;
+use App\Http\Controllers\InventarioReporteController;   
+use App\Http\Controllers\PerfilController;
+use App\Http\Controllers\PermisosPantallasController;
+use App\Http\Controllers\ProductoAlmacenController;
+use App\Http\Controllers\ProductoController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProveedorController;
+use App\Http\Controllers\RolController;
+use App\Http\Controllers\SubcategoriaController;
+use App\Http\Controllers\SucursalController;
+use App\Http\Controllers\SuscripcionController;
+use App\Http\Controllers\SuscripcionStatusController;
+use App\Http\Controllers\UnidadMedidaController;
+use App\Http\Controllers\UsuarioController;
+use App\Http\Controllers\VentaController;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
@@ -93,13 +93,13 @@ Route::middleware('auth')->get('/routes-list', function () {
 
 
 //dashboard
-Route::get('/inicio', [DashboardControoler::class, 'index'])->name('Inicio')->middleware(['auth', 'verified']);
+Route::get('/inicio', [DashboardController::class, 'index'])->name('Inicio')->middleware(['auth', 'verified']);
 Route::middleware(['auth'])->group(function () {
-    Route::get('/dashboard/diario', [DashboardControoler::class, 'diario']);
-    Route::get('/dashboard/mensual', [DashboardControoler::class, 'mensual']);
-    Route::get('/dashboard/categorias-mensual', [DashboardControoler::class, 'categoriasMensual']);
-    Route::get('/dashboard/historico-12m', [DashboardControoler::class, 'historico12Meses']);
-    Route::get('/dashboard/top-vendedores-mensual', [DashboardControoler::class, 'topVendedoresMensual']);
+    Route::get('/dashboard/diario', [DashboardController::class, 'diario']);
+    Route::get('/dashboard/mensual', [DashboardController::class, 'mensual']);
+    Route::get('/dashboard/categorias-mensual', [DashboardController::class, 'categoriasMensual']);
+    Route::get('/dashboard/historico-12m', [DashboardController::class, 'historico12Meses']);
+    Route::get('/dashboard/top-vendedores-mensual', [DashboardController::class, 'topVendedoresMensual']);
 });
 
 
@@ -204,8 +204,11 @@ Route::post('/proveedores/{id}/delete', [ProveedorController::class, 'marcarBorr
 
 // CRUD (listado)
 Route::get('/compras', [CompraController::class, 'crud'])->name('compras.index');
+Route::get('/compras-reporte-index', [CompraController::class, 'index_reporte'])->name('compras.reporte_compra.index');
 
-// API tabla y detalles
+Route::get('/compras/reporte', [CompraController::class, 'generarReporte'])->name('compras.reporte');
+Route::get('/api/proveedores', [CompraController::class, 'listarProveedoresParaFiltro']);
+Route::get('/api/almacenes', [CompraController::class, 'listarAlmacenesParaFiltro']);
 Route::get('/api/compras', [CompraController::class, 'apiIndex'])->name('compras.api.index');
 Route::get('/api/compras/{id}/detalles', [CompraController::class, 'apiDetalles'])->name('compras.api.detalles');
 

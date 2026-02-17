@@ -1076,21 +1076,35 @@
                     </a>
                 </div>
                 <ul class="menu-inner py-1">
-                    <li class="menu-item {{ Request::routeIs('Inicio') ? 'active open' : '' }}">
-                        <a href="{{ route('Inicio') }}" class="menu-link">
-                            <i class="menu-icon icon-base bx bx-home-smile"></i>
-                            <div data-i18n="Inicio">Inicio</div>
-                        </a>
-                    </li>
+                    
 
                     <li class="menu-header small"><span class="menu-header-text">Comercial</span></li>
+
+                    <li class="menu-item {{ Request::routeIs('Empresa') ? 'active open' : '' }}">
+                        <a href="javascript:void(0);" class="menu-link menu-toggle">
+                            <i class="menu-icon icon-base bx bx-buildings"></i>
+                            <div data-i18n="Empresa">EMPRESA</div>
+                        </a>
+                        <ul class="menu-sub">
+                            <li class="menu-item {{ Request::routeIs('Inicio') ? 'active' : '' }}"><a href="{{ route('Inicio') }}" class="menu-link"><div data-i18n="Inicio">Inicio</div></a></li>
+
+                            <li class="menu-item {{ Request::routeIs('Empresa') ? 'active' : '' }}"><a href="{{ route('Empresa') }}" class="menu-link"><div data-i18n="Mi empresa">Mi empresa</div></a></li>
+
+                            <li class="menu-item {{ Request::routeIs('sucursal.index') ? 'active' : '' }}"><a href="{{ route('sucursal.index') }}" class="menu-link"><div data-i18n="Sucursales">Sucursales</div></a></li>
+
+                        </ul>
+                    </li>
+
                     <li class="menu-item {{ Request::routeIs('Cliente') ? 'active' : '' }}">
                         <a href="{{ route('Cliente') }}" class="menu-link">
                             <i class="menu-icon icon-base bx bx-user-circle"></i>
                             <div data-i18n="Cliente">Clientes</div>
                         </a>
                     </li>
-                    <li class="menu-item {{ Request::routeIs('ventas.*') ? 'active open' : '' }}">
+
+
+                    <li class="menu-header small"><span class="menu-header-text">Inventario</span></li>
+                                        <li class="menu-item {{ Request::routeIs('ventas.*') ? 'active open' : '' }}">
                         <a href="javascript:void(0);" class="menu-link menu-toggle">
                             <i class="menu-icon bx bx-cart"></i>
                             <div data-i18n="Ventas">Ventas</div>
@@ -1099,24 +1113,20 @@
                             <li class="menu-item {{ Request::routeIs('ventas.index') ? 'active' : '' }}"><a href="{{ route('ventas.index') }}" class="menu-link"><div data-i18n="Registrar Venta">Registrar venta</div></a></li>
                             <li class="menu-item {{ Request::routeIs('ventas.registradas') ? 'active' : '' }}"><a href="{{ route('ventas.registradas') }}" class="menu-link"><div data-i18n="Lista de Ventas">Listado de ventas</div></a></li>
                             <li class="menu-item {{ Request::routeIs('ventas.reporte_ventas') ? 'active' : '' }}"><a href="{{ route('ventas.reporte_ventas') }}" class="menu-link"><div data-i18n="Reporte de Ventas">Reporte de ventas</div></a></li>
-                            <li class="menu-item {{ Request::routeIs('ventas.index') ? 'active' : '' }}"><a
-                                    href="{{ route('ventas.index') }}" class="menu-link">
-                                    <div data-i18n="Registrar Venta">Registrar venta</div>
-                                </a></li>
-                            <li class="menu-item {{ Request::routeIs('ventas.registradas') ? 'active' : '' }}"><a
-                                    href="{{ route('ventas.registradas') }}" class="menu-link">
-                                    <div data-i18n="Lista de Ventas">Listado de ventas</div>
-                                </a></li>
+
                         </ul>
                     </li>
-                    <li class="menu-item {{ Request::routeIs('compras.index') ? 'active' : '' }}">
-                        <a href="{{ route('compras.index') }}" class="menu-link">
-                            <i class="menu-icon bx bx-shopping-bag"></i>
-                            <div data-i18n="Compra">Compras</div>
+                    <li class="menu-item {{ Request::routeIs('compras*') ? 'active open' : '' }}">
+                        <a href="javascript:void(0);" class="menu-link menu-toggle">
+                            <i class="menu-icon bx bx-shopping"></i>
+                            <div data-i18n="Compras">Compras</div>
                         </a>
+                        <ul class="menu-sub">
+                            <li class="menu-item {{ Request::routeIs('compras.create') ? 'active' : '' }}"><a href="{{ route('compras.create') }}" class="menu-link"><div data-i18n="Registrar Compra">Registrar compra</div></a></li>
+                            <li class="menu-item {{ Request::routeIs('compras.index') ? 'active' : '' }}"><a href="{{ route('compras.index') }}" class="menu-link"><div data-i18n="Lista de Compras">Listado de compras</div></a></li>
+                            <li class="menu-item {{ Request::routeIs('compras.reporte_compra.index') ? 'active' : '' }}"><a href="{{ route('compras.reporte_compra.index') }}" class="menu-link"><div data-i18n="Reporte de Compras">Reporte de compras</div></a></li>
+                        </ul>
                     </li>
-
-                    <li class="menu-header small"><span class="menu-header-text">Inventario</span></li>
                     <li
                         class="menu-item {{ Request::routeIs('productos.index') || Request::routeIs('categorias.index') || Request::routeIs('unidad_medida.index') || Request::routeIs('producto.importar') ? 'active open' : '' }}">
                         <a href="javascript:void(0);" class="menu-link menu-toggle">
@@ -1142,11 +1152,7 @@
                                 </a></li>
                         </ul>
                     </li>
-                    <li class="menu-item {{ Request::routeIs('sucursal.index') ? 'active' : '' }}"><a
-                            href="{{ route('sucursal.index') }}" class="menu-link"><i
-                                class="menu-icon icon-base bx bx-git-branch"></i>
-                            <div data-i18n="Sucursal">Sucursales</div>
-                        </a></li>
+
                     <li class="menu-item {{ Request::routeIs('almacen.index') ? 'active' : '' }}"><a
                             href="{{ route('almacen.index') }}" class="menu-link"><i
                                 class="menu-icon icon-base bx bx-store-alt"></i>
@@ -1201,12 +1207,7 @@
                     </li>
 
                     <li class="menu-header small"><span class="menu-header-text">Configuracion</span></li>
-                    <li class="menu-item {{ Request::routeIs('Empresa') ? 'active' : '' }}">
-                        <a href="{{ route('Empresa') }}" class="menu-link">
-                            <i class="menu-icon icon-base bx bx-buildings"></i>
-                            <div data-i18n="Empresa">Empresa</div>
-                        </a>
-                    </li>
+                    
                     <li class="menu-item {{ Request::routeIs('Crear Usuario') ? 'active' : '' }}">
                         <a href="{{ route('Crear Usuario') }}" class="menu-link">
                             <i class="menu-icon icon-base bx bx-user-plus"></i>
@@ -1221,13 +1222,7 @@
                         <ul class="menu-sub">
                             <li class="menu-item {{ Request::routeIs('rol.index') ? 'active' : '' }}"><a href="{{ route('rol.index') }}" class="menu-link"><div data-i18n="Roles">Roles</div></a></li>
                             <li class="menu-item {{ Request::routeIs('permisos.index') ? 'active' : '' }}"><a href="{{ route('permisos.index') }}" class="menu-link"><div data-i18n="Permisos">Permisos</div></a></li>
-                            <li class="menu-item {{ Request::routeIs('rol.index') ? 'active' : '' }}"><a
-                                    href="{{ route('rol.index') }}" class="menu-link">
-                                    <div data-i18n="Roles">Roles</div>
-                                </a></li>
-                            <li class="menu-item"><a href="javascript:void(0);" class="menu-link">
-                                    <div data-i18n="Permisos">Permisos</div>
-                                </a></li>
+
                         </ul>
                     </li>
                     <li class="menu-item menu-spacer" aria-hidden="true"></li>
@@ -1679,9 +1674,7 @@
                                                 </div>
                                                 <div class="flex-grow-1">
                                                     <h6 class="mb-0">{{ auth()->user()->name }}</h6>
-                                                    <small
-                                                        class="text-body-secondary">@foreach(auth()->user()->roles as $role)
-                                                        {{ $role->name }}@endforeach</small>
+                                                    <small class="text-body-secondary"></small>
                                                 </div>
                                             </div>
                                         </a>

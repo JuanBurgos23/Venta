@@ -4,6 +4,9 @@
         <nav class="navbar ..."></nav>
         <!-- Scripts -->
         @vite([ 'resources/js/app.js'])
+        <script>
+            window.EMPRESA_ID = @json(optional(auth()->user())->id_empresa);
+        </script>
         <!-- End Navbar -->
         
         <div class="container-fluid py-4">
@@ -142,7 +145,7 @@
                             </div>
                         </div>
                         <div class="card-body p-3">
-                            <div class="chart">
+                            <div class="chart" style="height: 300px;">
                                 <canvas id="gananciasChart" class="chart-canvas" height="300"></canvas>
                             </div>
                         </div>
@@ -266,7 +269,7 @@
                             <p class="text-sm mb-0">Distribución mensual</p>
                         </div>
                         <div class="card-body p-3">
-                            <div class="chart">
+                            <div class="chart" style="height: 250px;">
                                 <canvas id="categoriasChart" class="chart-canvas" height="250"></canvas>
                             </div>
                         </div>
@@ -315,7 +318,7 @@
                             </div>
                         </div>
                         <div class="card-body p-3">
-                            <div class="chart">
+                            <div class="chart" style="height: 250px;">
                                 <canvas id="historicoChart" class="chart-canvas" height="250"></canvas>
                             </div>
                         </div>
@@ -425,88 +428,195 @@
     </main>
 
     <!-- Scripts para gráficos dinámicos -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Chart.js se carga via Vite (resources/js/app.js) para evitar bloqueos de CDN -->
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+function initDashboard() {
   initGananciasChart();
   initCategoriasChart();
   initHistoricoChart();
   loadDashboardData();
   setInterval(loadDashboardData, 30000);
-});
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initDashboard);
+} else {
+  initDashboard();
+}
+
+function initGananciasChart() {
+  const el = document.getElementById('gananciasChart');
+  if (!el || !window.Chart) return;
+  if (window.gananciasChart) return;
+
+  window.gananciasChart = new Chart(el, {
+    type: 'line',
+    data: {
+      labels: [],
+      datasets: [
+        {
+          label: 'Hoy',
+          data: [],
+          borderColor: '#3498db',
+          backgroundColor: 'rgba(52,152,219,0.15)',
+          tension: 0.35,
+          fill: true
+        },
+        {
+          label: 'Ayer',
+          data: [],
+          borderColor: '#17a2b8',
+          backgroundColor: 'rgba(23,162,184,0.10)',
+          tension: 0.35,
+          fill: true
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { display: false } },
+        y: { beginAtZero: true }
+      }
+    }
+  });
+}
+
+function initCategoriasChart() {
+  const el = document.getElementById('categoriasChart');
+  if (!el || !window.Chart) return;
+  if (window.categoriasChart) return;
+
+  window.categoriasChart = new Chart(el, {
+    type: 'doughnut',
+    data: {
+      labels: [],
+      datasets: [{
+        data: [],
+        backgroundColor: [
+          '#3498db', '#2ecc71', '#f39c12', '#e67e22',
+          '#9b59b6', '#1abc9c', '#e74c3c', '#95a5a6'
+        ],
+        borderWidth: 0
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom' } }
+    }
+  });
+}
+
+function initHistoricoChart() {
+  const el = document.getElementById('historicoChart');
+  if (!el || !window.Chart) return;
+  if (window.historicoChart) return;
+
+  window.historicoChart = new Chart(el, {
+    type: 'bar',
+    data: {
+      labels: [],
+      datasets: [{
+        label: 'Ventas',
+        data: [],
+        backgroundColor: 'rgba(46, 204, 113, 0.6)',
+        borderColor: '#2ecc71',
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { display: false } },
+        y: { beginAtZero: true }
+      }
+    }
+  });
+}
 
 function getEmpresaId() {
-  // ideal: injectarlo desde blade: <script>window.EMPRESA_ID={{ auth()->user()->id_empresa }};</script>
+  // ideal: injectarlo desde blade con window.EMPRESA_ID (evitar cerrar script en comentarios)
   return window.EMPRESA_ID || null;
 }
 
 async function loadDashboardData() {
-  try {
-    const empresaId = getEmpresaId();
-    if (!empresaId) return;
+  const empresaId = getEmpresaId();
+  const today = new Date().toISOString().slice(0,10);
+  const ym = new Date().toISOString().slice(0,7);
+  const baseParams = empresaId ? { empresa_id: empresaId } : {};
 
-    const today = new Date().toISOString().slice(0,10);
-    const ym = new Date().toISOString().slice(0,7);
+  const diarioUrl = buildUrl('/dashboard/diario', { ...baseParams, fecha: today });
+  const mensualUrl = buildUrl('/dashboard/mensual', { ...baseParams, mes: ym });
+  const catsUrl = buildUrl('/dashboard/categorias-mensual', { ...baseParams, mes: ym });
+  const histUrl = buildUrl('/dashboard/historico-12m', baseParams);
+  const topVendUrl = buildUrl('/dashboard/top-vendedores-mensual', { ...baseParams, mes: ym, meta: 100000 });
 
-    // 1) Diario
-    const diario = await fetchJson(`/dashboard/diario?empresa_id=${empresaId}&fecha=${today}`);
+  const [
+    diario,
+    mensual,
+    cats,
+    hist,
+    topVend
+  ] = await Promise.all([
+    fetchJsonSafe(diarioUrl),
+    fetchJsonSafe(mensualUrl),
+    fetchJsonSafe(catsUrl),
+    fetchJsonSafe(histUrl),
+    fetchJsonSafe(topVendUrl)
+  ]);
 
-    // Cards principales
-    const ventasHoy = diario?.resumen?.ventas_netas ?? 0;
-    const ticketsHoy = diario?.resumen?.tickets ?? 0;
+  // Cards principales
+  const ventasHoy = diario?.resumen?.ventas_netas ?? 0;
+  const ticketsHoy = diario?.resumen?.tickets ?? 0;
+  setTextMoney('gananciasHoy', ventasHoy);
+  setText('ventasHoy', ticketsHoy);
 
-    setTextMoney('gananciasHoy', ventasHoy);
-    setText('ventasHoy', ticketsHoy);
+  // 2) Mensual
+  const ventasMes = mensual?.resumen?.ventas_netas ?? 0;
+  setTextMoney('gananciasMensual', ventasMes);
 
-    // 2) Mensual
-    const mensual = await fetchJson(`/dashboard/mensual?empresa_id=${empresaId}&mes=${ym}`);
-    const ventasMes = mensual?.resumen?.ventas_netas ?? 0;
-    setTextMoney('gananciasMensual', ventasMes);
+  // 3) Serie horas => gananciasChart (Hoy vs Ayer simple)
+  if (window.gananciasChart && diario?.serie_horas) {
+    window.gananciasChart.data.labels = diario.serie_horas.labels;
+    window.gananciasChart.data.datasets[0].data = diario.serie_horas.data;
 
-    // 3) Serie horas => gananciasChart (Hoy vs Ayer simple)
-    if (window.gananciasChart && diario?.serie_horas) {
-      window.gananciasChart.data.labels = diario.serie_horas.labels;
-      window.gananciasChart.data.datasets[0].data = diario.serie_horas.data;
-
-      // Ayer: pide otro diario
-      const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0,10);
-      const diarioAyer = await fetchJson(`/dashboard/diario?empresa_id=${empresaId}&fecha=${yesterday}`);
-      const ayerData = diarioAyer?.serie_horas?.data ?? new Array(diario.serie_horas.data.length).fill(0);
-      window.gananciasChart.data.datasets[1].data = ayerData;
-
-      window.gananciasChart.update();
-    }
-
-    // 4) Categorías => categoriasChart
-    const cats = await fetchJson(`/dashboard/categorias-mensual?empresa_id=${empresaId}&mes=${ym}`);
-    if (window.categoriasChart && cats?.labels) {
-      window.categoriasChart.data.labels = cats.labels;
-      window.categoriasChart.data.datasets[0].data = cats.data;
-      window.categoriasChart.update();
-    }
-
-    // 5) Histórico 12 meses => historicoChart
-    const hist = await fetchJson(`/dashboard/historico-12m?empresa_id=${empresaId}`);
-    if (window.historicoChart && hist?.labels) {
-      window.historicoChart.data.labels = hist.labels;
-      window.historicoChart.data.datasets[0].data = hist.data;
-      window.historicoChart.update();
-    }
-
-    // 6) Top productos (lista)
-    renderTopProductos(diario?.top_productos ?? []);
-
-    // 7) Top vendedores (tabla)
-    const topVend = await fetchJson(`/dashboard/top-vendedores-mensual?empresa_id=${empresaId}&mes=${ym}&meta=100000`);
-    renderTopVendedores(topVend?.data ?? [], topVend?.meta ?? 100000);
-
-    // Footer quick stats (si no tienes tabla clientes/inventario aún, los dejas en 0)
-    setText('ordenesHoy', ticketsHoy);
-    // clientesActivos/itemsInventario/tasaExito los calculas cuando tengas endpoints
-
-  } catch (e) {
-    console.error('Dashboard error:', e);
+    // Ayer: pide otro diario (si falla, solo no pinta ayer)
+    const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0,10);
+    const diarioAyerUrl = buildUrl('/dashboard/diario', { ...baseParams, fecha: yesterday });
+    const diarioAyer = await fetchJsonSafe(diarioAyerUrl);
+    const ayerData = diarioAyer?.serie_horas?.data ?? new Array(diario.serie_horas.data.length).fill(0);
+    window.gananciasChart.data.datasets[1].data = ayerData;
+    window.gananciasChart.update();
   }
+
+  // 4) Categorías => categoriasChart
+  if (window.categoriasChart && cats?.labels) {
+    window.categoriasChart.data.labels = cats.labels;
+    window.categoriasChart.data.datasets[0].data = cats.data;
+    window.categoriasChart.update();
+  }
+
+  // 5) Histórico 12 meses => historicoChart
+  if (window.historicoChart && hist?.labels) {
+    window.historicoChart.data.labels = hist.labels;
+    window.historicoChart.data.datasets[0].data = hist.data;
+    window.historicoChart.update();
+  }
+
+  // 6) Top productos (lista)
+  renderTopProductos(diario?.top_productos ?? []);
+
+  // 7) Top vendedores (tabla)
+  renderTopVendedores(topVend?.data ?? [], topVend?.meta ?? 100000);
+
+  // Footer quick stats (si no tienes tabla clientes/inventario aún, los dejas en 0)
+  setText('ordenesHoy', ticketsHoy);
+  // clientesActivos/itemsInventario/tasaExito los calculas cuando tengas endpoints
 }
 
 async function fetchJson(url) {
@@ -515,6 +625,15 @@ async function fetchJson(url) {
   const json = await res.json();
   if (json && json.ok === false) throw new Error(json.msg || 'Error');
   return json;
+}
+
+async function fetchJsonSafe(url) {
+  try {
+    return await fetchJson(url);
+  } catch (e) {
+    console.error('Dashboard fetch error:', url, e);
+    return null;
+  }
 }
 
 function setText(id, val) {
@@ -603,6 +722,12 @@ function escapeHtml(s) {
   return String(s ?? '').replace(/[&<>"']/g, m => ({
     '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'
   }[m]));
+}
+
+function buildUrl(path, params) {
+  const qs = new URLSearchParams(params || {});
+  const q = qs.toString();
+  return q ? `${path}?${q}` : path;
 }
 </script>
 
