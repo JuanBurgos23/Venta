@@ -1679,9 +1679,7 @@
                                                 </div>
                                                 <div class="flex-grow-1">
                                                     <h6 class="mb-0">{{ auth()->user()->name }}</h6>
-                                                    <small
-                                                        class="text-body-secondary">@foreach(auth()->user()->roles as $role)
-                                                        {{ $role->name }}@endforeach</small>
+                                                       
                                                 </div>
                                             </div>
                                         </a>

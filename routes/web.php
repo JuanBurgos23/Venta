@@ -216,6 +216,7 @@ Route::post('/compras', [CompraController::class, 'store'])->name('compras.store
 // Acciones
 Route::get('/compras/{id}', [CompraController::class, 'show'])->name('compras.show');      // si lo usas
 Route::get('/compras/{id}/edit', [CompraController::class, 'edit'])->name('compras.edit'); // si lo usas
+Route::get('/compras/{id}/comprobante', [CompraController::class, 'comprobante'])->name('compras.comprobante');
 Route::delete('/compras/{id}', [CompraController::class, 'destroy'])->name('compras.destroy');
 
 

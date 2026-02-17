@@ -9,6 +9,7 @@ use App\Models\almacen;
 use App\Models\Producto;
 use App\Models\Sucursal;
 use App\Models\Proveedor;
+use App\Models\Empresa;
 use Illuminate\Http\Request;
 use App\Services\CajaService;
 use App\Models\Producto_compra;
@@ -358,5 +359,35 @@ class CompraController extends Controller
         // Aquí retornas la vista del formulario de nueva compra
         return view('compra.compra'); 
         // ⚠️ asegúrate de que exista resources/views/compra/compra.blade.php
+    }
+
+    public function comprobante($id)
+    {
+        $empresaId = auth()->user()->id_empresa;
+
+        $compra = Compra::with([
+            'proveedor',
+            'almacen',
+            'items.producto'
+        ])->where('id_empresa', $empresaId)->findOrFail($id);
+
+        $empresa = Empresa::find($empresaId);
+
+        $items = $compra->items->map(function ($it) {
+            return [
+                'codigo' => $it->producto->codigo ?? '-',
+                'producto' => $it->producto->nombre ?? '-',
+                'cantidad' => $it->cantidad,
+                'costo_unitario' => $it->costo_unitario,
+                'costo_total' => $it->costo_total,
+                'lote' => $it->lote,
+            ];
+        });
+
+        return view('compra.comprobante', [
+            'empresa' => $empresa,
+            'compra' => $compra,
+            'items' => $items,
+        ]);
     }
 }

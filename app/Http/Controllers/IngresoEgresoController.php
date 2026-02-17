@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Caja;
+use App\Models\FormaPago;
 use App\Models\IngresoEgreso;
 use App\Models\Sucursal;
 use App\Models\TipoIngresoEgreso;
@@ -104,7 +105,8 @@ class IngresoEgresoController extends Controller
     {
         $sucursales = Sucursal::all();
         $tipos = TipoIngresoEgreso::all();
-        return view('IngresoEgreso.registrarIngresoEgreso', compact('tipos', 'sucursales'));
+        $formasPago = FormaPago::all();
+        return view('IngresoEgreso.registrarIngresoEgreso', compact('tipos', 'sucursales', 'formasPago'));
     }
     public function fetchIngresoEgreso(Request $request)
     {
@@ -174,6 +176,7 @@ class IngresoEgresoController extends Controller
         // 🔹 Validación
         $validator = Validator::make($request->all(), [
             'tipo_ingreso_egreso_id' => 'required|exists:tipo_ingreso_egreso,id',
+            'id_forma_pago' => 'required|exists:forma_pago,id',
             'motivo' => 'required|string|max:255',
             'descripcion' => 'nullable|string',
             'monto' => 'required|numeric|min:0.01',
@@ -194,6 +197,7 @@ class IngresoEgresoController extends Controller
                 'descripcion' => $request->descripcion,
                 'fecha' => now(),
                 'motivo' => $request->motivo,
+                'id_forma_pago' => $request->id_forma_pago,
                 'tipo_ingreso_egreso_id' => $request->tipo_ingreso_egreso_id,
                 'monto' => $request->monto,
             ]);
@@ -219,7 +223,7 @@ class IngresoEgresoController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Error al registrar ingreso/egreso',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
