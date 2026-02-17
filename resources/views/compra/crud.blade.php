@@ -212,7 +212,10 @@
                         <td class="text-end">${total}</td>
                         <td>${estado}</td>
                         <td class="text-end">
-                            <div class="btn-group btn-group-sm">
+                            <div class="btn-group btn-group-sm shadow-sm" role="group" aria-label="Acciones">
+                                <a class="btn btn-icon btn-primary" href="/compras/${id}/comprobante" target="_blank" title="Comprobante">
+                                    <i class="bx bx-printer"></i>
+                                </a>
                                 <a class="btn btn-icon btn-secondary" href="/compras/${id}/edit" title="Editar">
                                     <i class="bx bx-edit"></i>
                                 </a>
@@ -258,10 +261,13 @@
                         </div>
                         <div class="d-flex justify-content-between align-items-center mt-2">
                             <div class="small text-muted">${r.almacen_nombre || 'ƒ?"'}</div>
-                            <div class="d-flex gap-2">
-                                <button class="btn btn-sm btn-icon btn-outline-primary" data-id="${r.id}" data-action="detalle" title="Detalles"><i class="bx bx-chevron-down"></i></button>
-                                <a class="btn btn-sm btn-icon btn-outline-secondary" href="/compras/${r.id}/edit" title="Editar"><i class="bx bx-edit"></i></a>
-                                <button class="btn btn-sm btn-icon btn-outline-danger" data-id="${r.id}" data-action="eliminar" title="Eliminar"><i class="bx bx-trash"></i></button>
+                            <div class="d-flex gap-1">
+                                <a class="btn btn-sm btn-icon btn-primary shadow-sm" href="/compras/${r.id}/comprobante" target="_blank" title="Comprobante">
+                                    <i class="bx bx-printer"></i>
+                                </a>
+                                <button class="btn btn-sm btn-icon btn-primary shadow-sm" data-id="${r.id}" data-action="detalle" title="Detalles"><i class="bx bx-chevron-down"></i></button>
+                                <a class="btn btn-sm btn-icon btn-secondary shadow-sm" href="/compras/${r.id}/edit" title="Editar"><i class="bx bx-edit"></i></a>
+                                <button class="btn btn-sm btn-icon btn-danger shadow-sm" data-id="${r.id}" data-action="eliminar" title="Eliminar"><i class="bx bx-trash"></i></button>
                             </div>
                         </div>
                     </div>

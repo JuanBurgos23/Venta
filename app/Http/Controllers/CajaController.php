@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Caja;
+use App\Models\Venta;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -83,15 +84,25 @@ class CajaController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | VENTAS
+        | VENTAS (separando efectivo / no efectivo desde tabla venta)
         |--------------------------------------------------------------------------
-        | Por ahora solo efectivo
         */
-        $ventasEfectivo = $caja->detalleCaja
-            ->where('movimiento', 'VENTA')
-            ->sum('monto');
+        $fechaFin = $caja->fecha_cierre ?? now();
 
-        $ventasNoEfectivo = 0;
+        $ventasQuery = Venta::query()
+            ->where('empresa_id', $caja->empresa_id)
+            ->where('sucursal_id', $caja->sucursal_id)
+            ->where('usuario_id', $caja->usuario_id)
+            ->whereBetween('fecha', [$caja->fecha_apertura, $fechaFin])
+            ->where('estado', 'Pagado');
+
+        $ventasEfectivo = (clone $ventasQuery)
+            ->where('forma_pago', 'Efectivo')
+            ->sum('total');
+
+        $ventasNoEfectivo = (clone $ventasQuery)
+            ->whereIn('forma_pago', ['Qr', 'Tarjeta'])
+            ->sum('total');
 
         $totalVentas = $ventasEfectivo + $ventasNoEfectivo;
 

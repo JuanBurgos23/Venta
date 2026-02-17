@@ -101,6 +101,16 @@
                         </div>
 
                         <div class="mb-3">
+                            <label for="id_forma_pago" class="form-label">Forma de pago</label>
+                            <select id="id_forma_pago" name="id_forma_pago" class="form-select" required>
+                                <option value="">Seleccione...</option>
+                                @foreach ($formasPago as $forma)
+                                    <option value="{{ $forma->id }}">{{ $forma->nombre }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
                             <label for="descripcion" class="form-label">Descripción</label>
                             <textarea id="descripcion" name="descripcion" class="form-control" rows="2"></textarea>
                         </div>
@@ -443,6 +453,7 @@
                         document.getElementById('registro_id').value = data.registro.id;
                         document.getElementById('tipo_ingreso_egreso_id').value = data.registro.tipo_ingreso_egreso_id;
                         document.getElementById('motivo').value = data.registro.motivo;
+                        document.getElementById('id_forma_pago').value = data.registro.id_forma_pago ?? '';
                         document.getElementById('descripcion').value = data.registro.descripcion ?? '';
                         document.getElementById('monto').value = data.registro.monto;
 
@@ -472,6 +483,7 @@
                         document.getElementById('registro_id').value = data.registro.id;
                         document.getElementById('tipo_ingreso_egreso_id').value = data.registro.tipo_ingreso_egreso_id;
                         document.getElementById('motivo').value = data.registro.motivo;
+                        document.getElementById('id_forma_pago').value = data.registro.id_forma_pago ?? '';
                         document.getElementById('descripcion').value = data.registro.descripcion ?? '';
                         document.getElementById('monto').value = data.registro.monto;
 
@@ -511,7 +523,7 @@
                         e.target.reset();
                         await fetchRows(); // Recarga tabla sin generar toast de error
                     } else {
-                        showToast(data.message || 'Error al guardar el registro', 'danger');
+                        showToast(data.error || 'Error al guardar el registro', 'danger');
                     }
                 } catch (error) {
                     console.error(error);

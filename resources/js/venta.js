@@ -247,6 +247,9 @@
                             timer: 1500,
                             showConfirmButton: false,
                             didClose: () => {
+                                if (data.url_comprobante) {
+                                    window.open(data.url_comprobante, '_blank');
+                                }
                                 location.reload();
                             }
                         });
