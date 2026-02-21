@@ -188,7 +188,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        const setupReporteCompraPage = () => {
             // Variables globales
             let reporteData = [];
             let graficoProveedores = null;
@@ -238,7 +238,9 @@
                     }
                     
                     // Cargar almacenes
-                    const resAlmacenes = await fetch(ALMACENES_URL, {
+                    const sucursalId = document.getElementById('report-sucursal')?.value || '';
+                    const qs = sucursalId ? `?sucursal_id=${encodeURIComponent(sucursalId)}` : '';
+                    const resAlmacenes = await fetch(ALMACENES_URL + qs, {
                         headers: { 'Accept': 'application/json' }
                     });
                     if (resAlmacenes.ok) {
@@ -770,7 +772,18 @@
             // Inicializar
             cargarFiltros();
             actualizarInfoReporte();
-        });
+        };
+
+        const handleReporteCompraLoad = () => {
+            const root = document.getElementById('reporte-body');
+            if (!root) return;
+            if (root.dataset.reporteCompraInit === '1') return;
+            root.dataset.reporteCompraInit = '1';
+            setupReporteCompraPage();
+        };
+
+        document.addEventListener('turbo:load', handleReporteCompraLoad);
+        document.addEventListener('DOMContentLoaded', handleReporteCompraLoad);
     </script>
 
     <style>

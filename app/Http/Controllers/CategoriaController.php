@@ -30,11 +30,6 @@ class CategoriaController extends Controller
                 $sc->where('estado', '!=', 0)->orderBy('nombre');
             }])
             ->where('estado', '!=', 0);
-
-        if (!$user->hasRole('Administrador')) {
-            $q->where('id_empresa', $user->id_empresa ?? 0);
-        }
-
         if ($search !== '') {
             $q->where(function($w) use ($search){
                 $w->where('nombre', 'like', "%{$search}%")
@@ -51,9 +46,6 @@ class CategoriaController extends Controller
     {
         $user = Auth::user();
         $q = Categoria::query();
-        if (!$user->hasRole('Administrador')) {
-            $q->where('id_empresa', $user->id_empresa ?? 0);
-        }
         $categoria = $q->findOrFail($id);
         return response()->json($categoria);
     }
@@ -90,9 +82,6 @@ class CategoriaController extends Controller
     {
         $user = Auth::user();
         $q = Categoria::query();
-        if (!$user->hasRole('Administrador')) {
-            $q->where('id_empresa', $user->id_empresa ?? 0);
-        }
         $cat = $q->find($id);
         if (!$cat || (int)$cat->estado === 0) {
             return response()->json(['status'=>'error','message'=>'Categoría no encontrada'], 200);
@@ -120,9 +109,6 @@ class CategoriaController extends Controller
     {
         $user = Auth::user();
         $q = Categoria::query();
-        if (!$user->hasRole('Administrador')) {
-            $q->where('id_empresa', $user->id_empresa ?? 0);
-        }
         $cat = $q->find($id);
         if (!$cat) return response()->json(['status'=>'error','message'=>'Categoría no encontrada'], 200);
 

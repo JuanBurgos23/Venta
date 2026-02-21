@@ -3,7 +3,12 @@
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg compact-main">
 
         @vite([ 'resources/js/app.js'])
-        
+        <div class="venta-loader" id="venta-loader" aria-hidden="true">
+              <div class="venta-loader-card">
+                  <svg stroke="hsl(228, 97%, 42%)" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="venta-loader-icon" aria-label="Cargando" role="img"><g><circle cx="12" cy="12" r="9.5" fill="none" stroke-width="3" stroke-linecap="round"><animate attributeName="stroke-dasharray" dur="1.5s" calcMode="spline" values="0 150;42 150;42 150;42 150" keyTimes="0;0.475;0.95;1" keySplines="0.42,0,0.58,1;0.42,0,0.58,1;0.42,0,0.58,1" repeatCount="indefinite"/><animate attributeName="stroke-dashoffset" dur="1.5s" calcMode="spline" values="0;-16;-59;-59" keyTimes="0;0.475;0.95;1" keySplines="0.42,0,0.58,1;0.42,0,0.58,1;0.42,0,0.58,1" repeatCount="indefinite"/></circle><animateTransform attributeName="transform" type="rotate" dur="2s" values="0 12 12;360 12 12" repeatCount="indefinite"/></g></svg>
+                  <div class="venta-loader-text" id="venta-loader-text">Cargando...</div>
+              </div>
+        </div>
         <div class="container-fluid py-2 px-2">
             <div class="col-12">
                 <div class="card my-2 shadow-sm">
@@ -604,12 +609,212 @@
             border-color: var(--primary-color) !important;
             box-shadow: 0 0 0 0.2rem rgba(67, 97, 238, 0.15) !important;
         }
+        /* Loader overlay */
+.venta-loader {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(15, 23, 42, 0.35);
+    backdrop-filter: blur(2px);
+    z-index: 9999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+}
+.venta-loader.is-active {
+    opacity: 1;
+    pointer-events: all;
+}
+.venta-loader-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 18px 22px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+.venta-loader-icon {
+    width: 36px;
+    height: 36px;
+}
+.venta-loader-text {
+    font-weight: 600;
+    color: #1f2937;
+}
+[data-bs-theme="dark"] .venta-loader-card {
+    background: #0f172a;
+    color: #e5e7eb;
+    border: 1px solid #1f2937;
+}
+[data-bs-theme="dark"] .venta-loader-text {
+    color: #e5e7eb;
+}
+
+/* ===== Dark theme overrides ===== */
+[data-bs-theme="dark"] {
+    --primary-color: #e2e8f0;
+    --secondary-color: #60a5fa;
+    --accent-color: #3b82f6;
+    --light-color: #122143;
+    --medium-color: #1a2b46;
+    --dark-color: #cbd5f5;
+    --box-shadow: 0 6px 18px rgba(21, 26, 68, 0.35);
+    --box-shadow-hover: 0 12px 26px rgba(20, 22, 75, 0.45);
+}
+
+[data-bs-theme="dark"] .venta-container {
+    background: #0b1220;
+}
+
+[data-bs-theme="dark"] .venta-header,
+[data-bs-theme="dark"] .venta-main-card {
+    background: #1b2844;
+    border-color: #1f2b3d;
+}
+
+[data-bs-theme="dark"] .venta-header h6,
+[data-bs-theme="dark"] .search-header h4,
+[data-bs-theme="dark"] .carrito-header h6,
+[data-bs-theme="dark"] .section-title,
+[data-bs-theme="dark"] .summary-label,
+[data-bs-theme="dark"] .summary-value {
+    color: #e5e7eb;
+}
+
+[data-bs-theme="dark"] .venta-header-info .info-item,
+[data-bs-theme="dark"] .text-muted {
+    color: #cbd5e1 !important;
+}
+
+[data-bs-theme="dark"] .venta-header .form-control-sm,
+[data-bs-theme="dark"] .venta-header .form-select-sm,
+[data-bs-theme="dark"] .search-box .form-control,
+[data-bs-theme="dark"] .input-group-text {
+    background: #0f172a;
+    border-color: #1f2937;
+    color: #e5e7eb;
+}
+
+[data-bs-theme="dark"] .venta-header .text-dark {
+    color: #e5e7eb !important;
+}
+
+[data-bs-theme="dark"] .quick-client-card,
+[data-bs-theme="dark"] .client-card {
+    background: #0f172a;
+    border-color: #1f2937;
+}
+
+[data-bs-theme="dark"] .quick-inline-input,
+[data-bs-theme="dark"] .summary-inline-input {
+    color: #e5e7eb;
+    border-bottom-color: #334155;
+}
+
+[data-bs-theme="dark"] .summary-inline-input:focus,
+[data-bs-theme="dark"] .quick-inline-input:focus {
+    background: #0b1426;
+}
+
+[data-bs-theme="dark"] .carrito-section {
+    background: transparent;
+}
+
+[data-bs-theme="dark"] .carrito-header {
+    border-bottom-color: #1f2937;
+}
+
+[data-bs-theme="dark"] .input-group-pro label {
+    color: #cbd5e1;
+}
+
+[data-bs-theme="dark"] .input-group-pro input,
+[data-bs-theme="dark"] .input-group-pro select {
+    background: #0f172a;
+    border-color: #1f2937;
+    color: #e5e7eb;
+}
+
+[data-bs-theme="dark"] .input-group-pro input:focus,
+[data-bs-theme="dark"] .input-group-pro select:focus {
+    box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
+}
+
+[data-bs-theme="dark"] .product-card-pro {
+    background: #0f172a;
+    border-color: #1f2937;
+}
+
+[data-bs-theme="dark"] .product-header-pro {
+    background: #111827;
+    border-bottom-color: #1f2937;
+}
+
+[data-bs-theme="dark"] .product-image-pro {
+    background: #0b1426;
+}
+
+[data-bs-theme="dark"] .product-info-pro {
+    color: #e5e7eb;
+}
+
+[data-bs-theme="dark"] .product-title-pro {
+    color: #e5e7eb;
+}
+
+[data-bs-theme="dark"] .product-specs-pro {
+    border-top-color: #1f2937;
+}
+
+[data-bs-theme="dark"] .spec-label-pro {
+    color: #cbd5e1;
+}
+
+[data-bs-theme="dark"] .spec-value-pro {
+    color: #e5e7eb;
+}
+
+[data-bs-theme="dark"] .price-unit-pro {
+    color: #cbd5e1;
+}
     </style>
 
     <!-- JavaScript mejorado (mantiene tu lógica pero con mejoras UI) -->
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        const initCompraEnhancedUI = () => {
             // Función para formatear moneda
+
+            const loaderEl = document.getElementById('venta-loader');
+            const loaderTextEl = document.getElementById('venta-loader-text');
+            let loaderCount = 0;
+
+            const showLoader = (text = 'Cargando...') => {
+                loaderCount += 1;
+                if (loaderTextEl) loaderTextEl.textContent = text;
+                loaderEl?.classList.add('is-active');
+                loaderEl?.setAttribute('aria-hidden', 'false');
+            };
+
+            const hideLoader = () => {
+                loaderCount = Math.max(0, loaderCount - 1);
+                if (loaderCount === 0) {
+                    loaderEl?.classList.remove('is-active');
+                    loaderEl?.setAttribute('aria-hidden', 'true');
+                }
+            };
+            window.showLoader = showLoader;
+            window.hideLoader = hideLoader;
+            window.withLoader = async (text, fn) => {
+                showLoader(text);
+                try {
+                    return await fn();
+                } finally {
+                    hideLoader();
+                }
+            };
             function formatCurrency(value) {
                 return `Bs/ ${parseFloat(value || 0).toFixed(2)}`;
             }
@@ -650,9 +855,9 @@
                         </td>
                     `;
                     tbody.appendChild(emptyRow);
+
                     return;
                 }
-                
                 window.productsList.forEach((product, index) => {
                     const row = document.createElement('tr');
                     row.className = 'fade-in';
@@ -689,8 +894,8 @@
                         </td>
                     `;
                     tbody.appendChild(row);
+
                 });
-                
                 updateProductsCount();
                 updateTotal();
             }
@@ -785,6 +990,7 @@
 
             // Renderizar tabla inicial
             renderProductsTable();
+            
 
             // Observador para inicializar eventos de eliminación
             const observer = new MutationObserver(function(mutations) {
@@ -819,13 +1025,13 @@
                     updateTotal();
                 };
             }
-        });
+        };
     </script>
 
     <!-- Mantener todo tu JavaScript original (se mantiene intacto) -->
     <script>
         // Tu JavaScript original se mantiene aquí
-        document.addEventListener('DOMContentLoaded', function() {
+        const initCompraMobileDetails = () => {
             const toggleBtn = document.getElementById('mobile-details-toggle');
             const closeBtn = document.getElementById('close-mobile-details');
             const sidebar = document.querySelector('.mobile-details-sidebar');
@@ -849,7 +1055,7 @@
                     sidebar.classList.remove('active');
                 });
             }
-        });
+        };
     </script>
     
     <!-- Mantener tus funciones JavaScript originales -->
@@ -874,13 +1080,13 @@
             @endif
             // Auto-eliminar después de 5 segundos
             setTimeout(() => {
-                if (alert.parentNode) {
-                    alert.parentNode.removeChild(alert);
+                if (toastEl) {
+                    toastEl.classList.add('hide');
                 }
             }, 5000);
         }
 
-        document.addEventListener("DOMContentLoaded", function() {
+        const initCompraSuppliers = () => {
             let supplierSelect;
 
             // Inicializar TomSelect
@@ -908,14 +1114,22 @@
             });
 
             // Función para cargar proveedores desde el backend
-            function loadSuppliers() {
-                fetch("/proveedores/list") // Ajusta a tu ruta real
-                    .then(res => res.json())
-                    .then(data => {
-                        supplierSelect.clearOptions();
-                        supplierSelect.addOptions(data);
-                    })
-                    .catch(err => console.error("Error cargando proveedores:", err));
+            async function loadSuppliers() {
+                window.showLoader?.('Cargando proveedores...');
+                let errorMsg = '';
+                try {
+                    const res = await fetch("/proveedores/list");
+                    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                    const data = await res.json();
+                    supplierSelect.clearOptions();
+                    supplierSelect.addOptions(Array.isArray(data) ? data : []);
+                } catch (err) {
+                    console.error("Error cargando proveedores:", err);
+                    errorMsg = "Error cargando proveedores.";
+                } finally {
+                    window.hideLoader?.();
+                }
+                if (errorMsg) showAlert(errorMsg, "danger");
             }
 
             // Función para actualizar el panel de detalle del proveedor
@@ -957,7 +1171,7 @@
             });
 
             // Guardar nuevo proveedor
-            saveSupplierBtn.addEventListener("click", function() {
+            saveSupplierBtn.addEventListener("click", async function() {
                 const newSupplier = {
                     nombre: document.getElementById("supplier-name").value.trim(),
                     ruc: document.getElementById("supplier-ruc").value.trim(),
@@ -972,33 +1186,42 @@
                     return;
                 }
 
-                fetch("/proveedores/store", { // Ajusta a tu ruta real
+                window.showLoader?.('Guardando proveedor...');
+                let errorMsg = '';
+                try {
+                    const res = await fetch("/proveedores/store", { // Ajusta a tu ruta real
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
                             "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
                         },
                         body: JSON.stringify(newSupplier)
-                    })
-                    .then(res => res.json())
-                    .then(saved => {
-                        // Agregar al select y seleccionar automáticamente
-                        supplierSelect.addOption(saved);
-                        supplierSelect.setValue(saved.id);
+                    });
+                    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                    const saved = await res.json();
 
-                        // Cerrar modal usando la misma instancia
-                        supplierModal.hide();
-
-                        showAlert("Proveedor guardado exitosamente.", "success");
-                        supplierForm.reset();
-                    })
-                    .catch(err => showAlert("Error guardando proveedor:", "danger"));
+                    supplierSelect.addOption(saved);
+                    supplierSelect.setValue(saved.id);
+                    supplierModal.hide();
+                    supplierForm.reset();
+                } catch (err) {
+                    console.error("Error guardando proveedor:", err);
+                    errorMsg = "Error guardando proveedor.";
+                } finally {
+                    window.hideLoader?.();
+                }
+                if (errorMsg) {
+                    showAlert(errorMsg, "danger");
+                } else {
+                    showAlert("Proveedor guardado exitosamente.", "success");
+                }
             });
             loadSuppliers();
-        });
+            window.__compraReloadSuppliers = loadSuppliers;
+        };
     </script>
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
+        const initCompraWarehouses = () => {
             const warehouseSelect = document.getElementById("warehouse-select");
             const newWarehouseBtn = document.getElementById("new-warehouse-btn");
             const saveWarehouseBtn = document.getElementById("save-warehouse");
@@ -1012,7 +1235,7 @@
             });
 
             // Guardar nuevo almacén
-            saveWarehouseBtn.addEventListener("click", function() {
+            saveWarehouseBtn.addEventListener("click", async function() {
                 const name = document.getElementById("warehouse-name").value.trim();
                 const address = document.getElementById("warehouse-address").value.trim();
                 const responsible = document.getElementById("warehouse-responsible").value.trim();
@@ -1023,7 +1246,10 @@
                     return;
                 }
 
-                fetch("/almacenes/store", {
+                window.showLoader?.('Guardando almacén...');
+                let errorMsg = '';
+                try {
+                    const res = await fetch("/almacenes/store", {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
@@ -1035,51 +1261,63 @@
                             responsable: responsible,
                             telefono: phone
                         })
-                    })
-                    .then(res => res.json())
-                    .then(data => {
-                        if (data.id) {
-                            const option = document.createElement("option");
-                            option.value = data.id;
-                            option.textContent = data.nombre;
-                            warehouseSelect.appendChild(option);
-                            warehouseSelect.value = data.id;
-
-                            updateWarehouseInfo(data); // marcar en panel de detalle
-                            warehouseModal.hide();
-                        } else {
-                            alert("No se pudo guardar el almacén");
-                        }
-                    })
-                    .catch(err => {
-                        console.error("Error al guardar almacén:", err);
-                        showAlert("Error al guardar el almacén", "danger");
                     });
+                    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                    const data = await res.json();
+                    if (data.id) {
+                        const option = document.createElement("option");
+                        option.value = data.id;
+                        option.textContent = data.nombre;
+                        warehouseSelect.appendChild(option);
+                        warehouseSelect.value = data.id;
+
+                        updateWarehouseInfo(data);
+                        warehouseModal.hide();
+                    } else {
+                        throw new Error("No se pudo guardar el almacén");
+                    }
+                } catch (err) {
+                    console.error("Error al guardar almacén:", err);
+                    errorMsg = "Error al guardar el almacén";
+                } finally {
+                    window.hideLoader?.();
+                }
+                if (errorMsg) {
+                    showAlert(errorMsg, "danger");
+                } else {
+                    showAlert("Almacén guardado exitosamente.", "success");
+                }
             });
 
             // Cargar almacenes desde backend
             let warehousesData = []; // almacenar todos los almacenes
 
-            function loadWarehouses() {
-                fetch("/almacenes/list")
-                    .then(res => res.json())
-                    .then(data => {
-                        warehousesData = data; // guardar todos los almacenes
-                        warehouseSelect.innerHTML = "";
-                        data.forEach(w => {
-                            const option = document.createElement("option");
-                            option.value = w.id;
-                            option.textContent = w.nombre;
-                            warehouseSelect.appendChild(option);
-                        });
-
-                        // Seleccionar primer almacén disponible y mostrar en panel
-                        if (data.length > 0) {
-                            warehouseSelect.value = data[0].id;
-                            updateWarehouseInfo(data[0]);
-                        }
-                    })
-                    .catch(err => console.error("Error cargando almacenes:", err));
+            async function loadWarehouses() {
+                window.showLoader?.('Cargando almacenes...');
+                let errorMsg = '';
+                try {
+                    const res = await fetch("/almacenes/list");
+                    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                    const data = await res.json();
+                    warehousesData = Array.isArray(data) ? data : [];
+                    warehouseSelect.innerHTML = "";
+                    warehousesData.forEach(w => {
+                        const option = document.createElement("option");
+                        option.value = w.id;
+                        option.textContent = w.nombre;
+                        warehouseSelect.appendChild(option);
+                    });
+                    if (warehousesData.length > 0) {
+                        warehouseSelect.value = warehousesData[0].id;
+                        updateWarehouseInfo(warehousesData[0]);
+                    }
+                } catch (err) {
+                    console.error("Error cargando almacenes:", err);
+                    errorMsg = "Error cargando almacenes.";
+                } finally {
+                    window.hideLoader?.();
+                }
+                if (errorMsg) showAlert(errorMsg, "danger");
             }
 
             // Evento change del select
@@ -1113,22 +1351,32 @@
             }
 
             // Evento change del select para actualizar el panel
-            warehouseSelect.addEventListener("change", function() {
+            warehouseSelect.addEventListener("change", async function() {
                 const selectedId = this.value;
-                fetch(`/almacenes/${selectedId}`)
-                    .then(res => res.json())
-                    .then(data => {
-                        updateWarehouseInfo(data);
-                    })
-                    .catch(err => console.error("Error cargando almacén:", err));
+                if (!selectedId) return;
+                window.showLoader?.('Cargando almacén...');
+                let errorMsg = '';
+                try {
+                    const res = await fetch(`/almacenes/${selectedId}`);
+                    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                    const data = await res.json();
+                    updateWarehouseInfo(data);
+                } catch (err) {
+                    console.error("Error cargando almacén:", err);
+                    errorMsg = "Error cargando almacén.";
+                } finally {
+                    window.hideLoader?.();
+                }
+                if (errorMsg) showAlert(errorMsg, "danger");
             });
 
             loadWarehouses();
-        });
+            window.__compraReloadWarehouses = loadWarehouses;
+        };
     </script>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
+        const initCompraProducts = () => {
         const productDetailsCard = document.getElementById("product-details-card");
         const productEntryDetails = document.getElementById("product-entry-details");
         const addToListBtn = document.getElementById("add-to-list-btn");
@@ -1158,7 +1406,9 @@
 
         async function loadSucursales() {
             if (!sucursalSelect) return;
+            let errorMsg = '';
             try {
+                window.showLoader?.('Cargando sucursales...');
                 let data = [];
                 const cache = localStorage.getItem("sucursalesEmpresa");
                 if (cache) {
@@ -1187,6 +1437,12 @@
                 }
             } catch (err) {
                 console.error("Error cargando sucursales", err);
+                errorMsg = "Error cargando sucursales.";
+            } finally {
+                window.hideLoader?.();
+            }
+            if (typeof errorMsg !== 'undefined' && errorMsg) {
+                showAlert(errorMsg, "danger");
             }
         }
 
@@ -1262,11 +1518,14 @@
 
         // Cargar productos
         function loadProducts() {
+            window.showLoader?.('Cargando productos...');
+            let errorMsg = '';
             fetch("/productos/list")
             .then(res => res.json())
             .then(data => {
-                console.log("Productos recibidos:", data.length, data);
-                productsData = data.map(p => ({
+                const list = Array.isArray(data) ? data : [];
+                console.log("Productos recibidos:", list.length, list);
+                productsData = list.map(p => ({
                 id: p.id,
                 nombre: p.name,           // backend envía "name"
                 category: p.category || "-",
@@ -1279,7 +1538,14 @@
                 productSelect.clearOptions();
                 productSelect.addOptions(productsData);
             })
-            .catch(err => console.error("Error cargando productos:", err));
+            .catch(err => {
+                console.error("Error cargando productos:", err);
+                errorMsg = "Error cargando productos.";
+            })
+            .finally(() => {
+                window.hideLoader?.();
+                if (errorMsg) showAlert(errorMsg, "danger");
+            });
         }
         loadProducts();
         loadSucursales();
@@ -1417,7 +1683,9 @@
 
         if (!confirm.isConfirmed) return;
 
+        let result;
         try {
+            window.showLoader?.('Registrando compra...');
             const response = await fetch("/compras/store", {
                 method: "POST",
                 headers: {
@@ -1426,46 +1694,40 @@
                 },
                 body: JSON.stringify(payload)
             });
-
-            const result = await response.json();
-
-            if (result.success) {
-                // 🔹 Confirmación de compra exitosa
-                const nextAction = await Swal.fire({
-                    title: 'Compra registrada',
-                    text: `La compra se registró correctamente. ID: ${result.compra_id}`,
-                    icon: 'success',
-                    showCancelButton: true,
-                    confirmButtonText: 'Seguir registrando',
-                    cancelButtonText: 'Ir al listado de compras'
-                });
-
-                // 🔹 Reset del formulario
-                productsList = [];
-                renderProductsTable();
-                updateSummary();
-
-                // Limpieza de selects y campos principales
-                document.getElementById("supplier-select").tomselect?.clear();
-                document.getElementById("warehouse-select").value = "";
-                document.getElementById("observation").value = "";
-                document.getElementById("invoice-number").value = "";
-
-                if (!nextAction.isConfirmed) {
-                    window.location.href = '/compras'; // 👈 redirige al listado
-                }
-            } else {
-                Swal.fire({
-                    title: 'Error al registrar',
-                    text: result.message || 'Ocurrió un error en el registro de la compra.',
-                    icon: 'error'
-                });
-            }
+            result = await response.json();
         } catch (error) {
             console.error("Error al registrar la compra:", error);
+            result = { success: false, message: 'No se pudo registrar la compra. Intenta nuevamente.' };
+        } finally {
+            window.hideLoader?.();
+        }
+
+        if (result && result.success) {
+            const nextAction = await Swal.fire({
+                title: 'Compra registrada',
+                text: `La compra se registró correctamente. ID: ${result.compra_id}`,
+                icon: 'success',
+                showCancelButton: true,
+                confirmButtonText: 'Seguir registrando',
+                cancelButtonText: 'Ir al listado de compras'
+            });
+
+            productsList = [];
+            renderProductsTable();
+            updateSummary();
+
+            document.getElementById("supplier-select").tomselect?.clear();
+            document.getElementById("warehouse-select").value = "";
+            document.getElementById("observation").value = "";
+            document.getElementById("invoice-number").value = "";
+
+            if (!nextAction.isConfirmed) {
+                window.location.href = '/compras';
+            }
+        } else {
             Swal.fire({
-                title: 'Error del servidor',
-                text: 'No se pudo registrar la compra. Intenta nuevamente.',
+                title: 'Error al registrar',
+                text: result?.message || 'Ocurrió un error en el registro de la compra.',
                 icon: 'error'
             });
         }
@@ -1505,7 +1767,31 @@
 
 
 
-        });
+        };
         
+        window.__compraReloadProducts = () => {
+            loadProducts();
+            loadSucursales();
+        };
+
+        const handleCompraLoad = () => {
+            const root = document.getElementById('supplier-select');
+            if (!root) return;
+            if (root.dataset.compraInit === '1') {
+                window.__compraReloadSuppliers?.();
+                window.__compraReloadWarehouses?.();
+                window.__compraReloadProducts?.();
+                return;
+            }
+            root.dataset.compraInit = '1';
+            initCompraEnhancedUI?.();
+            initCompraMobileDetails?.();
+            initCompraSuppliers?.();
+            initCompraWarehouses?.();
+            initCompraProducts?.();
+        };
+
+        document.addEventListener('turbo:load', handleCompraLoad);
+        document.addEventListener('DOMContentLoaded', handleCompraLoad);
     </script>
 </x-layout>

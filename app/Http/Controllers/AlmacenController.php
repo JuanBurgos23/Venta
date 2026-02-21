@@ -11,6 +11,30 @@ use Illuminate\Support\Facades\Validator;
 class AlmacenController extends Controller
 {
     /**
+     * GET /api/almacenes
+     * Lista almacenes para filtros de reportes (scoped por empresa/sucursal).
+     */
+    public function listarParaFiltro(Request $request)
+    {
+        $empresaId  = Auth::user()->id_empresa ?? null;
+        $sucursalId = $request->input('sucursal_id');
+
+        if (!$empresaId) {
+            return response()->json([]);
+        }
+
+        $almacenes = Almacen::whereHas('sucursal', function ($q) use ($empresaId, $sucursalId) {
+            $q->where('empresa_id', $empresaId);
+            if ($sucursalId) {
+                $q->where('id', $sucursalId);
+            }
+        })
+            ->orderBy('id', 'asc')
+            ->get();
+
+        return response()->json($almacenes);
+    }
+    /**
      * GET /almacenes/fetch?search=&page=1&per_page=10&sucursal_id=
      * Lista paginada + búsqueda; scope por empresa (si no es Admin).
      */
@@ -116,12 +140,6 @@ class AlmacenController extends Controller
             return response()->json(['status' => 'error', 'message' => 'Sucursal no encontrada.'], 200);
         }
 
-        // Scope por empresa si NO es Admin
-        if (!$user->hasRole('Administrador')) {
-            if (($user->id_empresa ?? 0) != $sucursal->empresa_id) {
-                return response()->json(['status' => 'error', 'message' => 'No autorizado para usar esta sucursal.'], 200);
-            }
-        }
 
         $almacen = Almacen::create([
             'sucursal_id' => $sucursal->id,

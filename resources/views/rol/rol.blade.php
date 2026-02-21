@@ -172,7 +172,7 @@
     </main>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        const setupRolPage = () => {
             const resolveEmpresaId = () => {
                 try {
                     const data = JSON.parse(localStorage.getItem('empresaSuscripcion') || 'null');
@@ -186,7 +186,18 @@
             if (!empresaId) return;
 
             document.querySelectorAll('.empresa-id-input').forEach(el => el.value = empresaId);
-        });
+        };
+
+        const handleRolLoad = () => {
+            const root = document.querySelector('.empresa-id-input');
+            if (!root) return;
+            if (root.dataset.rolInit === '1') return;
+            root.dataset.rolInit = '1';
+            setupRolPage();
+        };
+
+        document.addEventListener('turbo:load', handleRolLoad);
+        document.addEventListener('DOMContentLoaded', handleRolLoad);
     </script>
 
     <!-- Template Customizer va fuera de main y slot -->

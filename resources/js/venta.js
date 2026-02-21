@@ -1,5 +1,5 @@
 
-        document.addEventListener('DOMContentLoaded', function() {
+        const setupVentaPage = () => {
             // Inicializar fecha actual
             const saleDateInput = document.getElementById('sale-date');
 
@@ -499,7 +499,9 @@
             async function loadAlmacenes() {
                 try {
                     showLoader('Cargando almacenes...');
-                    const res = await fetch('/venta/almacenes');
+                    const sucursalId = sucursalSelect?.value;
+                    const qs = sucursalId ? `?sucursal_id=${encodeURIComponent(sucursalId)}` : '';
+                    const res = await fetch(`/venta/almacenes${qs}`);
                     if (!res.ok) throw new Error('No se pudieron cargar los almacenes');
                     const data = await res.json();
                     almacenSelect.innerHTML = '';
@@ -528,7 +530,10 @@
                     showLoader('Cargando productos...');
                     showProductLoaders(newProductsContainer);
                     showProductLoaders(bestProductsContainer);
-                    const res = await fetch(`/producto/venta?almacen_id=${almacenId}`);
+                    const sucursalId = sucursalSelect?.value;
+                    const params = new URLSearchParams({ almacen_id: almacenId });
+                    if (sucursalId) params.set('sucursal_id', sucursalId);
+                    const res = await fetch(`/producto/venta?${params.toString()}`);
                     if (res.status === 403) {
                         const data = await res.json();
                         showMessage(data.message || 'Debes abrir una caja activa.', 'warning');
@@ -840,6 +845,9 @@
             });
 
             almacenSelect?.addEventListener('change', loadProducts);
+            sucursalSelect?.addEventListener('change', () => {
+                loadAlmacenes();
+            });
             clientSelect?.addEventListener('change', updateClientInfo);
             discountEl?.addEventListener('input', refreshCartUI);
             billeteInput?.addEventListener('input', refreshCartUI);
@@ -854,8 +862,7 @@
             window.decreaseQuantity = decreaseQuantity;
             window.removeFromCart = removeFromCart;
 
-            // Inicializar datos
-            (async () => {
+            const reloadVentaData = async () => {
                 showLoader('Cargando venta...');
                 await loadCategories();
                 await loadSucursales();
@@ -863,5 +870,24 @@
                 await loadClients();
                 refreshCartUI();
                 hideLoader();
-            })();
-        });
+            };
+
+            window.__ventaReload = reloadVentaData;
+        };
+
+        const handleVentaLoad = async () => {
+            const root = document.getElementById('contenedorProductos');
+            if (!root) return;
+
+            if (root.dataset.ventaInit !== '1') {
+                root.dataset.ventaInit = '1';
+                setupVentaPage();
+            }
+
+            if (typeof window.__ventaReload === 'function') {
+                await window.__ventaReload();
+            }
+        };
+
+        document.addEventListener('turbo:load', handleVentaLoad);
+        document.addEventListener('DOMContentLoaded', handleVentaLoad);

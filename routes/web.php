@@ -100,6 +100,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard/categorias-mensual', [DashboardController::class, 'categoriasMensual']);
     Route::get('/dashboard/historico-12m', [DashboardController::class, 'historico12Meses']);
     Route::get('/dashboard/top-vendedores-mensual', [DashboardController::class, 'topVendedoresMensual']);
+    Route::get('/dashboard/ventas-5dias', [DashboardController::class, 'ventasUltimos5Dias']);
 });
 
 
@@ -208,7 +209,6 @@ Route::get('/compras-reporte-index', [CompraController::class, 'index_reporte'])
 
 Route::get('/compras/reporte', [CompraController::class, 'generarReporte'])->name('compras.reporte');
 Route::get('/api/proveedores', [CompraController::class, 'listarProveedoresParaFiltro']);
-Route::get('/api/almacenes', [CompraController::class, 'listarAlmacenesParaFiltro']);
 Route::get('/api/compras', [CompraController::class, 'apiIndex'])->name('compras.api.index');
 Route::get('/api/compras/{id}/detalles', [CompraController::class, 'apiDetalles'])->name('compras.api.detalles');
 

@@ -13,14 +13,12 @@ return new class extends Migration
     {
         Schema::create('proveedor', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre');
-            $table->string('paterno')->nullable();
-            $table->string('materno')->nullable();
+            $table->string('nombres');
             $table->string('telefono')->nullable();
             $table->string('ci')->nullable();
             $table->string('correo')->nullable();
             $table->foreignId('id_empresa')->nullable()->constrained('empresa')->onDelete('cascade');
-            $table->integer('estado')->nullable()->default('1');
+            $table->integer('estado')->nullable()->default(1);
             $table->timestamps();
         });
     }

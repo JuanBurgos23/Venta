@@ -390,4 +390,164 @@ class CompraController extends Controller
             'items' => $items,
         ]);
     }
+    public function index_reporte()
+    {
+        // Aquí retornas la vista del reporte de compras
+        return view('compra.reporte_compra'); 
+    }
+
+    public function generarReporte(Request $request)
+    {
+        $empresaId = auth()->user()->id_empresa;
+
+        $query = Compra::with(['proveedor', 'almacen', 'usuario'])
+            ->where('id_empresa', $empresaId);
+
+        // Filtros
+        if ($request->filled('from')) {
+            $query->whereDate('fecha_ingreso', '>=', $request->from);
+        }
+        
+        if ($request->filled('to')) {
+            $query->whereDate('fecha_ingreso', '<=', $request->to);
+        }
+        
+        if ($request->filled('proveedor')) {
+            $query->where('proveedor_id', $request->proveedor);
+        }
+        
+        if ($request->filled('warehouse')) {
+            $query->where('almacen_id', $request->warehouse);
+        }
+        
+        if ($request->filled('status') && $request->status !== '') {
+            $query->where('estado', $request->status);
+        }
+
+        $compras = $query->orderByDesc('fecha_ingreso')->get();
+
+        // Transformar datos para el reporte
+        $comprasTransformadas = $compras->map(function ($compra) {
+            $nombreCompleto = trim(($compra->proveedor->nombre ?? ''));
+
+            return [
+                'id' => $compra->id,
+                'numero_factura' => $compra->numero_factura,
+                'num_factura' => $compra->numero_factura, // alias
+                'fecha' => $compra->fecha_ingreso,
+                'fecha_ingreso' => $compra->fecha_ingreso,
+                'proveedor_id' => $compra->proveedor_id,
+                'proveedor_nombre' => $nombreCompleto,
+                'proveedor' => [
+                    'id' => $compra->proveedor_id,
+                    'nombre' => $nombreCompleto,
+                    'ruc' => $compra->proveedor->ci ?? null,
+                ],
+                'proveedor_ruc' => $compra->proveedor->ci ?? null,
+                'almacen_id' => $compra->almacen_id,
+                'almacen_nombre' => $compra->almacen->nombre ?? null,
+                'almacen' => [
+                    'id' => $compra->almacen_id,
+                    'nombre' => $compra->almacen->nombre ?? null,
+                ],
+                'subtotal' => $compra->subtotal ?? 0,
+                'descuento' => $compra->descuento ?? 0,
+                'iva' => $this->calcularIVA($compra),
+                'total' => $compra->total ?? 0,
+                'tipo' => $compra->tipo ?? 'compra',
+                'estado' => $compra->estado,
+                'usuario_id' => $compra->usuario_id,
+                'usuario_nombre' => $compra->user->name ?? null,
+                'usuario' => [
+                    'id' => $compra->usuario_id,
+                    'name' => $compra->usuario->name ?? null,
+                ],
+                'observacion' => $compra->observacion,
+                'recepcion' => $compra->recepcion,
+                'created_at' => $compra->created_at,
+                'updated_at' => $compra->updated_at,
+            ];
+        });
+
+        // Calcular totales
+        $totales = [
+            'subtotal' => $compras->sum('subtotal'),
+            'descuento' => $compras->sum('descuento'),
+            'iva' => $compras->sum(function($compra) {
+                return $this->calcularIVA($compra);
+            }),
+            'total' => $compras->sum('total'),
+        ];
+
+
+
+        return response()->json([
+            'compras' => $comprasTransformadas,
+            'totales' => $totales,
+            'estadisticas' => [
+                'total_compras' => $compras->count(),
+                'compras_activas' => $compras->where('estado', 1)->count(),
+                'compras_anuladas' => $compras->where('estado', 0)->count(),
+            ]
+        ]);
+    }
+    private function calcularIVA($compra): float
+    {
+        $subtotal  = (float) ($compra->subtotal ?? 0);
+        $descuento = (float) ($compra->descuento ?? 0);
+
+        $base = max($subtotal - $descuento, 0);
+
+        $iva = $base * 0.13;
+
+        return round($iva, 2);
+    }
+
+    /**
+     * Listar proveedores para filtro del reporte
+     */
+    public function listarProveedoresParaFiltro()
+    {
+        $empresaId = auth()->user()->id_empresa;
+
+        $proveedores = Proveedor::where('id_empresa', $empresaId)
+            ->where('estado', 1)
+            ->orderBy('nombre')
+            ->get()
+            ->map(function ($proveedor) {
+                $nombreCompleto = trim(($proveedor->nombre ?? '') . ' ' . 
+                                     ($proveedor->paterno ?? '') . ' ' . 
+                                     ($proveedor->materno ?? ''));
+
+                return [
+                    'id' => $proveedor->id,
+                    'nombre' => $nombreCompleto,
+                    'ruc' => $proveedor->ci,
+                    'telefono' => $proveedor->telefono,
+                    'email' => $proveedor->correo,
+                ];
+            });
+
+        return response()->json($proveedores);
+    }
+
+    /**
+     * Listar almacenes para filtro del reporte
+     */
+    public function listarAlmacenesParaFiltro()
+    {
+        $empresaId = auth()->user()->id_empresa;
+        $sucursalId = request()->input('sucursal_id');
+
+        // Obtener almacenes filtrando por sucursal (si aplica) y empresa
+        $almacenes = Almacen::whereHas('sucursal', function ($q) use ($empresaId, $sucursalId) {
+            $q->where('empresa_id', $empresaId);
+            if ($sucursalId) {
+                $q->where('id', $sucursalId);
+            }
+        })->orderBy('id', 'asc')->get();
+
+        return response()->json($almacenes);
+    }
+
 }

@@ -17,12 +17,12 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->string('paterno')->nullable();
-            $table->string('materno')->nullable();
             $table->string('foto')->nullable();
             $table->string('telefono')->nullable();
-            $table->string('estado')->default('1')->nullable();
+            $table->integer('estado')->default(1)->nullable();
             $table->foreignId('id_empresa')->nullable()->constrained('empresa');
+            $table->integer('sucursal_defaut_id')->nullable();
+            $table->integer('almacen_default_id')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

@@ -23,9 +23,6 @@ class SubcategoriaController extends Controller
         $q = Subcategoria::with('categoria:id,nombre')
             ->where('estado', '!=', 0);
 
-        if (!$user->hasRole('Administrador')) {
-            $q->where('id_empresa', $user->id_empresa ?? 0);
-        }
 
         if ($catId) $q->where('categoria_id', $catId);
 
@@ -49,9 +46,6 @@ class SubcategoriaController extends Controller
             ->where('estado','!=',0)
             ->where('categoria_id', $categoriaId);
 
-        if (!$user->hasRole('Administrador')) {
-            $q->where('id_empresa', $user->id_empresa ?? 0);
-        }
 
         return response()->json($q->orderBy('nombre')->get());
     }
@@ -99,8 +93,6 @@ class SubcategoriaController extends Controller
         $user = Auth::user();
 
         $q = Subcategoria::query();
-        if (!$user->hasRole('Administrador')) {
-        }
         $sub = $q->find($id);
         if (!$sub || (int)$sub->estado === 0) {
             return response()->json(['status'=>'error','message'=>'Subcategoría no encontrada'], 200);
@@ -141,9 +133,6 @@ class SubcategoriaController extends Controller
         $user = Auth::user();
 
         $q = Subcategoria::query();
-        if (!$user->hasRole('Administrador')) {
-            $q->where('id_empresa', $user->id_empresa ?? 0);
-        }
         $sub = $q->find($id);
         if (!$sub) return response()->json(['status'=>'error','message'=>'Subcategoría no encontrada'], 200);
 

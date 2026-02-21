@@ -31,12 +31,16 @@ class VentaController extends Controller
         $usuario = auth()->user();
         $empresaId = $usuario->id_empresa;
         $almacenId = $request->input('almacen_id');
+        $sucursalId = $request->input('sucursal_id');
 
         // ⚠️ 1️⃣ Verificar si el usuario tiene caja activa
-        $cajaActiva = \App\Models\Caja::where('usuario_id', $usuario->id)
+        $cajaQuery = \App\Models\Caja::where('usuario_id', $usuario->id)
             ->where('empresa_id', $empresaId)
-            ->where('estado', 1)
-            ->first();
+            ->where('estado', 1);
+        if ($sucursalId) {
+            $cajaQuery->where('sucursal_id', $sucursalId);
+        }
+        $cajaActiva = $cajaQuery->first();
 
         if (!$cajaActiva) {
             return response()->json([
@@ -48,6 +52,26 @@ class VentaController extends Controller
         // ⚠️ 2️⃣ Verificar que se haya enviado el almacén
         if (!$almacenId) {
             return response()->json([], 400);
+        }
+
+        $almacen = Almacen::where('id', $almacenId)
+            ->whereHas('sucursal', function ($q) use ($empresaId) {
+                $q->where('empresa_id', $empresaId);
+            })
+            ->first();
+
+        if (!$almacen) {
+            return response()->json([
+                'error' => true,
+                'message' => 'Almacén no válido.'
+            ], 404);
+        }
+
+        if ($sucursalId && (int) $almacen->sucursal_id !== (int) $sucursalId) {
+            return response()->json([
+                'error' => true,
+                'message' => 'El almacén no pertenece a la sucursal seleccionada.'
+            ], 400);
         }
 
         // ✅ 3️⃣ Cargar productos normalmente
@@ -92,10 +116,14 @@ class VentaController extends Controller
     public function fetchAlmacenes()
     {
         $empresaId = auth()->user()->id_empresa;
+        $sucursalId = request()->input('sucursal_id');
 
-        // Obtener todos los almacenes cuya sucursal pertenece a la empresa
-        $almacenes = Almacen::whereHas('sucursal', function ($q) use ($empresaId) {
+        // Obtener almacenes filtrando por sucursal (si aplica) y empresa
+        $almacenes = Almacen::whereHas('sucursal', function ($q) use ($empresaId, $sucursalId) {
             $q->where('empresa_id', $empresaId);
+            if ($sucursalId) {
+                $q->where('id', $sucursalId);
+            }
         })->orderBy('id', 'asc')->get();
 
         return response()->json($almacenes);

@@ -136,7 +136,7 @@
     </style>
 
 <script>
-    document.addEventListener("DOMContentLoaded", () => {
+    const setupCompraCrudPage = () => {
         const tbody = document.getElementById("tbodyCompras");
         const pager = document.getElementById("pager");
         const pagerInfo = document.getElementById("pagerInfo");
@@ -453,7 +453,26 @@
     
         // carga inicial
         fetchCompras(1);
-    });
+
+        window.__compraCrudReload = () => {
+            fetchCompras(1);
+        };
+    };
+
+    const handleCompraCrudLoad = () => {
+        const root = document.getElementById('tbodyCompras');
+        if (!root) return;
+        if (root.dataset.compraCrudInit === '1') {
+            window.__compraCrudReload?.();
+            return;
+        }
+        root.dataset.compraCrudInit = '1';
+        setupCompraCrudPage();
+    };
+
+    document.addEventListener('turbo:load', handleCompraCrudLoad);
+    document.addEventListener('DOMContentLoaded', handleCompraCrudLoad);
+</script>
 </script>
     
 </x-layout>

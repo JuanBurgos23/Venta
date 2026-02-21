@@ -33,11 +33,6 @@ class UnidadMedidaController extends Controller
         $q = Unidad_medida::query()
             ->where('estado', '!=', 0);
 
-        // Scope por empresa si NO es Administrador
-        if (!$user->hasRole('Administrador')) {
-            $q->where('id_empresa', $user->id_empresa ?? 0);
-        }
-
         if ($search !== '') {
             $q->where(function ($w) use ($search) {
                 $w->where('nombre', 'like', "%{$search}%");

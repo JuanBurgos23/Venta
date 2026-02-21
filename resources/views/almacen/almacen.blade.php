@@ -108,7 +108,7 @@
 
 
         <script>
-          document.addEventListener("DOMContentLoaded", function() {
+          const setupAlmacenPage = () => {
             // Helpers
             const CSRF = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
@@ -356,10 +356,29 @@
                 showToast('Error al guardar', 'danger');
               }
             });
-          });
+
+            window.__almacenReload = () => {
+              fetchAlmacenes(1, currentSearch, sortColumn, sortDirection);
+            };
+          };
+
+          const handleAlmacenLoad = () => {
+            const root = document.getElementById('almacenes-table');
+            if (!root) return;
+            if (root.dataset.almacenInit === '1') {
+              if (typeof window.__almacenReload === 'function') {
+                window.__almacenReload();
+              }
+              return;
+            }
+            root.dataset.almacenInit = '1';
+            setupAlmacenPage();
+          };
+
+          document.addEventListener('turbo:load', handleAlmacenLoad);
+          document.addEventListener('DOMContentLoaded', handleAlmacenLoad);
         </script>
       </div>
     </div>
   </main>
 </x-layout>
-

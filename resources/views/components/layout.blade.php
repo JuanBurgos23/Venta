@@ -1034,7 +1034,7 @@
         <div class="layout-container">
             <!-- Menu -->
 
-            <aside id="layout-menu" class="layout-menu menu-vertical menu"
+            <aside id="layout-menu"class="layout-menu menu-vertical menu bg-menu-theme" data-turbo-permanent
                 style="touch-action: none; user-select: none; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
 
                 <div class="app-brand demo">
@@ -1236,7 +1236,7 @@
             <!-- Layout container -->
             <div class="layout-page">
                 <!-- Navbar -->
-                <nav class="layout-navbar container-xxl navbar-detached navbar navbar-expand-xl align-items-center bg-navbar-theme"
+                <nav class="layout-navbar container-xxl navbar-detached navbar navbar-expand-xl align-items-center bg-navbar-theme" data-turbo-permanent
                     id="layout-navbar">
 
                     <div class="menu-mobile-toggler d-xl-none rounded-1">
@@ -2155,7 +2155,7 @@
                     <div class="m-0 px-6 pb-6 template-customizer-layoutNavbarOptions w-100">
                         <label for="customizerNavbar"
                             class="form-label template-customizer-t-layout_navbar_label mb-2">Tipo de Barra de
-                            NavegaciÃ³n</label>
+                            Navegación</label>
                         <div class="row px-1 template-customizer-navbar-options">
                             <div class="col-4 px-2">
                                 <div
