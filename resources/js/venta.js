@@ -753,7 +753,7 @@
                         body: JSON.stringify(payload)
                     });
                     const data = await res.json();
-                    if (!res.ok || !data.success) throw new Error(data.message || 'No se pudo registrar la venta');
+                    if (!res.ok || !data.success) throw new Error(data.error || 'No se pudo registrar la venta');
                     showMessage('Venta registrada correctamente', 'success');
                     cart = [];
                     if (discountEl) discountEl.value = 0;
@@ -768,7 +768,7 @@
                 } catch (err) {
                     hideLoader();
                     console.error(err);
-                    showMessage(err.message || 'Error al registrar la venta', 'error');
+                    showMessage(err.error || 'Error al registrar la venta', 'error');
                 }
             }
 

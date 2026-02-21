@@ -93,19 +93,21 @@ class CajaController extends Controller
             ->where('empresa_id', $caja->empresa_id)
             ->where('sucursal_id', $caja->sucursal_id)
             ->where('usuario_id', $caja->usuario_id)
-            ->whereBetween('fecha', [$caja->fecha_apertura, $fechaFin])
+            ->whereBetween('created_at', [$caja->fecha_apertura, $fechaFin]) // 🔥 aquí
             ->where('estado', 'Pagado');
 
-        $ventasEfectivo = (clone $ventasQuery)
-            ->where('forma_pago', 'Efectivo')
-            ->sum('total');
 
-        $ventasNoEfectivo = (clone $ventasQuery)
-            ->whereIn('forma_pago', ['Qr', 'Tarjeta'])
-            ->sum('total');
+        $ventasEfectivo = $caja->detalleCaja
+            ->where('movimiento', 'VENTA')
+            ->where('id_forma_pago', 1) // efectivo
+            ->sum('monto');
+
+        $ventasNoEfectivo = $caja->detalleCaja
+            ->where('movimiento', 'VENTA')
+            ->where('id_forma_pago', '!=', 1) // todos lo que NO sea efectivo
+            ->sum('monto');
 
         $totalVentas = $ventasEfectivo + $ventasNoEfectivo;
-
         /*
         |--------------------------------------------------------------------------
         | INGRESOS VARIOS (NO ventas)

@@ -14,6 +14,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             SuscripcionSeeder::class,
             TipoCatalogosSeeder::class,
+            FormaPago::class
         ]);
     }
 }

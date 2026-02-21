@@ -27,6 +27,7 @@ return new class extends Migration
 
             $table->index('caja_id');
             $table->index('fecha_movimiento');
+            $table->foreignId('id_forma_pago')->constrained('forma_pago')->default(1);
             $table->index('id_tipo_movimiento');
             $table->integer('id_movimiento')->nullable();//ID del movimiento relacionado (compra, venta, etc.
 
