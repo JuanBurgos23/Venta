@@ -178,7 +178,7 @@
 
     {{-- Scripts --}}
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        const setupVentasRegistradas = () => {
             const CAN_ANULAR = @json(auth()->user()->can('ventas.eliminar'));
             // Config
             const LIST_URL = '/ventas/fetch'; // endpoint que debe devolver paginado { data: [...], current_page, last_page, total }
@@ -634,7 +634,18 @@
 
             // inicial
             loadSales(1);
-        });
+        };
+
+        const handleVentasRegistradasLoad = () => {
+            const root = document.getElementById('ventas-body');
+            if (!root) return;
+            if (root.dataset.ventasRegistradasInit === '1') return;
+            root.dataset.ventasRegistradasInit = '1';
+            setupVentasRegistradas();
+        };
+
+        document.addEventListener('turbo:load', handleVentasRegistradasLoad);
+        document.addEventListener('DOMContentLoaded', handleVentasRegistradasLoad);
     </script>
     <style>
         

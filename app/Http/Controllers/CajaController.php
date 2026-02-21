@@ -10,14 +10,20 @@ use Illuminate\Support\Facades\Auth;
 class CajaController extends Controller
 {
     // Verificar si hay una caja activa para el usuario logueado
-    public function verificarCajaActiva()
+    public function verificarCajaActiva(Request $request)
     {
         $usuario = Auth::user();
+        $sucursalId = $request->input('sucursal_id');
 
-        $cajaActiva = Caja::where('usuario_id', $usuario->id)
+        $query = Caja::where('usuario_id', $usuario->id)
             ->where('empresa_id', $usuario->id_empresa)
-            ->where('estado', 1)
-            ->first();
+            ->where('estado', 1);
+
+        if ($sucursalId) {
+            $query->where('sucursal_id', $sucursalId);
+        }
+
+        $cajaActiva = $query->first();
 
         if ($cajaActiva) {
             return response()->json(['activa' => true, 'caja' => $cajaActiva]);
@@ -45,11 +51,17 @@ class CajaController extends Controller
     public function cerrarCaja(Request $request)
     {
         $usuario = auth()->user();
+        $sucursalId = $request->input('sucursal_id');
 
-        $caja = Caja::where('usuario_id', $usuario->id)
+        $query = Caja::where('usuario_id', $usuario->id)
             ->where('empresa_id', $usuario->id_empresa)
-            ->where('estado', 1)
-            ->first();
+            ->where('estado', 1);
+
+        if ($sucursalId) {
+            $query->where('sucursal_id', $sucursalId);
+        }
+
+        $caja = $query->first();
 
         if (!$caja) {
             return response()->json(['success' => false, 'message' => 'No hay caja activa.']);

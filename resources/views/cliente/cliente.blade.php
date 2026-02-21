@@ -145,7 +145,7 @@
                 </div>
 
                 <script>
-                    document.addEventListener("DOMContentLoaded", function() {
+                    const setupClientePage = () => {
 
                         // --- Toast
                         function showToast(message, type = 'primary') {
@@ -376,7 +376,26 @@
                             }
                         });
 
-                    });
+                        window.__clienteReload = () => {
+                            fetchClientes(1, currentSearch, sortColumn, sortDirection);
+                        };
+                    };
+
+                    const handleClienteLoad = () => {
+                        const root = document.getElementById('clientes-table');
+                        if (!root) return;
+                        if (root.dataset.clienteInit === '1') {
+                            if (typeof window.__clienteReload === 'function') {
+                                window.__clienteReload();
+                            }
+                            return;
+                        }
+                        root.dataset.clienteInit = '1';
+                        setupClientePage();
+                    };
+
+                    document.addEventListener('turbo:load', handleClienteLoad);
+                    document.addEventListener('DOMContentLoaded', handleClienteLoad);
                 </script>
             </div>
         </div>

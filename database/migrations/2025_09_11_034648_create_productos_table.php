@@ -40,10 +40,9 @@ return new class extends Migration
             $table->string('marca', 100)->nullable();
             $table->string('modelo', 100)->nullable();
             $table->string('origen', 100)->nullable();
-            $table->string('estado', 100)->nullable()->default('Activo');
-            $table->foreignId('proveedor_id')
-                  ->nullable()
-                  ->constrained('proveedor');
+            $table->integer('estado')->nullable()->default(1);
+            $table->integer('stock_minimo')->nullable()->default(0);
+            $table->decimal('costo', 12, 2)->nullable()->default(0);
             $table->integer('inventariable')->nullable()->default(1);
             $table->decimal('precio', 12, 2)->default(0);
             $table->timestamps();

@@ -6,7 +6,9 @@
         <!-- Scripts -->
         @vite([ 'resources/js/app.js'])
         <!-- End Navbar -->
+
         <div class="container-fluid py-4">
+
             <div class="col-12">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <div>
@@ -14,7 +16,13 @@
                         <p class="mb-0">Controla qué pantallas y funcionalidades puede acceder cada rol del sistema.</p>
                     </div>
                     <div class="d-flex align-items-center">
-                        <form method="POST" action="{{ route('permisos.pantallas.sync') }}" class="me-3">
+                                    <div class="venta-loader" id="venta-loader" aria-hidden="true">
+                                        <div class="venta-loader-card">
+                                            <svg stroke="hsl(228, 97%, 42%)" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="venta-loader-icon" aria-label="Cargando" role="img"><g><circle cx="12" cy="12" r="9.5" fill="none" stroke-width="3" stroke-linecap="round"><animate attributeName="stroke-dasharray" dur="1.5s" calcMode="spline" values="0 150;42 150;42 150;42 150" keyTimes="0;0.475;0.95;1" keySplines="0.42,0,0.58,1;0.42,0,0.58,1;0.42,0,0.58,1" repeatCount="indefinite"/><animate attributeName="stroke-dashoffset" dur="1.5s" calcMode="spline" values="0;-16;-59;-59" keyTimes="0;0.475;0.95;1" keySplines="0.42,0,0.58,1;0.42,0,0.58,1;0.42,0,0.58,1" repeatCount="indefinite"/></circle><animateTransform attributeName="transform" type="rotate" dur="2s" values="0 12 12;360 12 12" repeatCount="indefinite"/></g></svg>
+                                            <div class="venta-loader-text" id="venta-loader-text">Cargando...</div>
+                                        </div>
+                                    </div>
+                        <form method="POST" action="{{ route('permisos.pantallas.sync') }}" class="me-3" id="syncPantallasForm">
                             @csrf
                             <button class="btn btn-sm btn-outline-dark" type="submit">
                                 <i class="fas fa-sync me-1"></i> Sincronizar pantallas
@@ -343,10 +351,29 @@
     </main>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const changes = new Set();
-            const saveAllBtn = document.getElementById('saveAllChanges');
-            const changesList = document.getElementById('changesList');
+            const setupPermisosPage = () => {
+                const changes = new Set();
+                const saveAllBtn = document.getElementById('saveAllChanges');
+                const changesList = document.getElementById('changesList');
+                const syncPantallasForm = document.getElementById('syncPantallasForm');
+                const loaderEl = document.getElementById('venta-loader');
+                const loaderTextEl = document.getElementById('venta-loader-text');
+                let loaderCount = 0;
+
+            const showLoader = (text = 'Cargando...') => {
+                loaderCount += 1;
+                if (loaderTextEl) loaderTextEl.textContent = text;
+                loaderEl?.classList.add('is-active');
+                loaderEl?.setAttribute('aria-hidden', 'false');
+            };
+
+            const hideLoader = () => {
+                loaderCount = Math.max(0, loaderCount - 1);
+                if (loaderCount === 0) {
+                    loaderEl?.classList.remove('is-active');
+                    loaderEl?.setAttribute('aria-hidden', 'true');
+                }
+            };
             
             // Toggle children visibility
             document.querySelectorAll('.toggle-children').forEach(button => {
@@ -363,6 +390,13 @@
                     icon.classList.toggle('fa-chevron-up');
                 });
             });
+
+            // Sync screens form
+            if (syncPantallasForm) {
+                syncPantallasForm.addEventListener('submit', function() {
+                    showLoader('Sincronizando...');
+                });
+            }
             
             // Expand all modules
             document.getElementById('expandAll').addEventListener('click', function() {
@@ -586,6 +620,7 @@
             
             async function saveChangesToServer(changesArray) {
                 try {
+                    showLoader('Guardando cambios...');
                     const response = await fetch('{{ route('permisos.pantallas.guardar') }}', {
                         method: 'POST',
                         headers: {
@@ -607,25 +642,37 @@
                     }
                 } catch (error) {
                     showToast('Error de conexión', 'error');
+                } finally {
+                    hideLoader();
                 }
             }
             
-            function showScreenDetails(screenId) {
-                fetch(`{{ url('/permisos-pantallas/pantalla') }}/${screenId}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        document.getElementById('screenDetailsContent').innerHTML = data.html;
-                        new bootstrap.Modal(document.getElementById('screenDetailsModal')).show();
-                    });
+            async function showScreenDetails(screenId) {
+                try {
+                    showLoader('Cargando...');
+                    const response = await fetch(`{{ url('/permisos-pantallas/pantalla') }}/${screenId}`);
+                    const data = await response.json();
+                    document.getElementById('screenDetailsContent').innerHTML = data.html;
+                    new bootstrap.Modal(document.getElementById('screenDetailsModal')).show();
+                } catch (error) {
+                    showToast('Error de conexión', 'error');
+                } finally {
+                    hideLoader();
+                }
             }
             
-            function showRoleSummary(roleId) {
-                fetch(`{{ url('/permisos-pantallas/rol') }}/${roleId}/resumen`)
-                    .then(response => response.json())
-                    .then(data => {
-                        document.getElementById('roleSummaryContent').innerHTML = data.html;
-                        new bootstrap.Modal(document.getElementById('roleSummaryModal')).show();
-                    });
+            async function showRoleSummary(roleId) {
+                try {
+                    showLoader('Cargando...');
+                    const response = await fetch(`{{ url('/permisos-pantallas/rol') }}/${roleId}/resumen`);
+                    const data = await response.json();
+                    document.getElementById('roleSummaryContent').innerHTML = data.html;
+                    new bootstrap.Modal(document.getElementById('roleSummaryModal')).show();
+                } catch (error) {
+                    showToast('Error de conexión', 'error');
+                } finally {
+                    hideLoader();
+                }
             }
             
             function showToast(message, type = 'info') {
@@ -638,7 +685,18 @@
             tooltipTriggerList.map(function (tooltipTriggerEl) {
                 return new bootstrap.Tooltip(tooltipTriggerEl);
             });
-        });
+            };
+
+            const handlePermisosLoad = () => {
+                const root = document.getElementById('syncPantallasForm');
+                if (!root) return;
+                if (root.dataset.permisosInit === '1') return;
+                root.dataset.permisosInit = '1';
+                setupPermisosPage();
+            };
+
+            document.addEventListener('turbo:load', handlePermisosLoad);
+            document.addEventListener('DOMContentLoaded', handlePermisosLoad);
     </script>
 
     <style>
@@ -680,5 +738,176 @@
             top: 0;
             z-index: 10;
         }
+        /* Loader overlay */
+.venta-loader {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(15, 23, 42, 0.35);
+    backdrop-filter: blur(2px);
+    z-index: 9999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+}
+.venta-loader.is-active {
+    opacity: 1;
+    pointer-events: all;
+}
+.venta-loader-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 18px 22px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+.venta-loader-icon {
+    width: 36px;
+    height: 36px;
+}
+.venta-loader-text {
+    font-weight: 600;
+    color: #1f2937;
+}
+[data-bs-theme="dark"] .venta-loader-card {
+    background: #0f172a;
+    color: #e5e7eb;
+    border: 1px solid #1f2937;
+}
+[data-bs-theme="dark"] .venta-loader-text {
+    color: #e5e7eb;
+}
+
+/* ===== Dark theme overrides ===== */
+[data-bs-theme="dark"] {
+    --primary-color: #e2e8f0;
+    --secondary-color: #60a5fa;
+    --accent-color: #3b82f6;
+    --light-color: #122143;
+    --medium-color: #1a2b46;
+    --dark-color: #cbd5f5;
+    --box-shadow: 0 6px 18px rgba(21, 26, 68, 0.35);
+    --box-shadow-hover: 0 12px 26px rgba(20, 22, 75, 0.45);
+}
+
+[data-bs-theme="dark"] .venta-container {
+    background: #0b1220;
+}
+
+[data-bs-theme="dark"] .venta-header,
+[data-bs-theme="dark"] .venta-main-card {
+    background: #1b2844;
+    border-color: #1f2b3d;
+}
+
+[data-bs-theme="dark"] .venta-header h6,
+[data-bs-theme="dark"] .search-header h4,
+[data-bs-theme="dark"] .carrito-header h6,
+[data-bs-theme="dark"] .section-title,
+[data-bs-theme="dark"] .summary-label,
+[data-bs-theme="dark"] .summary-value {
+    color: #e5e7eb;
+}
+
+[data-bs-theme="dark"] .venta-header-info .info-item,
+[data-bs-theme="dark"] .text-muted {
+    color: #cbd5e1 !important;
+}
+
+[data-bs-theme="dark"] .venta-header .form-control-sm,
+[data-bs-theme="dark"] .venta-header .form-select-sm,
+[data-bs-theme="dark"] .search-box .form-control,
+[data-bs-theme="dark"] .input-group-text {
+    background: #0f172a;
+    border-color: #1f2937;
+    color: #e5e7eb;
+}
+
+[data-bs-theme="dark"] .venta-header .text-dark {
+    color: #e5e7eb !important;
+}
+
+[data-bs-theme="dark"] .quick-client-card,
+[data-bs-theme="dark"] .client-card {
+    background: #0f172a;
+    border-color: #1f2937;
+}
+
+[data-bs-theme="dark"] .quick-inline-input,
+[data-bs-theme="dark"] .summary-inline-input {
+    color: #e5e7eb;
+    border-bottom-color: #334155;
+}
+
+[data-bs-theme="dark"] .summary-inline-input:focus,
+[data-bs-theme="dark"] .quick-inline-input:focus {
+    background: #0b1426;
+}
+
+[data-bs-theme="dark"] .carrito-section {
+    background: transparent;
+}
+
+[data-bs-theme="dark"] .carrito-header {
+    border-bottom-color: #1f2937;
+}
+
+[data-bs-theme="dark"] .input-group-pro label {
+    color: #cbd5e1;
+}
+
+[data-bs-theme="dark"] .input-group-pro input,
+[data-bs-theme="dark"] .input-group-pro select {
+    background: #0f172a;
+    border-color: #1f2937;
+    color: #e5e7eb;
+}
+
+[data-bs-theme="dark"] .input-group-pro input:focus,
+[data-bs-theme="dark"] .input-group-pro select:focus {
+    box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
+}
+
+[data-bs-theme="dark"] .product-card-pro {
+    background: #0f172a;
+    border-color: #1f2937;
+}
+
+[data-bs-theme="dark"] .product-header-pro {
+    background: #111827;
+    border-bottom-color: #1f2937;
+}
+
+[data-bs-theme="dark"] .product-image-pro {
+    background: #0b1426;
+}
+
+[data-bs-theme="dark"] .product-info-pro {
+    color: #e5e7eb;
+}
+
+[data-bs-theme="dark"] .product-title-pro {
+    color: #e5e7eb;
+}
+
+[data-bs-theme="dark"] .product-specs-pro {
+    border-top-color: #1f2937;
+}
+
+[data-bs-theme="dark"] .spec-label-pro {
+    color: #cbd5e1;
+}
+
+[data-bs-theme="dark"] .spec-value-pro {
+    color: #e5e7eb;
+}
+
+[data-bs-theme="dark"] .price-unit-pro {
+    color: #cbd5e1;
+}
     </style>
 </x-layout>

@@ -14,7 +14,14 @@ class EmpresaController extends Controller
 {
     public function index()
     {
-        return view('empresa.empresa');
+        $user = Auth::user();
+        $empresa = null;
+
+        if ($user && $user->id_empresa) {
+            $empresa = Empresa::find($user->id_empresa);
+        }
+
+        return view('empresa.empresa', compact('empresa'));
     }
     public function edit($id)
     {

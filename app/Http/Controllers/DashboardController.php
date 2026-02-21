@@ -324,4 +324,26 @@ class DashboardController extends Controller
 
         return response()->json(['ok'=>true,'meta'=>$meta,'data'=>$rows]);
     }
+
+    public function ventasUltimos5Dias(Request $request)
+    {
+        $empresaId = $request->integer('empresa_id') ?: (auth()->user()->id_empresa ?? null);
+        if (!$empresaId) return response()->json(['ok'=>false,'msg'=>'empresa_id requerido'], 422);
+
+        $labels = [];
+        $data = [];
+
+        for ($i = 4; $i >= 0; $i--) {
+            $fecha = now()->subDays($i)->toDateString();
+            $q = DB::table($this->VENTA_TABLE)
+                ->whereDate($this->VENTA_FECHA, $fecha)
+                ->where($this->VENTA_EMP, $empresaId);
+            $this->applyEstado($q);
+
+            $labels[] = now()->subDays($i)->format('d/m');
+            $data[] = round((float) $q->sum($this->VENTA_TOTAL), 2);
+        }
+
+        return response()->json(['ok'=>true, 'labels'=>$labels, 'data'=>$data]);
+    }
 }

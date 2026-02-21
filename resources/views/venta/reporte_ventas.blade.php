@@ -197,7 +197,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        const setupReporteVentas = () => {
             // Variables globales
             let reporteData = [];
             let graficoPagos = null;
@@ -803,7 +803,18 @@
             // Inicializar
             cargarAlmacenes();
             actualizarInfoReporte();
-        });
+        };
+
+        const handleReporteVentasLoad = () => {
+            const root = document.getElementById('reporte-body');
+            if (!root) return;
+            if (root.dataset.reporteVentasInit === '1') return;
+            root.dataset.reporteVentasInit = '1';
+            setupReporteVentas();
+        };
+
+        document.addEventListener('turbo:load', handleReporteVentasLoad);
+        document.addEventListener('DOMContentLoaded', handleReporteVentasLoad);
     </script>
 
     <style>
